@@ -22,11 +22,15 @@
                         <a class="nav-link" href="/index">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profiili</a>
+                        <a class="nav-link" href="/profile_view">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Kirjaudu</a>
-                    </li>    
+                        <a class="nav-link" href="/auth/login">Sign in</a>
+                    </li>
+                    <li class='nav-item' sec:authorize="hasAuthority('USER')">
+                        <a class="nav-link" href="/auth/login">Sign out</a>
+                    </li>
+                    
                 </ul>
             </div>  
         </nav>
@@ -47,10 +51,10 @@
                             <p><a th:href="@{/docs/project}">Project documentation</a></p>
                         </div>
                         <div class="col">
-                            <p><a th:href="@{/polku2}">Feedback</a></p>
+                            <p><a th:href="@{/docs/feedback}">Feedback</a></p>
                         </div>
                          <div class="col">
-                            <p><a th:href="@{/polku3}">About Us</a></p>
+                            <p><a th:href="@{/docs/aboutus}">About Us</a></p>
                         </div> 
                     </div>
                 </div>

@@ -24,7 +24,7 @@
         <div class="row">
             <div class="col-sm-4">
                 <h2>Show when logged in</h2>
-                <h5>Welcome to Waypoint <span sec:authorize="hasAuthority('USER')">, <span sec:authentication="name">Username</span></span>!</h5>
+                <h5>Welcome, "nimi"</h5>
                 <div class="fakeimg">Profile picture</div>
                 <p>Basic information about user here </p>
                 <h3>Some Links</h3>
@@ -63,3 +63,4 @@
 
 </body>
 </html>
+

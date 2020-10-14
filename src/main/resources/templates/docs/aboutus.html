@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <title>Bootstrap 4 Website Example</title>
+  <meta charset="utf-8" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <style>
+  .fakeimg {
+    height: 200px;
+    background: #aaa;
+  }
+  </style>
+</head>
+    <body>
+        
+        <div th:replace="fragments/layout :: pageTitle">Page title</div>
+        <nav th:replace="fragments/layout :: nav">Navigation</nav>
+        
+        
+        <div class="container" style="margin-top:30px">
+            <div class="row">
+                <div class="col-sm-4">
+                    <h2>About us</h2>
+                    <h5>Team photo</h5>
+                    <div class="fakeimg">Picture of stuffed animals</div>
+                    <p>Waypoint was built by a diverse team of stuffed animals.</p>
+                    
+                </div>
+                
+                <div class="col">
+                    <h1>Waypoint to your dreams</h1>
+
+                    <p>Add a silly description of what Waypoint is</p>
+
+                    <h2>Vision</h2>
+                    <p>Add content</p>
+                    
+                    <h2>Mission</h2>
+                    <p>Add content</p>
+                    
+                    <h2>Stategy</h2>
+                    <p>Add content</p>
+
+                    
+                </div>
+            </div>
+        </div>
+        
+        <div class="jumbotron text-center" style="margin-bottom:0">
+            <footer th:replace="fragments/layout :: footer">Footer comes here</footer>
+        </div>
+        
+    </body>
+</html>
+
+
