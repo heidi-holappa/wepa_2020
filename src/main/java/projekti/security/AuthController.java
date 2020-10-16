@@ -43,7 +43,7 @@ public class AuthController {
             model.addAttribute("errors", error.toString());
         }
                 
-        return "auth/signup";
+        return "/auth/signup";
     }
     
     // Käyttäjätunnuksen luominen POST
