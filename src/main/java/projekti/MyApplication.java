@@ -1,6 +1,7 @@
 package projekti;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import org.apache.xerces.parsers.SecurityConfiguration;
@@ -10,12 +11,16 @@ import projekti.security.*;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
 public class MyApplication {
     
     @Autowired
     private AccountRepository accountRepository;
+    
+    @Autowired 
+    private MessageRepository msgRepository;
  
     @Autowired
     private ProductionSecurityConfiguration prodSecConf;
@@ -46,11 +51,36 @@ public class MyApplication {
             a2.setAuthorities(rights);
             accountRepository.save(a2);
         }
+        
+        if (msgRepository.findAll().isEmpty()) {
+            Message msg = new Message();
+            msg.setContent("Hello Waypoint!");
+            msg.setUser(a1);
+            msg.setLikes(1);
+            msg.setOpId(0L);
+            ArrayList<Account> likers = new ArrayList<>();
+            likers.add(a2);
+            msg.setLikers(likers);
+            msgRepository.save(msg);
+        }
+                
  
     }
     
     public static void main(String[] args) {
-        SpringApplication.run(MyApplication.class);
+//        SpringApplication.run(MyApplication.class);
+        ApplicationContext ctx = SpringApplication.run(MyApplication.class, args);
+
+        System.out.println("Let's inspect the beans provided by Spring Boot:");
+
+        String[] beanNames = ctx.getBeanDefinitionNames();
+        Arrays.sort(beanNames);
+        for (String beanName : beanNames) {
+            System.out.println(beanName);
+        }
+
     }
+    
+
 
 }

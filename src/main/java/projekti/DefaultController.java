@@ -9,6 +9,6 @@ public class DefaultController {
 
     @GetMapping("*")
     public String goHome() {
-        return "index";
+        return "redirect:/index";
     }
 }

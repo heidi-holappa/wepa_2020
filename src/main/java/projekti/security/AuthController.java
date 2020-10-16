@@ -24,25 +24,29 @@ public class AuthController {
     @Autowired
     PasswordEncoder passwordEncoder;
     
+    // Luodaan yksi virheet kerävä olio. TARKASTA VIELÄ, VOISIKO TÄMÄN LUODA AUTOMAATTISESTI
     ErrorObject error = new ErrorObject();
 
     
+    // Custom login-sivu
     @GetMapping("/auth/login")
     public String login() {
-        return "/auth/login";
+        return "auth/login";
     }
     
+    // Käyttäjätunnuksen luominen näkymä. 
+    // Jos virhe-oliossa on virhe tallennettuna, virhe-viesti lisätään Modeliin. 
     @GetMapping("/auth/signup")
     public String signup(@ModelAttribute Account account, Model model) {
-        System.out.println("signup: " + error.toString());
-        System.out.println("signup: " + error.toString().length());
+        
         if (error.toString().length() > 1 ) {
             model.addAttribute("errors", error.toString());
         }
                 
-        return "/auth/signup";
+        return "auth/signup";
     }
     
+    // Käyttäjätunnuksen luominen POST
     @PostMapping("/auth/signup")
     public String createUsername(
             @Valid
@@ -51,55 +55,49 @@ public class AuthController {
             @RequestParam String password,
             @RequestParam String passwordtwo) {
         
+        // Tarkastetaan BindingResult - virheet
         if(bindingResult.hasErrors()) {
-            return "/auth/signup";
+            return "auth/signup";
         }
         
-        System.out.println("Metodi createUsername käynnistyy");
-        
+        // Muut virheet: käyttäjätunnus varattu
         if (accountRepository.findByUsername(account.getUsername()) != null) {
             error.setError("Username is already in use. Choose another username.");
             System.out.println("createUserError: " + error.toString());
             return "redirect:/auth/signup";
         }
         
+        // Muut virheet: polku varattu
         if (accountRepository.findByPathname(account.getPathname()) != null) {
             error.setError("Path is already in use. Choose another path.");
             System.out.println("createUserError: " + error.toString());
             return "redirect:/auth/signup";
         }
         
+        // Muut virheet: salasanat eivät täsmää
         if (!password.equals(passwordtwo)) {
             error.setError("Passwords didn't match. Please try again.");
             System.out.println("createUserError: " + error.toString());
             return "redirect:/auth/signup";
         }
         
+        // Muut virheet: salasana liian lyhyt tai liian pitkä
         if (password.length() < 8 || password.length() > 16) {
             error.setError("Password must be 8-16 characters long.");
             System.out.println("createUserError: " + error.toString());
             return "redirect:/auth/signup";
         }
         
-        
-        
-        System.out.println("createUsername: If-lausekkeet ohitettu");
-        
-               
-        System.out.println("createUsername: Tilin a tiedot");
-        System.out.println("createUsername: Username: " + account.getUsername());
-        System.out.println("createUsername: Password: " + password);
-        System.out.println("createUsername: Pathname: " + account.getPathname());
-        
+        //Luodaan lista käyttäjäoikeuksista
         ArrayList<String> rights = new ArrayList<>();
         rights.add("USER");
         account.setAuthorities(rights);
         
+        //Salasanan suojaus
         account.setSecuredPassword(passwordEncoder.encode(password));
-        accountRepository.save(account);
         
-        System.out.println("createUsername: Tallennus ohitettu");
-        
+        //Tallennetaan uusi käyttäjätunnus
+        accountRepository.save(account);      
         
         return "redirect:/auth/login";
     }

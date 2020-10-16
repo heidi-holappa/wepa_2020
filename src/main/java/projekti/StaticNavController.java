@@ -3,20 +3,22 @@
 
 package projekti;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import projekti.domain.*;
 
 @Controller
 public class StaticNavController {
     
-    
-    @GetMapping("/index")
-    public String returnHome() {
-        return "index";
-    }
-    
+    @Autowired
+    private MessageRepository msgRepository;
+      
     @GetMapping("/docs/project")
     public String projectDoc() {
         return "docs/project";
@@ -41,6 +43,7 @@ public class StaticNavController {
     public ModelAndView login() {
         return new ModelAndView("login");
     }
+    
     
     
 }

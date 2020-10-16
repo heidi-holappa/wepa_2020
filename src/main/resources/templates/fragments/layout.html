@@ -1,9 +1,21 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-    <head lang="en">
-        <meta charset="UTF-8" />
-        <title>Layout</title>
-    </head>
+<html lang="en">
+<head>
+    <title>Waypoint</title>
+    <meta charset="utf-8" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        .fakeimg {
+            height: 200px;
+            background: #aaa;
+        }
+    </style>
+</head>
+    
     <body>
         
         <div th:fragment="pageTitle" class="jumbotron text-center" style="margin-bottom:0">
@@ -24,11 +36,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/profile_view">Profile</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="isAnonymous()">
                         <a class="nav-link" href="/auth/login">Sign in</a>
                     </li>
                     <li class='nav-item' sec:authorize="hasAuthority('USER')">
-                        <a class="nav-link" href="/auth/login">Sign out</a>
+                        <a class="nav-link" href="/logout">Sign out</a>
                     </li>
                     
                 </ul>
@@ -36,14 +48,45 @@
         </nav>
         
         
+        <div th:fragment='postform'>
+            <h5 th:text="${actionError}" style="color:red;"></h5>.
+            <form th:action="@{/postmessage}" method="POST">
+                
+                <div class="form-group">
+                    <label for="exampleFormControlTextarea1">What would you like to say?</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" name="content" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" value="Post">Send my post</button>    
+            </form>    
+        </div>
+        
+        <div th:fragment='msgs'>
+            <div class='container' th:each="message : ${postedmessages}">
+                <div class="card-deck mt-4">    
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title"><span th:text="${message.user.username}"> Username </span></h4>
+                            <p class="card-text"><span th:text="${message.content}"> Content </span></p>
+
+
+                            <a th:href="@{/like/{id}(id=${message.id})}" class="card-link" sec:authorize="hasAuthority('USER')">Like</a>
+                            <a href="#" class="card-link" sec:authorize="hasAuthority('USER')">Comment</a>
+                            Likes: <span th:text="${message.likes}">-1</span>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
         
         <div th:fragment="footer" class="jumbotron text-center" style="margin-bottom:0">
-            <footer th:fragment="footer">
+            <footer>
                 <div class="container">
                     <div class="row">
                         <div class="col">
-                            <h1>Waypoint</h1>
-                            <p>the number one hub for UNSC - professionals.</p>
+                            <h4>Site information</h4>
                         </div>
                     </div>
                     <div class="row">
