@@ -51,18 +51,18 @@ public class MyApplication {
             a2.setAuthorities(rights);
             accountRepository.save(a2);
         }
-        
-        if (msgRepository.findAll().isEmpty()) {
-            Message msg = new Message();
-            msg.setContent("Hello Waypoint!");
-            msg.setUser(a1);
-            msg.setLikes(1);
-            msg.setOpId(0L);
-            ArrayList<Account> likers = new ArrayList<>();
-            likers.add(a2);
-            msg.setLikers(likers);
-            msgRepository.save(msg);
-        }
+//        
+//        if (msgRepository.findAll().isEmpty()) {
+//            Message msg = new Message();
+//            msg.setContent("Hello Waypoint!");
+//            msg.setUser(a1);
+//            msg.setLikes(1);
+//            msg.setOpId(0L);
+//            ArrayList<Account> likers = new ArrayList<>();
+//            likers.add(a2);
+//            msg.setLikers(likers);
+//            msgRepository.save(msg);
+//        }
                 
  
     }

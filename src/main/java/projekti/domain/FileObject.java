@@ -19,8 +19,8 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 public class FileObject extends AbstractPersistable<Long> {
     
     private String name;
-    private String mediaType;
-    private Long size;
+    private String contentType;
+    private Long contentLength;
     private Long userId;
     
     @Lob
