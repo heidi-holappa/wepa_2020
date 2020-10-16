@@ -1,6 +1,7 @@
 package projekti.domain;
 
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 public class UserInfo extends AbstractPersistable<Long> {
     
     // Käyttäjä, johon tiedot liittyvät. Jos olisi liitetty esim. Id-numeroon, voisi liittyä vahingossa väärään henkilöön.
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private Account user;
     
     // Profiilikuvan tieto. Defaultkuvaksi tulee jokin random-kuva

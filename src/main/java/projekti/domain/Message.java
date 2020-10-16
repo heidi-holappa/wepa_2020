@@ -2,6 +2,7 @@ package projekti.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -28,7 +29,7 @@ public class Message extends AbstractPersistable<Long> {
     
     private String content;
     
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.ALL})
     private List<Account> likers;
     
     private Integer likes;
