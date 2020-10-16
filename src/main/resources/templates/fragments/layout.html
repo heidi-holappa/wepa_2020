@@ -13,6 +13,12 @@
             height: 200px;
             background: #aaa;
         }
+        .avatar {
+            vertical-align: middle;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
     </style>
 </head>
     
@@ -65,13 +71,19 @@
                 <div class="card-deck mt-4">    
                     <div class="card">
                         <div class="card-body">
+                            <img th:if="${message.user.profileImgId == 0L}" th:src="@{/media/template.PNG}" class="avatar" alt="A beautiful unicorn" />
+                            <img th:unless="${message.user.profileImgId == 0L}" th:src="@{/media/super.png}" class="avatar" alt="A beautiful unicorn" />
                             <h4 class="card-title"><span th:text="${message.user.username}"> Username </span></h4>
-                            <p class="card-text"><span th:text="${message.content}"> Content </span></p>
+                            <p class="card-text">
+                                <span th:text="${message.content}"> Content </span>
+                                <br />
+                                Likes: <span th:text="${message.likes}">-1</span>
+                            </p>
 
 
                             <a th:href="@{/like/{id}(id=${message.id})}" class="card-link" sec:authorize="hasAuthority('USER')">Like</a>
                             <a href="#" class="card-link" sec:authorize="hasAuthority('USER')">Comment</a>
-                            Likes: <span th:text="${message.likes}">-1</span>
+                            
 
                         </div>
                     </div>

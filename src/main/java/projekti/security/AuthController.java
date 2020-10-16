@@ -1,5 +1,7 @@
 package projekti.security;
 
+import com.google.common.io.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import projekti.domain.*;
 
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class AuthController {
@@ -95,6 +98,9 @@ public class AuthController {
         
         //Salasanan suojaus
         account.setSecuredPassword(passwordEncoder.encode(password));
+        
+        //Profile-image-id to zero (no image added):
+        account.setProfileImgId(0L);
         
         //Tallennetaan uusi käyttäjätunnus
         accountRepository.save(account);      

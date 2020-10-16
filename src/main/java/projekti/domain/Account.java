@@ -36,6 +36,9 @@ public class Account extends AbstractPersistable<Long> {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> authorities;
     
+    // The id of the profile image
+    private Long profileImgId;
+    
     
     
     

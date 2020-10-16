@@ -2,6 +2,7 @@ package projekti;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import org.apache.xerces.parsers.SecurityConfiguration;
@@ -42,6 +43,7 @@ public class MyApplication {
             a1.setSecuredPassword(prodSecConf.passwordEncoder().encode("user1Pass"));
             a1.setAuthorities(rights);
             a1.setPathname("user1");
+            a1.setProfileImgId(0L);
             accountRepository.save(a1);
         }
  
@@ -49,23 +51,26 @@ public class MyApplication {
             a2.setSecuredPassword(prodSecConf.passwordEncoder().encode("user2Pass"));
             a2.setPathname("user2");
             a2.setAuthorities(rights);
+            a2.setProfileImgId(1L);
             accountRepository.save(a2);
         }
-//        
+        
 //        if (msgRepository.findAll().isEmpty()) {
 //            Message msg = new Message();
 //            msg.setContent("Hello Waypoint!");
 //            msg.setUser(a1);
 //            msg.setLikes(1);
 //            msg.setOpId(0L);
-//            ArrayList<Account> likers = new ArrayList<>();
+//            List<Account> likers = new ArrayList<>();
 //            likers.add(a2);
 //            msg.setLikers(likers);
-//            msgRepository.save(msg);
+//           msgRepository.save(msg);
 //        }
-                
+        
+        
  
     }
+    
     
     public static void main(String[] args) {
 //        SpringApplication.run(MyApplication.class);

@@ -13,6 +13,65 @@
                 height: 200px;
                 background: #aaa;
             }
+            
+            * {
+              box-sizing: border-box;
+            }
+
+            body {
+              margin: 0;
+              font-family: Arial;
+            }
+
+            .header {
+              text-align: center;
+              padding: 32px;
+            }
+
+            .row {
+              display: flex;
+              flex-wrap: wrap;
+              padding: 0 4px;
+            }
+
+            /* Create four equal columns that sits next to each other */
+            .column {
+              flex: 25%;
+              max-width: 25%;
+              padding: 0 4px;
+            }
+
+            .column img {
+              margin-top: 8px;
+              vertical-align: middle;
+              width: 100%;
+            }
+
+            /* Responsive layout - makes a two column-layout instead of four columns */
+            @media screen and (max-width: 800px) {
+              .column {
+                flex: 50%;
+                max-width: 50%;
+              }
+            }
+
+            /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+            @media screen and (max-width: 600px) {
+              .column {
+                flex: 100%;
+                max-width: 100%;
+              }
+            }
+            img {
+                border-radius: 50%;
+            }
+            .avatar {
+                vertical-align: middle;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+            }
+
         </style>
     </head>
     
@@ -24,13 +83,12 @@
          <div class="container" style="margin-top:30px">
             <div class="row">
                 <div class="col-sm-4">
-                    <h2>Show when logged in</h2>
+                    <h2>Meet Waypoint's #1 patreon!</h2>
+                    <img th:src="@{/media/template.PNG}" class="img-tumbnail" style="width:100%" alt="A beautiful unicorn" />
                     <h5>Welcome to Waypoint<span sec:authorize="hasAuthority('USER')">, </span><span sec:authorize="hasAuthority('USER')">, <span sec:authentication="name">Username</span></span>!</h5>
-                    <img width="1000" th:src="@{/media/template.PNG}" class="rounded-circle" alt="A beautiful unicorn" />
-                    <div class="fakeimg">Profile picture</div>
-                    <p>Basic information about user here </p>
-                    <h3>Some Links</h3>
-                    <p>Quick navigation:</p>
+                    <div class="fakeimg" sec:authorize="hasAuthority('USER')">Profile picture</div>
+                    <p sec:authorize="hasAuthority('USER')">When logged in a user can see their basic info here</p>
+                    <h4>Quick navigation</h4>
                     <ul class="nav nav-pills flex-column">
                         <li class="nav-item">
                             <a class="nav-link active" href="#">Home</a>
