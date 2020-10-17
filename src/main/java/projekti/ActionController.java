@@ -34,6 +34,10 @@ public class ActionController {
     
     @GetMapping("/index")
     public String returnHome(Model model) {
+        
+        if (!SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
+            model.addAttribute("userinfo", accountRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+        }
                 
         System.out.println("GetMapping index: initiated");
         model.addAttribute("postedmessages", msgRepository.findAll());

@@ -32,9 +32,11 @@ public class MyApplication {
  
         Account a1 = new Account();
         Account a2 = new Account();
+        Account anonymousUser = new Account();
  
         a1.setUsername("user1");
         a2.setUsername("user2");
+        anonymousUser.setUsername("anonymousUser");
         
         ArrayList<String> rights = new ArrayList<>();
         rights.add("USER");
@@ -43,13 +45,24 @@ public class MyApplication {
             a1.setSecuredPassword(prodSecConf.passwordEncoder().encode("user1Pass"));
             a1.setAuthorities(rights);
             a1.setPathname("user1");
+            a1.setName("Susi Kuulakallio");
             a1.setProfileImgId(0L);
             accountRepository.save(a1);
+        }
+        
+        if (accountRepository.findByUsername(anonymousUser.getUsername()) == null) {
+            anonymousUser.setSecuredPassword(prodSecConf.passwordEncoder().encode("salasana"));
+            anonymousUser.setAuthorities(rights);
+            anonymousUser.setPathname("anon");
+            anonymousUser.setName("Anonymous User");
+            anonymousUser.setProfileImgId(1L);
+            accountRepository.save(anonymousUser);
         }
  
         if (accountRepository.findByUsername(a2.getUsername()) == null) {
             a2.setSecuredPassword(prodSecConf.passwordEncoder().encode("user2Pass"));
             a2.setPathname("user2");
+            a2.setName("Alex Dunphy");
             a2.setAuthorities(rights);
             a2.setProfileImgId(1L);
             accountRepository.save(a2);

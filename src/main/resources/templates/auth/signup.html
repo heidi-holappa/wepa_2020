@@ -40,9 +40,14 @@
                 <form th:action="@{/auth/signup}" method="POST" th:object="${account}">
                     <table>
                         <tr>
-                            <td>User:</td>
+                            <td>Username:</td>
                             <td><input type='text' th:field="*{username}"></td>
                             <td th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username error</td>
+                        </tr>
+                        <tr>
+                            <td>Name (it is preferrable to use a made-up name here):</td>
+                            <td><input type='text' th:field="*{name}"></td>
+                            <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</td>
                         </tr>
                         <tr>
                             <td>Password:</td>
