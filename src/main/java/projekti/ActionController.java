@@ -130,10 +130,33 @@ public class ActionController {
     @GetMapping("profile_view/{pathname}")
     public String profilePage(Model model, @PathVariable String pathname) {
         
-        model.addAttribute("userinfo", accountRepository.findByPathname(pathname));
-        model.addAttribute("userprofile", userInfoRepository.findByUser(accountRepository.findByPathname(pathname)));
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        String viewedUser = accountRepository.findByPathname(pathname).getUsername();
+        
+        if (username.equals(viewedUser)) {
+            model.addAttribute("modify", "true");
+        }
+        
+        model.addAttribute("userinfo", accountRepository.findByUsername(username));
+        model.addAttribute("viewedProfile", accountRepository.findByPathname(pathname));
+        model.addAttribute("userProfile", userInfoRepository.findByUser(accountRepository.findByPathname(pathname)));
         
         return "profile_view";
+    }
+    
+    @PostMapping("/updateprofile")
+    public String updateprofile(
+            @RequestParam String description,
+            @RequestParam String skill,
+            @RequestParam String profileimage) {
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        String pathname = accountRepository.findByUsername(username).getPathname();
+        
+        return "redirect:/profile_view/" + pathname;
     }
     
     

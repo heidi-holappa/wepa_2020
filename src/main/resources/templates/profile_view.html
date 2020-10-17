@@ -47,13 +47,15 @@
                 <hr class="d-sm-none">
             </div>
             <div class="col-sm-8">
-                <h2 th:text='${userinfo.name}'>User's name</h2>
+                <h2 th:text='${viewedProfile.name}'>User's name</h2>
                 <p>
-                    Profile created:  <span th:text="${#temporals.format(userprofile.created, 'dd.MM.yyyy')}"></span>
+                    Profile created:  <span th:text="${#temporals.format(userProfile.created, 'dd.MM.yyyy')}"></span>
                     <br />
-                    Updated: <span th:text="${#temporals.format(userprofile.updateDate, 'dd.MM.yyyy')}"></span>
+                    Updated: <span th:text="${#temporals.format(userProfile.updateDate, 'dd.MM.yyyy')}"></span>
                 </p>
-                <p th:text='${userprofile.description}'>User can add a description here</p>
+                <p th:text='${userProfile.description}'>User can add a description here</p>
+                
+                                
                 <p>
                     Show users skills here as a list
                     <ul>
@@ -77,9 +79,36 @@
                     </ul>
                     
                 </p>
+                
+                <div th:if="${modify =='true'}"> This is only true when the profile viewed is user's own.
+                    <h4>Update your profile information:</h4>
+                    <br />
+                    <form th:action="@{/updateprofile}" method="POST">
+
+                        <div class="form-group">
+                            <label>Update your description:</label>
+                            <textarea class="form-control" id="updatedescription" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Add a skill:</label>
+                            <textarea class="form-control" id="addskill" name="skill" rows="1"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Update your profileimage:</label>
+                            <textarea class="form-control" id="updatedescription" name="profileimage" rows="1"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" value="Post">Send my post</button>    
+                    </form> 
+                
+                
+                </div>
+                
+                
             </div>
         </div>
     </div>
+    <br />
+    <br />
 
     <div class="jumbotron text-center" style="margin-bottom:0">
         <footer th:replace="fragments/layout :: footer">Footer comes here</footer>
