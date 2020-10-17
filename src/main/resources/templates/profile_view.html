@@ -47,10 +47,13 @@
                 <hr class="d-sm-none">
             </div>
             <div class="col-sm-8">
-                <h2>USERNAME's profile</h2>
-                <h5>MAYBE I COULD ADD LAST UPDATED?</h5>
-                <div class="fakeimg">An image the user has chosen? OR give users an option to customize page title background?</div>
-                <p>User can add a description here</p>
+                <h2 th:text='${userinfo.name}'>User's name</h2>
+                <p>
+                    Profile created:  <span th:text="${#temporals.format(userprofile.created, 'dd-MM-yyyy')}"></span>
+                    <br />
+                    Updated: <span th:text="${#temporals.format(userprofile.updateDate, 'dd-MM-yyyy')}"></span>
+                </p>
+                <p th:text='${userprofile.description}'>User can add a description here</p>
                 <p>
                     Show users skills here as a list
                     <ul>

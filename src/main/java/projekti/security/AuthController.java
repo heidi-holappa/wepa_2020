@@ -2,6 +2,7 @@ package projekti.security;
 
 import com.google.common.io.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import projekti.domain.*;
 
@@ -23,6 +24,8 @@ public class AuthController {
     
     @Autowired
     private AccountRepository accountRepository;
+    
+    @Autowired UserInfoRepository userInfoRepository;
     
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -102,8 +105,19 @@ public class AuthController {
         //Profile-image-id to zero (no image added):
         account.setProfileImgId(0L);
         
+        UserInfo info = new UserInfo();
+        info.setDescription(account.getName() + " is a highly accomplished professional. Their career has been described as groundbreaking, innovative and bold.");
+        ArrayList<String> skills = new ArrayList<>();
+        info.setSkills(skills);
+        info.setUser(account);
+        info.setUpdateDate(LocalDateTime.now());
+        
+        userInfoRepository.save(info);
+
         //Tallennetaan uusi käyttäjätunnus
-        accountRepository.save(account);      
+        accountRepository.save(account);
+        
+        
         
         return "redirect:/auth/login";
     }

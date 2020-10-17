@@ -29,6 +29,9 @@ public class ActionController {
     @Autowired
     private AccountRepository accountRepository;
     
+    @Autowired
+    private UserInfoRepository userInfoRepository;
+    
     // Luodaan yksi virheet kerävä olio. TARKASTA VIELÄ, VOISIKO TÄMÄN LUODA AUTOMAATTISESTI
     ErrorObject actionError = new ErrorObject();
     
@@ -122,6 +125,15 @@ public class ActionController {
         System.out.println("Saved message");
         
         return "redirect:/index";
+    }
+    
+    @GetMapping("profile_view/{pathname}")
+    public String profilePage(Model model, @PathVariable String pathname) {
+        
+        model.addAttribute("userinfo", accountRepository.findByPathname(pathname));
+        model.addAttribute("userprofile", userInfoRepository.findByUser(accountRepository.findByPathname(pathname)));
+        
+        return "profile_view";
     }
     
     
