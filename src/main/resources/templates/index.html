@@ -76,7 +76,6 @@
     </head>
     
     <body>
-
         <div th:replace="fragments/layout :: pageTitle">Page title</div>
         <nav th:replace="fragments/layout :: nav">Navigation</nav>
 
@@ -85,7 +84,7 @@
                 <div class="col-sm-4">
                     <h2 sec:authorize="isAnonymous()">Meet Waypoint's #1 patreon!</h2>
                     <img th:src="@{/media/template.PNG}" class="img-tumbnail" style="width:100%" alt="A beautiful unicorn" sec:authorize="isAnonymous()" />
-                    <h5>Welcome to Waypoint<span sec:authorize="hasAuthority('USER')">, </span><span sec:authorize="hasAuthority('USER')">, <span th:text="${userinfo.name}">Name</span></span>!</h5>
+                    <h5>Welcome to Waypoint<span sec:authorize="hasAuthority('USER')">, <span th:text="${userinfo.name}">Name</span></span>!</h5>
                     <div class="fakeimg" sec:authorize="hasAuthority('USER')">Profile picture</div>
                     <p sec:authorize="hasAuthority('USER')">When logged in a user can see their basic info here</p>
                     <h4>Quick navigation</h4>
