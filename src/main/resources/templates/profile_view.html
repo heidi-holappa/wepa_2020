@@ -49,9 +49,9 @@
             <div class="col-sm-8">
                 <h2 th:text='${userinfo.name}'>User's name</h2>
                 <p>
-                    Profile created:  <span th:text="${#temporals.format(userprofile.created, 'dd-MM-yyyy')}"></span>
+                    Profile created:  <span th:text="${#temporals.format(userprofile.created, 'yyyy-MM-dd')}"></span>
                     <br />
-                    Updated: <span th:text="${#temporals.format(userprofile.updateDate, 'dd-MM-yyyy')}"></span>
+                    Updated: <span th:text="${#temporals.format(userprofile.updateDate, 'yyyy-MM-dd')}"></span>
                 </p>
                 <p th:text='${userprofile.description}'>User can add a description here</p>
                 <p>
