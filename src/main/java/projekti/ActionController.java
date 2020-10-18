@@ -141,19 +141,21 @@ public class ActionController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         String viewedUser = accountRepository.findByPathname(pathname).getUsername();
+         
+        
         
         if (username.equals(viewedUser)) {
             model.addAttribute("modify", "true");
         }
         
-        Pageable topSkills = PageRequest.of(0, 3, Sort.by("endorsements").descending());
+        Pageable topSkills = PageRequest.of(0, 3, Sort.by("endorsements", "skill").descending());
         Pageable otherSkills = PageRequest.of(1, 3, Sort.by("endorsements").descending());
         
         System.out.println(topSkills.toString());
-        System.out.println(otherSkills.toString());
+//        System.out.println(otherSkills.toString());
         
         model.addAttribute("topSkills", skillRepository.findByUser(accountRepository.findByUsername(viewedUser),topSkills));
-        model.addAttribute("otherSkills", skillRepository.findByUser(accountRepository.findByUsername(viewedUser),otherSkills));
+        model.addAttribute("otherSkills", skillRepository.findByUserOffset(accountRepository.findByUsername(viewedUser).getId()));
         model.addAttribute("userinfo", accountRepository.findByUsername(username));
         model.addAttribute("viewedProfile", accountRepository.findByPathname(pathname));
         model.addAttribute("userProfile", userInfoRepository.findByUser(accountRepository.findByPathname(pathname)));
@@ -200,6 +202,40 @@ public class ActionController {
         return "redirect:/profile_view/" + pathname;
     }
     
-    
+    @GetMapping("/endorse/{id}")
+    public String addEndorse(Model model, @PathVariable Long id) {
+        
+        System.out.println("addEndorse käynnistyy. Long id: " + id);
+        
+        // Get the user who has logged in
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        
+        // Get skill and users who have liked it
+        Skill skill = skillRepository.getOne(id);
+        List<Account> endorsers = skill.getEndorsers();
+        
+        // If likers already include current user, redirect to index
+        if (endorsers.contains(accountRepository.findByUsername(username))) {
+            endorsers.remove(accountRepository.findByUsername(username));
+            skill.setEndorsements(skill.getEndorsements() - 1);
+            skillRepository.save(skill);
+            return "redirect:/index";
+        }        
+        
+        
+        // Add one like to counter and add the user who liked the post
+        skill.setEndorsements(skill.getEndorsements() + 1);
+        endorsers.add(accountRepository.findByUsername(username));
+        
+        
+        
+        // save message
+        skillRepository.save(skill);
+        
+        System.out.println("Saved message");
+        
+        return "redirect:/index";
+    }
     
 }

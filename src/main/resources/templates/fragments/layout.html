@@ -30,7 +30,7 @@
         </div>
 
         <nav th:fragment="navbar" class="navbar navbar-expand-sm bg-dark navbar-dark">
-            <a class="navbar-brand" href="#">Navbar</a>
+            <a class="navbar-brand" href="#">Navigation</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -72,7 +72,7 @@
                     <div class="card">
                         <div class="card-body">
                             <img th:if="${message.user.profileImgId == 0L}" th:src="@{/media/template.PNG}" class="avatar" alt="A beautiful unicorn" />
-                            <img th:unless="${message.user.profileImgId == 0L}" th:src="@{/media/super.png}" class="avatar" alt="A beautiful unicorn" />
+                            <img th:unless="${message.user.profileImgId == 0L}" th:src="@{/media/super.png}" class="avatar" alt="Superman" />
                             <h4 class="card-title"><a th:href="@{/profile_view/{id}(id=${message.user.pathname})}" class="card-link" th:text='${message.user.name}'>Name</a> </h4>
                             <p class="card-text">
                                 <span th:text="${message.content}"> Content </span>

@@ -61,13 +61,25 @@
                     This list should only show three first skills
                     
                     <ul>
-                        <li th:each="skill : ${topSkills}"><span th:text="${skill.skill}">Top skills here</span></li>
+                        <li th:each="skill : ${topSkills}">
+                            <span th:text="${skill.skill}">Top skills here</span> - Endorsements: 
+                            <span th:text="${skill.endorsements}"></span>
+                            <span th:unless="${modify =='true'}">
+                                <a th:href="@{/endorse/{id}(id=${skill.id})}">Endorse</a>
+                            </span>
+                        </li>
                     </ul>
                     
                     If user has more skills, they are shown separately below:
                     
                     <ul>
-                        <li th:each="skill : ${otherSkills}"><span th:text="${skill.skill}">Other skills here</span></li>
+                        <li th:each="skill : ${otherSkills}">
+                            <span th:text="${skill.skill}">Other skills here</span> - Endorsements: 
+                            <span th:text="${skill.endorsements}"></span> 
+                            <span th:unless="${modify =='true'}">
+                                <a th:href="@{/endorse/{id}(id=${skill.id})}">Endorse</a>
+                            </span>
+                        </li>
                     </ul>
                 </div>
                 <h5>Bonus-features I'd like to add</h5>
