@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -26,14 +27,17 @@ public class UserInfo extends AbstractPersistable<Long> {
     // Profiilikuvan tieto. Defaultkuvaksi tulee jokin random-kuva
 //    private FileObject profilepic;
     
-//     Lista käyttäjän taidoista. Vai, pitäisikö olla erillinen olio? Koulutuskin voisi olla?   
-    @ElementCollection
-    private List<String> skills;
+//     Lista käyttäjän taidoista. Loin erillisen olion   
+//    @OneToMany
+//    private List<Skill> skills;
     
     private String description;
     
     private LocalDateTime updateDate;
     private LocalDateTime created = LocalDateTime.now();
+    
+    @ManyToMany
+    private List<Account> friends;
     
     
     

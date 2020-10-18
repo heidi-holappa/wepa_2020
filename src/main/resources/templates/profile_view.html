@@ -56,24 +56,24 @@
                 <p th:text='${userProfile.description}'>User can add a description here</p>
                 
                                 
-                <p>
-                    Show users skills here as a list
+                <div>
+                    <h4>Top 3 skills</h4>
+                    This list should only show three first skills
+                    
                     <ul>
-                        <li>Skill 1</li>
-                        <li>Skill 2</li>
-                        <li>Skill 3</li>
+                        <li th:each="skill : ${topSkills}"><span th:text="${skill.skill}">Top skills here</span></li>
                     </ul>
+                    
                     If user has more skills, they are shown separately below:
                     
                     <ul>
-                        <li>Skill 4</li>
-                        <li>Skill 5</li>
-                        <li>Skill 6 etc</li>
+                        <li th:each="skill : ${otherSkills}"><span th:text="${skill.skill}">Other skills here</span></li>
                     </ul>
-                </p>
-                <h5>Other features I'd like to add</h5>
+                </div>
+                <h5>Bonus-features I'd like to add</h5>
                 <p>
                     <ul>
+                        <li>A title to user (Dr. Professor. etc.)?</li>
                         <li>Give users a chance to see all their data</li>
                         <li>Delete or update information (not required in project)</li>
                     </ul>

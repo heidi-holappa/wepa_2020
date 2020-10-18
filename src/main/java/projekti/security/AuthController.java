@@ -107,9 +107,12 @@ public class AuthController {
         
         UserInfo info = new UserInfo();
         info.setDescription(account.getName() + " is a highly accomplished professional. Their career has been described as groundbreaking, innovative and bold.");
-        ArrayList<String> skills = new ArrayList<>();
-        info.setSkills(skills);
-        info.setUser(account);
+
+//        Loinkin erillisen olion. Alussa ei tarvitse tallentaa mitään
+//        ArrayList<Skill> skills = new ArrayList<>();
+//        info.setSkills(skills);
+
+info.setUser(account);
         info.setUpdateDate(LocalDateTime.now());
         
         userInfoRepository.save(info);

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -31,6 +34,9 @@ public class ActionController {
     
     @Autowired
     private UserInfoRepository userInfoRepository;
+    
+    @Autowired
+    private SkillRepository skillRepository;
     
     // Luodaan yksi virheet kerävä olio. TARKASTA VIELÄ, VOISIKO TÄMÄN LUODA AUTOMAATTISESTI
     ErrorObject actionError = new ErrorObject();
@@ -110,7 +116,6 @@ public class ActionController {
             return "redirect:/index";
         }        
         System.out.println("Message content: " + msg.getContent());
-        
         System.out.println("Ohitettiin if-lauseke");
         
         // Add one like to counter and add the user who liked the post
@@ -131,6 +136,8 @@ public class ActionController {
     public String profilePage(Model model, @PathVariable String pathname) {
         
         
+        
+        
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         String viewedUser = accountRepository.findByPathname(pathname).getUsername();
@@ -139,6 +146,14 @@ public class ActionController {
             model.addAttribute("modify", "true");
         }
         
+        Pageable topSkills = PageRequest.of(0, 3, Sort.by("endorsements").descending());
+        Pageable otherSkills = PageRequest.of(1, 3, Sort.by("endorsements").descending());
+        
+        System.out.println(topSkills.toString());
+        System.out.println(otherSkills.toString());
+        
+        model.addAttribute("topSkills", skillRepository.findByUser(accountRepository.findByUsername(viewedUser),topSkills));
+        model.addAttribute("otherSkills", skillRepository.findByUser(accountRepository.findByUsername(viewedUser),otherSkills));
         model.addAttribute("userinfo", accountRepository.findByUsername(username));
         model.addAttribute("viewedProfile", accountRepository.findByPathname(pathname));
         model.addAttribute("userProfile", userInfoRepository.findByUser(accountRepository.findByPathname(pathname)));
@@ -155,6 +170,32 @@ public class ActionController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         String pathname = accountRepository.findByUsername(username).getPathname();
+        
+        actionError.setError("");
+        
+        if (description.length() > 4 && description.length() < 200) {
+            UserInfo info = userInfoRepository.findByUser(accountRepository.findByUsername(username));
+            info.setDescription(description);
+            userInfoRepository.save(info);
+        } else {
+            actionError.addError("Your description must be between 4-200 characters. ");
+        }
+        
+        if (skill.length() >= 1 && skill.length() < 41) {
+            UserInfo info = userInfoRepository.findByUser(accountRepository.findByUsername(username));
+            
+            Skill newSkill = new Skill();
+            newSkill.setSkill(skill);
+            newSkill.setEndorsements(0);
+            newSkill.setUser(accountRepository.findByUsername(username));
+            skillRepository.save(newSkill);
+            
+//            info.getSkills().add(newSkill);
+//            userInfoRepository.save(info);
+        } else {
+            actionError.addError("Skills must be between 1-40 characters. ");
+        }
+        
         
         return "redirect:/profile_view/" + pathname;
     }
