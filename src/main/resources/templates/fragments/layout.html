@@ -54,8 +54,10 @@
         </nav>
         
         
+        <h5 th:fragment='error' th:text="${actionError}" style="color:red;"></h5>
+        
         <div th:fragment='postform'>
-            <h5 th:text="${actionError}" style="color:red;"></h5>.
+            
             <form th:action="@{/postmessage}" method="POST">
                 
                 <div class="form-group">

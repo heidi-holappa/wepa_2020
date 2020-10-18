@@ -13,6 +13,64 @@
             height: 200px;
             background: #aaa;
         }
+
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+          font-family: Arial;
+        }
+
+        .header {
+          text-align: center;
+          padding: 32px;
+        }
+
+        .row {
+          display: flex;
+          flex-wrap: wrap;
+          padding: 0 4px;
+        }
+
+        /* Create four equal columns that sits next to each other */
+        .column {
+          flex: 25%;
+          max-width: 25%;
+          padding: 0 4px;
+        }
+
+        .column img {
+          margin-top: 8px;
+          vertical-align: middle;
+          width: 100%;
+        }
+
+        /* Responsive layout - makes a two column-layout instead of four columns */
+        @media screen and (max-width: 800px) {
+          .column {
+            flex: 50%;
+            max-width: 50%;
+          }
+        }
+
+        /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+        @media screen and (max-width: 600px) {
+          .column {
+            flex: 100%;
+            max-width: 100%;
+          }
+        }
+        img {
+            border-radius: 50%;
+        }
+        .avatar {
+            vertical-align: middle;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body>
@@ -26,7 +84,14 @@
             <div class="col-sm-4">
                 <h2>Basic info</h2>
                 <h5>Profile picture</h5>
-                <div class="fakeimg">User image</div>
+                
+                <div th:if="${profilepic != null}">
+                    <img class="img-tumbnail" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
+                </div>
+                <form th:if="${modify =='true'}" method="POST" th:action="@{/updatePicture}" enctype="multipart/form-data">
+                    <input type="file" name="file" id="file"/>
+                    <input class="btn btn-primary" type="submit" value="Update picture"/>
+                </form>
                 <p>User-info</p>
                 <h3>THINK ABOUT THIS. DO I NEED THIS?</h3>
                 <p>Maybe show user posts, user likes?</p>
@@ -47,6 +112,7 @@
                 <hr class="d-sm-none">
             </div>
             <div class="col-sm-8">
+                <div th:replace='fragments/layout :: error'></div>
                 <h2 th:text='${viewedProfile.name}'>User's name</h2>
                 <p>
                     Profile created:  <span th:text="${#temporals.format(userProfile.created, 'dd.MM.yyyy')}"></span>

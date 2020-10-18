@@ -39,6 +39,12 @@ public class UserInfo extends AbstractPersistable<Long> {
     @ManyToMany
     private List<Account> friends;
     
+    @ManyToMany
+    private List<Account> friendRequests;
+    
+    @OneToOne
+    private FileObject profilePic;
+    
     
     
 }

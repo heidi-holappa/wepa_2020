@@ -1,6 +1,7 @@
 
 package projekti;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
@@ -8,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import projekti.domain.*;
 import projekti.security.*;
@@ -38,6 +44,9 @@ public class ActionController {
     @Autowired
     private SkillRepository skillRepository;
     
+    @Autowired
+    private FileRepository fileObjectRepository;
+    
     // Luodaan yksi virheet kerävä olio. TARKASTA VIELÄ, VOISIKO TÄMÄN LUODA AUTOMAATTISESTI
     ErrorObject actionError = new ErrorObject();
     
@@ -52,6 +61,7 @@ public class ActionController {
         model.addAttribute("postedmessages", msgRepository.findAll());
         if (actionError.toString().length() > 3) {
             model.addAttribute("actionError", actionError.toString());
+            actionError.setError("");
         }
         
         System.out.println("GetMapping index: postedmessages added");
@@ -135,30 +145,32 @@ public class ActionController {
     @GetMapping("profile_view/{pathname}")
     public String profilePage(Model model, @PathVariable String pathname) {
         
-        
-        
-        
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         String viewedUser = accountRepository.findByPathname(pathname).getUsername();
-         
         
         
         if (username.equals(viewedUser)) {
             model.addAttribute("modify", "true");
         }
         
-        Pageable topSkills = PageRequest.of(0, 3, Sort.by("endorsements", "skill").descending());
-        Pageable otherSkills = PageRequest.of(1, 3, Sort.by("endorsements").descending());
+        if (userInfoRepository.findByUser(accountRepository.findByUsername(viewedUser)).getProfilePic() != null) {
+            model.addAttribute("profilepic", userInfoRepository.findByUser(accountRepository.findByUsername(viewedUser)).getProfilePic().getId());
+        }
         
-        System.out.println(topSkills.toString());
-//        System.out.println(otherSkills.toString());
+        Pageable topSkills = PageRequest.of(0, 3, Sort.by("endorsements", "skill").descending());
+
         
         model.addAttribute("topSkills", skillRepository.findByUser(accountRepository.findByUsername(viewedUser),topSkills));
         model.addAttribute("otherSkills", skillRepository.findByUserOffset(accountRepository.findByUsername(viewedUser).getId()));
         model.addAttribute("userinfo", accountRepository.findByUsername(username));
         model.addAttribute("viewedProfile", accountRepository.findByPathname(pathname));
         model.addAttribute("userProfile", userInfoRepository.findByUser(accountRepository.findByPathname(pathname)));
+        
+        if (actionError.toString().length() > 3) {
+            model.addAttribute("actionError", actionError.toString());
+            actionError.setError("");
+        }
         
         return "profile_view";
     }
@@ -224,6 +236,7 @@ public class ActionController {
         }        
         
         
+        
         // Add one like to counter and add the user who liked the post
         skill.setEndorsements(skill.getEndorsements() + 1);
         endorsers.add(accountRepository.findByUsername(username));
@@ -236,6 +249,48 @@ public class ActionController {
         System.out.println("Saved message");
         
         return "redirect:/index";
+    }
+    
+    @PostMapping("/updatePicture")
+    public String add(@RequestParam("file") MultipartFile file) throws IOException {
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        String pathname = accountRepository.findByUsername(username).getPathname();
+        
+        if (!file.getContentType().contains("image/")) {
+            actionError.setError("File's content-type needs to be image/*");
+            return "redirect:/profile_view/" + pathname;
+        }
+        
+        // Get the user who has logged in
+
+        FileObject fo = new FileObject();
+
+        fo.setName(file.getOriginalFilename());
+        fo.setContentType(file.getContentType());
+        fo.setContentLength(file.getSize());
+        fo.setContent(file.getBytes());
+        
+        UserInfo userinfo = userInfoRepository.findByUser(accountRepository.findByUsername(username));
+        userinfo.setProfilePic(fo);
+        fileObjectRepository.save(fo);
+        userInfoRepository.save(userinfo);
+ 
+        return "redirect:/profile_view/" + pathname;
+    }
+    
+    
+    @GetMapping(value = "/profilePic/{id}")
+    public ResponseEntity<byte[]> viewFile(@PathVariable Long id) {
+        FileObject fo = fileObjectRepository.getOne(id);
+ 
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(fo.getContentType()));
+        headers.add("Content-Disposition", "attachment; filename=" + fo.getName());
+        headers.setContentLength(fo.getContentLength());
+ 
+        return new ResponseEntity<>(fo.getContent(), headers, HttpStatus.CREATED);
     }
     
 }

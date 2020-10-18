@@ -110,6 +110,7 @@
                 <div class="col-sm-8">
                     <h2>Post feed</h2>
                     <h5 sec:authorize="isAnonymous()">Sign in or sign up to comment or like posts</h5>
+                    <div th:replace='fragments/layout :: error'></div>
                     <p>Feeds start here. Each feed includes, profile pic, post content, comments. If logged in, you can like and comment</p>
                     <div th:replace='fragments/layout :: postform' sec:authorize="hasAuthority('USER')"></div>
                     <div th:replace='fragments/layout :: msgs'></div>
