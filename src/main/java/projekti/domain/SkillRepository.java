@@ -22,6 +22,8 @@ public interface SkillRepository extends JpaRepository<Skill, Long> {
     
     List<Skill> findByUser(Account user, Pageable pageable);
     
+    List<Skill> findByUser(Account user);
+    
     @Query(value = "SELECT * FROM Skill S WHERE S.USER_ID = ?1 ORDER BY ENDORSEMENTS DESC, SKILL DESC OFFSET 3", nativeQuery = true)
     List<Skill> findByUserOffset(Long id);
     

@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,16 +18,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import projekti.domain.*;
-import projekti.security.*;
 
 
 @Controller
@@ -48,6 +44,9 @@ public class ActionController {
     
     @Autowired
     private FileRepository fileObjectRepository;
+    
+    @Autowired
+    private DomainService domainService;
     
     // Luodaan yksi virheet kerävä olio. TARKASTA VIELÄ, VOISIKO TÄMÄN LUODA AUTOMAATTISESTI
     ErrorObject actionError = new ErrorObject();
@@ -153,17 +152,17 @@ public class ActionController {
         String username = auth.getName();
         String viewedUser = accountRepository.findByPathname(pathname).getUsername();
         
-        
         if (username.equals(viewedUser)) {
             model.addAttribute("modify", "true");
         }
         
-        if (userInfoRepository.findByUser(accountRepository.findByUsername(viewedUser)).getProfilePic() != null) {
-            model.addAttribute("profilepic", userInfoRepository.findByUser(accountRepository.findByUsername(viewedUser)).getProfilePic().getId());
+        Long id = accountRepository.findByUsername(viewedUser).getProfileImgId();
+        
+        if ( id != 0) {
+            model.addAttribute("profilepic", id);
         }
         
         Pageable topSkills = PageRequest.of(0, 3, Sort.by("endorsements", "skill").descending());
-
         
         model.addAttribute("topSkills", skillRepository.findByUser(accountRepository.findByUsername(viewedUser),topSkills));
         model.addAttribute("otherSkills", skillRepository.findByUserOffset(accountRepository.findByUsername(viewedUser).getId()));
@@ -179,14 +178,11 @@ public class ActionController {
         return "profile_view";
     }
     
-    @PostMapping("/updateprofile")
-    public String updateprofile(
-            @RequestParam String description,
-            @RequestParam String skill) {
+    @PostMapping("/updatedescription")
+    public String updateDescription(@RequestParam String description) {
         
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        String pathname = accountRepository.findByUsername(username).getPathname();
+        
+        String username = domainService.getCurrentUsername();
         
         actionError.setError("");
         
@@ -198,6 +194,19 @@ public class ActionController {
         } else {
             actionError.addError("Your description must be between 4-200 characters. ");
         }
+        
+        String pathname = accountRepository.findByUsername(username).getPathname();
+        return "redirect:/updatemode/";
+    }
+    
+    
+     @PostMapping("/updateskill")
+    public String updateSkill(@RequestParam String skill) {
+        
+        String username = domainService.getCurrentUsername();
+    
+        
+        actionError.setError("");
         
         if (skill.length() >= 1 && skill.length() < 41) {
             UserInfo info = userInfoRepository.findByUser(accountRepository.findByUsername(username));
@@ -214,8 +223,8 @@ public class ActionController {
             actionError.addError("Skills must be between 1-40 characters. ");
         }
         
-        
-        return "redirect:/profile_view/" + pathname;
+        String pathname = accountRepository.findByUsername(username).getPathname();
+        return "redirect:/updatemode/";
     }
     
     @GetMapping("/endorse/{id}")
@@ -237,31 +246,26 @@ public class ActionController {
             skill.setEndorsements(skill.getEndorsements() - 1);
             skillRepository.save(skill);
             return "redirect:/index";
-        }        
-        
-        
+        }
         
         // Add one like to counter and add the user who liked the post
         skill.setEndorsements(skill.getEndorsements() + 1);
         endorsers.add(accountRepository.findByUsername(username));
         
-        
-        
-        // save message
+        // save 
         skillRepository.save(skill);
         
-        System.out.println("Saved message");
-        
-        return "redirect:/index";
+        return "redirect:/profile_view/" + skill.getUser().getPathname();
     }
     
     
-    @Transactional
     @PostMapping("/updatePicture")
     public String add(@RequestParam("file") MultipartFile file) throws IOException {
         
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
+        // Get the user who has logged in
+        String username = domainService.getCurrentUsername();
+        
+        // Get user's pathname
         String pathname = accountRepository.findByUsername(username).getPathname();
         
         if (!file.getContentType().contains("image/")) {
@@ -269,22 +273,28 @@ public class ActionController {
             return "redirect:/profile_view/" + pathname;
         }
         
-        // Get the user who has logged in
+        FileObject fo = domainService.fileSaver(file);
 
-        FileObject fo = new FileObject();
-
-        fo.setName(file.getOriginalFilename());
-        fo.setContentType(file.getContentType());
-        fo.setContentLength(file.getSize());
-        fo.setContent(file.getBytes());
+//        FileObject fo = new FileObject();
+//
+//        fo.setName(file.getOriginalFilename());
+//        fo.setContentType(file.getContentType());
+//        fo.setContentLength(file.getSize());
+//        fo.setContent(file.getBytes());
+//        fileObjectRepository.save(fo);
         
         UserInfo userinfo = userInfoRepository.findByUser(accountRepository.findByUsername(username));
-        userinfo.setProfilePic(fo);
+//        userinfo.setProfilePic(fo);
         userinfo.setUpdateDate(LocalDateTime.now());
-        fileObjectRepository.save(fo);
+
         userInfoRepository.save(userinfo);
  
-        return "redirect:/profile_view/" + pathname;
+        
+        Account user = accountRepository.findByUsername(username);
+        user.setProfileImgId(fo.getId());
+        accountRepository.save(user);
+        
+        return "redirect:/updatemode/";
     }
     
     @Transactional
@@ -298,6 +308,27 @@ public class ActionController {
         headers.setContentLength(fo.getContentLength());
  
         return new ResponseEntity<>(fo.getContent(), headers, HttpStatus.CREATED);
+    }
+    
+    
+    @GetMapping("/updatemode")
+    public String updateProfile(Model model) {
+        String username = domainService.getCurrentUsername();
+        Account user = domainService.getCurrentUser();
+        model.addAttribute("userinfo", accountRepository.findByUsername(username));
+        model.addAttribute("skills", skillRepository.findByUser(user));
+        model.addAttribute("userProfile", userInfoRepository.findByUser(user));
+        Long id = user.getProfileImgId();
+        if ( id != 0) {
+            model.addAttribute("profilepic", id);
+        }
+        
+        return "updateprofile";
+    }
+    
+    @GetMapping("/updatedone")
+    public String updateDone() {
+        return "redirect:/profile_view/" + domainService.getCurrentUser().getPathname();
     }
     
 

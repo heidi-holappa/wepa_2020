@@ -73,10 +73,12 @@
                 <div class="card-deck mt-4">    
                     <div class="card">
                         <div class="card-body">
-                            <img th:if="${message.user.profileImgId == 0L}" th:src="@{/media/template.PNG}" class="avatar" alt="A beautiful unicorn" />
-                            <img th:unless="${message.user.profileImgId == 0L}" th:src="@{/media/super.png}" class="avatar" alt="Superman" />
+                            <img sec:authorize="hasAuthority('USER')" th:if="${message.user.profileImgId != 0}" th:src="@{/profilePic/{id}(id=${message.user.profileImgId})}" class="avatar" alt="User profile" />
+                            <img sec:authorize="hasAuthority('USER')" th:if="${message.user.profileImgId == 0}" th:src="@{/media/template.PNG}" class="avatar" alt="Unicorn" />
                             <h4 class="card-title"><a th:href="@{/profile_view/{id}(id=${message.user.pathname})}" class="card-link" th:text='${message.user.name}'>Name</a> </h4>
                             <p class="card-text">
+                                <span th:text="${#temporals.format(message.messageDate, 'dd.MM.yyyy HH:mm')}"></span>
+                                <br />
                                 <span th:text="${message.content}"> Content </span>
                                 <br />
                                 Likes: <span th:text="${message.likes}">-1</span>

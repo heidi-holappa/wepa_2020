@@ -105,16 +105,16 @@ public class AuthController {
         //Profile-image-id to zero (no image added):
         account.setProfileImgId(0L);
         
+        
+        // Create the basic userInfo
         UserInfo info = new UserInfo();
         info.setDescription(account.getName() + " is a highly accomplished professional. Their career has been described as groundbreaking, innovative and bold.");
-
-//        Loinkin erillisen olion. Alussa ei tarvitse tallentaa mitään
-//        ArrayList<Skill> skills = new ArrayList<>();
-//        info.setSkills(skills);
-
-info.setUser(account);
+        ArrayList<Account> friendRequests = new ArrayList<>();
+        ArrayList<Account> friends = new ArrayList<>();
+        info.setFriendRequests(friendRequests);
+        info.setFriends(friends);
+        info.setUser(account);
         info.setUpdateDate(LocalDateTime.now());
-        
         userInfoRepository.save(info);
 
         //Tallennetaan uusi käyttäjätunnus

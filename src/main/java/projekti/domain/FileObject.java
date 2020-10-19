@@ -2,6 +2,7 @@
 package projekti.domain;
 
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
@@ -30,6 +31,7 @@ public class FileObject extends AbstractPersistable<Long> {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Type(type = "org.hibernate.type.BinaryType")
+    @Column(columnDefinition="BLOB")
     private byte[] content;
     
 }

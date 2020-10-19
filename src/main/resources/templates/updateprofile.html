@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Bootstrap 4 Website Example</title>
+    <meta charset="utf-8" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style></style>
+</head>
+<body>
+    
+        <div th:replace="fragments/layout :: pageTitle">Page title</div>
+        <nav th:replace="fragments/layout :: nav">Navigation</nav>
+    
+
+    <div class="container" style="margin-top:30px">
+        <div class="row">
+            <div class="col-sm-4">
+                
+                <hr class="d-sm-none">
+                                
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Active</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">Disabled</a>
+                    </li>
+                </ul>
+                
+                <hr class="d-sm-none">    
+            </div>
+            
+            <div class="col-sm-8">
+                <div th:replace='fragments/layout :: error'></div>
+                <h2>Update profile-information</h2>
+                <br />
+                <br />
+                
+                <span class="font-weight-bold">Current profile picture:</span>
+                <div th:if="${profilepic != null}">
+                    <img class="img-tumbnail" style="width:50%" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
+                </div>
+                
+                <br />
+                <br />
+                
+                <div> 
+                    <form method="POST" th:action="@{/updatePicture}" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Update your profile picture:</label>
+                            <input type="file" class="form-control-file border" name="file" id="file"/>
+                        </div>
+                        <input class="btn btn-primary" type="submit" value="Update picture"/>
+                    </form>
+                </div>
+                
+                <br />
+                <br />
+                
+                <span class="font-weight-bold">Current description:</span>
+                <p th:text='${userProfile.description}' class="font-italic">User can add a description here</p>
+                 
+                <div> 
+                    <form th:action="@{/updatedescription}" method="POST">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Update your description:</label>
+                            <textarea class="form-control" id="updatedescription" name="description" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" value="Post">Update description</button>    
+                    </form> 
+                </div>
+                
+                <br />
+                <br />
+                <h4>Current skills:</h4>
+                <ul>
+                    <li th:each="skill : ${skills}">
+                        <span th:text="${skill.skill}">Top skills here</span> - Endorsements: 
+                        <span th:text="${skill.endorsements}"></span>
+                        <span>
+                            <a href="#">Delete</a>
+                        </span>
+                    </li>
+                </ul>                    
+       
+                
+                <div> 
+                    <form th:action="@{/updateskill}" method="POST">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Add a skill:</label>
+                            <textarea class="form-control" id="addskill" name="skill" rows="1"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" value="Post">Send skill</button>    
+                    </form> 
+                </div>
+                                
+                <br />
+                <br />
+                
+                <form method="GET" th:action="@{/updatedone}">
+                    <div class="form-group">
+                       <button type="submit" class="btn btn-primary" value="Post">Done</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+
+    <div class="jumbotron text-center" style="margin-bottom:0">
+        <footer th:replace="fragments/layout :: footer">Footer comes here</footer>
+    </div>
+
+</body>
+</html>
+
