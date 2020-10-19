@@ -72,18 +72,17 @@ public class ActionController {
     }
     
     @PostMapping("/postmessage")
-    private String postMessage(@RequestParam String content) {
+    public String postMessage(@RequestParam String content) {
 
         if (content.length() < 10) {
-            actionError.setError("Your post must be at least 10 characters long.");
+            this.actionError.setError("Your post must be at least 10 characters long.");
             return "redirect:/index";
         }
         
         if (content.length() > 500) {
-            actionError.setError("Your post must not be more than 500 characters long.");
+            this.actionError.setError("Your post must not be more than 500 characters long.");
             return "redirect:/index";
         }
-        
         
         Message msg = new Message();
         msg.setContent(content);
@@ -92,17 +91,20 @@ public class ActionController {
         List<Account> likers = new ArrayList<>();
         msg.setLikers(likers);
         
-            
+        // Get the user who has logged in    
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();        
+        String username = auth.getName();
         
-        msg.setUser(accountRepository.findByUsername(username));
+        System.out.println(username);
         
+        Account user = accountRepository.findByUsername(username);
+        System.out.println(user);
+                
+        msg.setUser(user); 
         
-   
+        System.out.println(msg);
         msgRepository.save(msg);
-        
-        System.out.println("postMessage: save passed");
+
         
         return "redirect:/index";
     }
@@ -253,6 +255,7 @@ public class ActionController {
         return "redirect:/index";
     }
     
+    
     @Transactional
     @PostMapping("/updatePicture")
     public String add(@RequestParam("file") MultipartFile file) throws IOException {
@@ -296,5 +299,8 @@ public class ActionController {
  
         return new ResponseEntity<>(fo.getContent(), headers, HttpStatus.CREATED);
     }
+    
+
+
     
 }
