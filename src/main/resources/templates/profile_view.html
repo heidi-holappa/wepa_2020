@@ -82,19 +82,20 @@
     <div class="container" style="margin-top:30px">
         <div class="row">
             <div class="col-sm-4">
-                <h2>Basic info</h2>
-                <h5>Profile picture</h5>
                 
                 <div th:if="${profilepic != null}">
-                    <img class="img-tumbnail" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
+                    <img class="img-tumbnail" style="width:100%" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
                 </div>
+                <br />
                 <form th:if="${modify =='true'}" method="POST" th:action="@{/updatePicture}" enctype="multipart/form-data">
-                    <input type="file" name="file" id="file"/>
+                    <div class="form-group">
+                        <input type="file" class="form-control-file border" name="file" id="file"/>
+                    </div>
                     <input class="btn btn-primary" type="submit" value="Update picture"/>
                 </form>
-                <p>User-info</p>
-                <h3>THINK ABOUT THIS. DO I NEED THIS?</h3>
-                <p>Maybe show user posts, user likes?</p>
+                
+                <hr class="d-sm-none">
+                                
                 <ul class="nav nav-pills flex-column">
                     <li class="nav-item">
                         <a class="nav-link active" href="#">Active</a>
@@ -109,7 +110,12 @@
                         <a class="nav-link disabled" href="#">Disabled</a>
                     </li>
                 </ul>
+                
                 <hr class="d-sm-none">
+                
+                
+
+                    
             </div>
             <div class="col-sm-8">
                 <div th:replace='fragments/layout :: error'></div>
@@ -170,10 +176,6 @@
                         <div class="form-group">
                             <label>Add a skill:</label>
                             <textarea class="form-control" id="addskill" name="skill" rows="1"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Update your profileimage:</label>
-                            <textarea class="form-control" id="updatedescription" name="profileimage" rows="1"></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary" value="Post">Send my post</button>    
                     </form> 

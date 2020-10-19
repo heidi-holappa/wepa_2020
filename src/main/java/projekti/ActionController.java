@@ -2,8 +2,10 @@
 package projekti;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -178,8 +180,7 @@ public class ActionController {
     @PostMapping("/updateprofile")
     public String updateprofile(
             @RequestParam String description,
-            @RequestParam String skill,
-            @RequestParam String profileimage) {
+            @RequestParam String skill) {
         
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
@@ -190,6 +191,7 @@ public class ActionController {
         if (description.length() > 4 && description.length() < 200) {
             UserInfo info = userInfoRepository.findByUser(accountRepository.findByUsername(username));
             info.setDescription(description);
+            info.setUpdateDate(LocalDateTime.now());
             userInfoRepository.save(info);
         } else {
             actionError.addError("Your description must be between 4-200 characters. ");
@@ -203,9 +205,9 @@ public class ActionController {
             newSkill.setEndorsements(0);
             newSkill.setUser(accountRepository.findByUsername(username));
             skillRepository.save(newSkill);
+            info.setUpdateDate(LocalDateTime.now());
+            userInfoRepository.save(info);
             
-//            info.getSkills().add(newSkill);
-//            userInfoRepository.save(info);
         } else {
             actionError.addError("Skills must be between 1-40 characters. ");
         }
@@ -251,6 +253,7 @@ public class ActionController {
         return "redirect:/index";
     }
     
+    @Transactional
     @PostMapping("/updatePicture")
     public String add(@RequestParam("file") MultipartFile file) throws IOException {
         
@@ -274,13 +277,14 @@ public class ActionController {
         
         UserInfo userinfo = userInfoRepository.findByUser(accountRepository.findByUsername(username));
         userinfo.setProfilePic(fo);
+        userinfo.setUpdateDate(LocalDateTime.now());
         fileObjectRepository.save(fo);
         userInfoRepository.save(userinfo);
  
         return "redirect:/profile_view/" + pathname;
     }
     
-    
+    @Transactional
     @GetMapping(value = "/profilePic/{id}")
     public ResponseEntity<byte[]> viewFile(@PathVariable Long id) {
         FileObject fo = fileObjectRepository.getOne(id);
