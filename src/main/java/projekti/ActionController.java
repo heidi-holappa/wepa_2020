@@ -148,19 +148,33 @@ public class ActionController {
     @GetMapping("profile_view/{pathname}")
     public String profilePage(Model model, @PathVariable String pathname) {
         
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
+        String username = domainService.getCurrentUsername();
+        Account user = domainService.getCurrentUser();
+        UserInfo userInfo = userInfoRepository.findByUser(user);
+        
         String viewedUser = accountRepository.findByPathname(pathname).getUsername();
+        Account viewed = accountRepository.findByPathname(pathname);
         
         if (username.equals(viewedUser)) {
             model.addAttribute("modify", "true");
         }
         
-        Long id = accountRepository.findByUsername(viewedUser).getProfileImgId();
+        Long id = viewed.getProfileImgId();
         
         if ( id != 0) {
             model.addAttribute("profilepic", id);
         }
+        
+        if (userInfo.getSentRequests().contains(viewed)) {
+            model.addAttribute("contactrequest", "Cancel contact request");
+        } else {
+            model.addAttribute("contactrequest", "Send contact request");            
+        }
+        
+        if (!userInfo.getFriendRequests().isEmpty()) {
+            model.addAttribute("pending", "You have pending requests");
+        }
+        
         
         Pageable topSkills = PageRequest.of(0, 3, Sort.by("endorsements", "skill").descending());
         
@@ -331,6 +345,92 @@ public class ActionController {
         return "redirect:/profile_view/" + domainService.getCurrentUser().getPathname();
     }
     
+    @GetMapping("/contacts")
+    public String contacts(Model model) {
+        String username = domainService.getCurrentUsername();
+        Account user = domainService.getCurrentUser();
+        UserInfo userInfo = userInfoRepository.findByUser(user);
+        
+        if (actionError.toString().length() > 3) {
+            model.addAttribute("error", actionError.toString());
+            actionError.setError("");
+        }
+        model.addAttribute("userinfo", accountRepository.findByUsername(username));
+        model.addAttribute("skills", skillRepository.findByUser(user));
+        model.addAttribute("userProfile", userInfo);
+        model.addAttribute("friends", userInfo.getFriends());
+        model.addAttribute("friendRequests", userInfo.getFriendRequests());
+        model.addAttribute("sentRequests", userInfo.getSentRequests());
+        
+        
+        return "contacts";
+    }
+    
+    @Transactional
+    @PostMapping("/contactrequest")
+    public String contactRequest(@RequestParam String pathname) {
+        
+        UserInfo user = userInfoRepository.findByUser(domainService.getCurrentUser());
+        Account contact = accountRepository.findByPathname(pathname);
+        UserInfo contactInfo = userInfoRepository.findByUser(contact);
+                
+        if (!user.getSentRequests().contains(contact)) {
+            user.getSentRequests().add(contact);
+            contactInfo.getFriendRequests().add(domainService.getCurrentUser());
+        } else {
+            user.getSentRequests().remove(contact);
+            contactInfo.getFriendRequests().remove(domainService.getCurrentUser());
+        }
+        
+        userInfoRepository.save(user);
+        userInfoRepository.save(contactInfo);
+        
+        return "redirect:/contacts";
+    }
+    
+    @PostMapping("/handlerequest")
+    public String handleRequest(@RequestParam String decision, @RequestParam Long contactId) {
+        
+        Account user = domainService.getCurrentUser();
+        UserInfo userInfo = userInfoRepository.findByUser(user);
+        Account contact = accountRepository.getOne(contactId);
+        UserInfo contactInfo = userInfoRepository.findByUser(contact);        
+        
+        if (decision.equals("accept")) {
+            userInfo.getFriends().add(contact);
+            userInfo.getFriendRequests().remove(contact);
+            contactInfo.getFriends().add(user);
+            contactInfo.getSentRequests().remove(user);
+        } else if (decision.equals("decline")) {
+            userInfo.getFriendRequests().remove(contact);
+            contactInfo.getSentRequests().remove(user);
+        } else {
+            actionError.setError("You tried to answer a contact request, but something went wrong. Please contact system admin.");
+        }
+        
+        userInfoRepository.save(userInfo);
+        userInfoRepository.save(contactInfo);
+        
+        return "redirect:/contacts/";
+    }
+    
+    @PostMapping("/terminatecontact")
+    public String terminateContact(@RequestParam String pathname) {
+        
+        Account user = domainService.getCurrentUser();
+        UserInfo userInfo = userInfoRepository.findByUser(user);
+        Account contact = accountRepository.findByPathname(pathname);
+        UserInfo contactInfo = userInfoRepository.findByUser(contact);
+        
+        contactInfo.getFriends().remove(user);
+        userInfo.getFriends().remove(contact);
+        
+        userInfoRepository.save(userInfo);
+        userInfoRepository.save(contactInfo);
+        
+        return "redirect:/contacts/";
+        
+    }
 
 
     

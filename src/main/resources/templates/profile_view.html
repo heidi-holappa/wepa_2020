@@ -84,6 +84,8 @@
         <div class="row">
             <div class="col-sm-4">
                 
+                
+                
                 <div th:if="${profilepic != null}">
                     <img class="img-tumbnail" style="width:100%" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
                 </div>
@@ -116,7 +118,15 @@
             <div class="col-sm-8">
                 <div th:replace='fragments/layout :: error'></div>
                 <h2 th:text='${viewedProfile.name}'>User's name</h2>
-                <button th:unless="${modify =='true'}" type="submit" class="btn btn-primary" value="Post">Send friendrequest</button>
+                
+                
+                <form th:unless="${modify =='true'}" method="POST" th:action="@{/contactrequest}">
+                    <div class="form-group">
+                       <input type="hidden" id="pathname" name="pathname" th:value="${viewedProfile.pathname}"/>
+                    </div>
+                    <button type="submit" class="btn btn-primary" th:text="${contactrequest}">Send or cancel</button>
+                </form>
+                
                 <p>
                     Profile created:  <span th:text="${#temporals.format(userProfile.created, 'dd.MM.yyyy')}"></span>
                     <br />
@@ -169,6 +179,12 @@
                 <form th:if="${modify =='true'}" method="GET" th:action="@{/updatemode}">
                     <div class="form-group">
                        <button type="submit" class="btn btn-primary" value="Post">Update mode</button>
+                    </div>
+                </form>
+                
+                <form th:if="${modify =='true'}" method="GET" th:action="@{/contacts}">
+                    <div class="form-group">
+                       <button type="submit" class="btn btn-primary" value="Post">Contacts</button>
                     </div>
                 </form>
                 

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Bootstrap 4 Website Example</title>
+    <meta charset="utf-8" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style></style>
+</head>
+<body>
+    
+        <div th:replace="fragments/layout :: pageTitle">Page title</div>
+        <nav th:replace="fragments/layout :: nav">Navigation</nav>
+    
+
+    <div class="container" style="margin-top:30px">
+        <div class="row">
+            <div class="col-sm-4">
+                
+                <hr class="d-sm-none">
+                                
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Active</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">Disabled</a>
+                    </li>
+                </ul>
+                
+                <hr class="d-sm-none">    
+            </div>
+            
+            <div class="col-sm-8">
+                <h2>Contacts</h2>
+                <div th:text="${error}">Possible error</div>
+                <ul>
+                    <li>Käyttäjä voi tarkastella omia yhteyksiään. </li>
+                    <li>Yhteyden ohessa näytetään toisen henkilön nimi joka toimii linkkinä henkilön profiiliin sekä painikkeet yhteyden hyväksyntään ja hylkäykseen.</li>
+                    <li>Mikäli yhteys on jo muodostettu, on tilalla painike yhteyden katkaisemiseksi.</li>
+                    <li>Korjaa vielä: kaksi käyttäjää eivät voi lähettää toisilleen ystäväkutsua</li>
+                </ul>
+                
+                            
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Contacts:</th><th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${sentRequests.empty}">
+                            <td colspan="2">No sent contact requests</td>
+                        </tr>
+                        <tr th:each="contact : ${friends}">
+                            <td th:text="${contact.name}">Name here</td>
+                            <td>
+                                <form method="POST" th:action="@{/terminatecontact}">
+                                    <div class="form-group">
+                                       <input type="hidden" id="pathname" name="pathname" th:value="${contact.pathname}"/>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Remove contact</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                    
+                
+                
+                    
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Received contact requests:</th><th></th><th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${friendRequests.empty}">
+                            <td colspan="3">No contact requests</td>
+                        </tr>
+                        <tr th:each="received : ${friendRequests}">
+                            <td th:text="${received.name}">Name here</td>
+                            <td>
+                                <form th:method="POST" th:action="@{/handlerequest}">
+                                    <input type="hidden" id="contactId" name="contactId" th:value="${received.id}"/>
+                                    <input type="hidden" id="acceptinput" name="decision" th:value="accept"/>
+                                    <button class="btn btn-primary" type="submit" value="accept">accept</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form th:method="POST" th:action="@{/handlerequest}">
+                                    <input type="hidden" id="contactId" name="contactId" th:value="${received.id}"/>
+                                    <input type="hidden" id="declineinput" name="decision" th:value="decline"/>
+                                    <button class="btn btn-primary" type="submit" value="decline">decline</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                    
+                    
+                <h4>Sent contact requests:</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Contact requests:</th><th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${sentRequests.empty}">
+                            <td colspan="2">No sent contact requests</td>
+                        </tr>
+                        <tr th:each="sent : ${sentRequests}">
+                            <td th:text="${sent.name}">Name here</td>
+                            <td>
+                                <form method="POST" th:action="@{/contactrequest}">
+                                    <div class="form-group">
+                                       <input type="hidden" id="pathname" name="pathname" th:value="${sent.pathname}"/>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Cancel request</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                    
+                    
+             
+            </div>   
+        </div>
+    </div>
+
+
+    <div class="jumbotron text-center" style="margin-bottom:0">
+        <footer th:replace="fragments/layout :: footer">Footer comes here</footer>
+    </div>
+
+</body>
+</html>
+
+

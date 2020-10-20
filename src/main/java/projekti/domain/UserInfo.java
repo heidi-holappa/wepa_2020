@@ -7,6 +7,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -39,12 +40,11 @@ public class UserInfo extends AbstractPersistable<Long> {
     @ManyToMany
     private List<Account> friends;
     
+    
     @ManyToMany
     private List<Account> friendRequests;
     
-    @OneToOne
-    private FileObject profilePic;
-    
-    
+    @ManyToMany
+    private List<Account> sentRequests;
     
 }
