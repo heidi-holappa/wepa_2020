@@ -36,7 +36,7 @@
                     
                     <b>Note:</b> This is a student project and data security is not guaranteed. Please do not submit any sensitive information or use passwords you use in other online services. 
                 </p>
-                <h5 th:text="${errors}" style="color:red;"></h5>.
+                <h5 th:text="${errors}" style="color:red;"></h5>
                 <form th:action="@{/auth/signup}" method="POST" th:object="${account}">
                     <table>
                         <tr>

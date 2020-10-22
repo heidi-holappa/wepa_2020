@@ -34,6 +34,8 @@ public class Message extends AbstractPersistable<Long> {
     
     private Integer likes;
     
+    private Integer Comments;
+    
     private LocalDateTime messageDate = LocalDateTime.now();
     
 }

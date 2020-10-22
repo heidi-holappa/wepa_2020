@@ -64,7 +64,7 @@
                             <td colspan="2">No sent contact requests</td>
                         </tr>
                         <tr th:each="contact : ${friends}">
-                            <td th:text="${contact.name}">Name here</td>
+                            <td><a th:href="@{/profile_view/{id}(id=${contact.pathname})}" th:text="${contact.name}">Name here</a></td>
                             <td>
                                 <form method="POST" th:action="@{/terminatecontact}">
                                     <div class="form-group">
@@ -78,7 +78,9 @@
                 </table>
                     
                 
-                
+                <br />
+                <br />
+                <br />
                     
 
                 <table>
@@ -112,14 +114,13 @@
                 </table>
 
 
-                    
-                    
-                <h4>Sent contact requests:</h4>
-
+                <br />
+                <br />
+                
                 <table>
                     <thead>
                         <tr>
-                            <th>Contact requests:</th><th></th>
+                            <th>Sent Contact requests:</th><th></th>
                         </tr>
                     </thead>
                     <tbody>

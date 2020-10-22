@@ -48,6 +48,16 @@
                     <li class='nav-item' sec:authorize="hasAuthority('USER')">
                         <a class="nav-link" href="/logout">Sign out</a>
                     </li>
+                    <li class="nav-item" sec:authorize="hasAuthority('USER')">
+                        <div class="input-group">
+                            <form class="form-inline" th:action="@{/searchpost}" method="POST">
+                                <input type="text" class="form-control" name="search" placeholder="Search">
+                                <div class="input-group-append">
+                                    <button class="btn btn-success" type="submit">Go</button>  
+                                </div>
+                            </form>
+                        </div>
+                    </li>
                     
                 </ul>
             </div>  
@@ -82,11 +92,12 @@
                                 <span th:text="${message.content}"> Content </span>
                                 <br />
                                 Likes: <span th:text="${message.likes}">-1</span>
+                                Comments: <span th:text="${message.comments}">-2</span>
                             </p>
 
 
                             <a th:href="@{/like/{id}(id=${message.id})}" class="card-link" sec:authorize="hasAuthority('USER')">Like</a>
-                            <a href="#" class="card-link" sec:authorize="hasAuthority('USER')">Comment</a>
+                            <a th:href="@{/comment/{id}(id=${message.id})}" class="card-link" sec:authorize="hasAuthority('USER')">Comment</a>
                             
 
                         </div>

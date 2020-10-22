@@ -31,7 +31,7 @@ import projekti.domain.*;
 public class ActionController {
     
     @Autowired
-    private MessageRepository msgRepository;
+    private MessageRepository messageRepository;
     
     @Autowired
     private AccountRepository accountRepository;
@@ -58,15 +58,13 @@ public class ActionController {
             model.addAttribute("userinfo", accountRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
         }
                 
-        System.out.println("GetMapping index: initiated");
-        model.addAttribute("postedmessages", msgRepository.findAll());
+        
+        model.addAttribute("postedmessages", messageRepository.findByOriginal(0L));
         if (actionError.toString().length() > 3) {
             model.addAttribute("actionError", actionError.toString());
             actionError.setError("");
         }
         
-        System.out.println("GetMapping index: postedmessages added");
-        System.out.println("GetMapping index: " + msgRepository.findAll().toString());
         return "index";
     }
     
@@ -86,6 +84,7 @@ public class ActionController {
         Message msg = new Message();
         msg.setContent(content);
         msg.setLikes(0);
+        msg.setComments(0);
         msg.setOpId(0L);
         List<Account> likers = new ArrayList<>();
         msg.setLikers(likers);
@@ -102,7 +101,7 @@ public class ActionController {
         msg.setUser(user); 
         
         System.out.println(msg);
-        msgRepository.save(msg);
+        messageRepository.save(msg);
 
         
         return "redirect:/index";
@@ -118,14 +117,14 @@ public class ActionController {
         String username = auth.getName();
         
         // Get message and users who have liked it
-        Message msg = msgRepository.getOne(id);
+        Message msg = messageRepository.getOne(id);
         List<Account> likers = msg.getLikers();
         
         // If likers already include current user, redirect to index
         if (likers.contains(accountRepository.findByUsername(username))) {
             likers.remove(accountRepository.findByUsername(username));
             msg.setLikes(msg.getLikes() - 1);
-            msgRepository.save(msg);
+            messageRepository.save(msg);
             return "redirect:/index";
         }        
         System.out.println("Message content: " + msg.getContent());
@@ -138,7 +137,7 @@ public class ActionController {
         System.out.println("Added one to like counter and the userlike");
         
         // save message
-        msgRepository.save(msg);
+        messageRepository.save(msg);
         
         System.out.println("Saved message");
         
@@ -431,6 +430,105 @@ public class ActionController {
         return "redirect:/contacts/";
         
     }
+    
+    @GetMapping("/comment/{id}")
+    public String comment(Model model, @PathVariable Long id) {
+        
+        Account user = domainService.getCurrentUser();
+        UserInfo userInfo = userInfoRepository.findByUser(user);
+        
+        model.addAttribute("userinfo", user);
+        model.addAttribute("message", messageRepository.getOne(id));
+        model.addAttribute("comments", messageRepository.findAllByOpId(id));
+        model.addAttribute("error", actionError.toString());
+        actionError.setError("");
+        
+        
+        return "comment";
+    }
+    
+    @PostMapping("/postcomment")
+    public String postComment(@RequestParam String content, @RequestParam Long messageId) {
+        
+        if (content.length() < 10) {
+            this.actionError.setError("Your post must be at least 10 characters long.");
+            return "redirect:/index";
+        }
+        
+        if (content.length() > 500) {
+            this.actionError.setError("Your post must not be more than 500 characters long.");
+            return "redirect:/index";
+        }
+        
+        // Create a new reply
+        Message msg = new Message();
+        msg.setContent(content);
+        msg.setLikes(0);
+        msg.setComments(0);
+        msg.setOpId(messageId);
+        List<Account> likers = new ArrayList<>();
+        msg.setLikers(likers);
+        
+        // Get the user who has logged in    
+        msg.setUser(domainService.getCurrentUser());
+        
+        messageRepository.save(msg);
+        
+        Message op = messageRepository.getOne(messageId);
+        Integer n = op.getComments() + 1;
+        op.setComments(n);
+        messageRepository.save(op);
+        
+        
+        return "redirect:/comment/" + messageId;
+    }
+    
+    @PostMapping("/searchpost")
+    public String searchByName(@RequestParam String search) {
+        
+//        if (search.isEmpty()) {
+//            System.out.println("searchByName if ran");
+//            search = "_";
+//        } 
+        
+        return "redirect:/searchresults?search=" + search;
+               
+        
+    }
+    
+    @GetMapping("/searchresults")
+    public String searchGet(Model model, @RequestParam String search) {
+        
+        
+        Account user = domainService.getCurrentUser();
+        UserInfo userInfo = userInfoRepository.findByUser(user);
+        
+        model.addAttribute("userinfo", user);
+        if (search.equals("*")) {
+            List<Account> allUsers = accountRepository.findAll();
+            model.addAttribute("searchresults", allUsers);
+            if (allUsers.size() == 1) {
+                model.addAttribute("notification", "No other users found in the service.");
+            }
+        } else if (search.equals("_")) {
+            List<Account> users = new ArrayList<>();
+            model.addAttribute("notification", "No results.");
+            model.addAttribute("searchresults", users);
+        } else if (search.equals("")) {
+            List<Account> users = new ArrayList<>();
+            model.addAttribute("notification", "You searched for nothing and thus found nothing.");
+            model.addAttribute("searchresults", users);
+        } else {
+            model.addAttribute("searchresults", accountRepository.findAllByNameContainingIgnoreCase(search));
+            model.addAttribute("notification", "No users found. Find all users, by typing the symbol '*' in the search field.");
+            
+        }   
+        
+        return "searchresults";
+        
+    }
+    
+    
 
 
     
