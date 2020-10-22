@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +27,7 @@ public class FileObject extends AbstractPersistable<Long> {
     private String contentType;
     private Long contentLength;
     
-    @ManyToMany
+    @ManyToOne
     private Account user;
         
     @Lob
