@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,13 +26,13 @@ public class FileObject extends AbstractPersistable<Long> {
     private String contentType;
     private Long contentLength;
     
-    @OneToOne
+    @ManyToMany
     private Account user;
         
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Type(type = "org.hibernate.type.BinaryType")
-//    @Column(columnDefinition="BLOB")
+    @Column(columnDefinition="BLOB")
     private byte[] content;
     
 }
