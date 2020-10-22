@@ -517,7 +517,7 @@ public class ActionController {
         } else if (search.equals("")) {
             List<Account> users = new ArrayList<>();
             model.addAttribute("notification", "You searched for nothing and thus found nothing.");
-            model.addAttribute("searchresults", users);
+            model.addAttribute("searchresults", users); 
         } else {
             model.addAttribute("searchresults", accountRepository.findAllByNameContainingIgnoreCase(search));
             model.addAttribute("notification", "No users found. Find all users, by typing the symbol '*' in the search field.");
