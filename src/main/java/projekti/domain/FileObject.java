@@ -30,7 +30,7 @@ public class FileObject extends AbstractPersistable<Long> {
         
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Type(type = "org.hibernate.type.BinaryType")
+//    @Type(type = "org.hibernate.type.BinaryType")
     @Column(columnDefinition="BLOB")
     private byte[] content;
     
