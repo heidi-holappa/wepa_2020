@@ -41,29 +41,29 @@
                     <table>
                         <tr>
                             <td>Username:</td>
-                            <td><input type='text' th:field="*{username}"></td>
+                            <td><input class="form-control" placeholder="Choose a username" type='text' th:field="*{username}"></td>
                             <td th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username error</td>
                         </tr>
                         <tr>
                             <td>Name (it is preferrable to use a made-up name here):</td>
-                            <td><input type='text' th:field="*{name}"></td>
+                            <td><input class="form-control" placeholder="Enter your name" type='text' th:field="*{name}"></td>
                             <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</td>
                         </tr>
                         <tr>
                             <td>Password:</td>
-                            <td><input type='password'  name="password" /></td>
+                            <td><input class="form-control" placeholder="Enter password" type='password'  name="password" /></td>
                         </tr>
                         <tr>
                             <td>Re-enter password:</td>
-                            <td><input type='password'  name="passwordtwo" /></td>
+                            <td><input class="form-control" placeholder="Enter password again" type='password'  name="passwordtwo" /></td>
                         </tr>
                         <tr>
                             <td>Profile path:</td>
-                            <td><input type='text' th:field="*{pathname}" /></td>
+                            <td><input class="form-control" placeholder="Choose path-name" type='text' th:field="*{pathname}" /></td>
                             <td th:if="${#fields.hasErrors('pathname')}" th:errors="*{pathname}">Pathname error</td>
                         </tr>
                         <tr>
-                            <td><input type="submit" value="Send" /></td>
+                            <td align ="right"><input class="btn btn-primary" type="submit" value="Send" /></td>
                         </tr>
                     </table>
                 </form>

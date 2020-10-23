@@ -84,42 +84,17 @@
             <div class="row">
                 <div class="col-sm-4">
                    
-                    <h4>Quick navigation</h4>
-                    <ul class="nav nav-pills flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Home</a>
-                        </li>
-                        <li class="nav-item" sec:authorize="hasAuthority('USER')">
-                            <a class="nav-link" th:href="@{/profile_view/{id}(id=${userinfo.pathname})}">Profile</a>
-                        </li>
-                        <li class="nav-item" sec:authorize="isAnonymous()">
-                            <a class="nav-link" href="/auth/login">Sign in</a>
-                        </li>
-                        <li class="nav-item" sec:authorize="hasAuthority('USER')">
-                            <a class="nav-link" href="/logout">Sign out</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#">If logged in active, if not, disabled?</a>
-                        </li>
-                    </ul>
                     <hr class="d-sm-none">
+                        
+                    <div th:replace="fragments/layout :: quicknav"></div>
+                    
+                    <hr class="d-sm-none">
+                
                 </div>
                 <div class="col-sm-8">
                     
-                    <h2>Search by name</h2>
-                    
-                                        
-                    <div class="input-group mb-3">
-                        <form class="form-inline" th:action="@{/searchpost}" method="POST">
-                            <input type="text" class="form-control" name="search" placeholder="Search">
-                            <div class="input-group-append">
-                                <button class="btn btn-success" type="submit">Go</button>  
-                            </div>
-                        </form>
-                    </div>
-                    
+                    <h2>Search results:</h2>
                     <p><b>Tip:</b> If you want to see all users, search with the symbol '*'.</p>
-                    
                     
                     <div>
                         <div th:if="${searchresults.empty}">

@@ -5,74 +5,11 @@
         <meta charset="utf-8" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" th:href="@{/css/stylesheet.css}"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <style>
-            .fakeimg {
-                height: 200px;
-                background: #aaa;
-            }
-            
-            * {
-              box-sizing: border-box;
-            }
-
-            body {
-              margin: 0;
-              font-family: Arial;
-            }
-
-            .header {
-              text-align: center;
-              padding: 32px;
-            }
-
-            .row {
-              display: flex;
-              flex-wrap: wrap;
-              padding: 0 4px;
-            }
-
-            /* Create four equal columns that sits next to each other */
-            .column {
-              flex: 25%;
-              max-width: 25%;
-              padding: 0 4px;
-            }
-
-            .column img {
-              margin-top: 8px;
-              vertical-align: middle;
-              width: 100%;
-            }
-
-            /* Responsive layout - makes a two column-layout instead of four columns */
-            @media screen and (max-width: 800px) {
-              .column {
-                flex: 50%;
-                max-width: 50%;
-              }
-            }
-
-            /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
-            @media screen and (max-width: 600px) {
-              .column {
-                flex: 100%;
-                max-width: 100%;
-              }
-            }
-            img {
-                border-radius: 50%;
-            }
-            .avatar {
-                vertical-align: middle;
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-            }
-
-        </style>
+        <style></style>
     </head>
     
     <body>
@@ -84,40 +21,54 @@
                 <div class="col-sm-4">
                     <h2 sec:authorize="isAnonymous()">Meet Waypoint's #1 patreon!</h2>
                     <img th:src="@{/media/template.PNG}" class="img-tumbnail" style="width:100%" alt="A beautiful unicorn" sec:authorize="isAnonymous()" />
-                    <h5>Welcome to Waypoint<span sec:authorize="hasAuthority('USER')">, <span th:text="${userinfo.name}">Name</span></span>!</h5>
-                    <div class="fakeimg" sec:authorize="hasAuthority('USER')">Profile picture</div>
-                    <p sec:authorize="hasAuthority('USER')">When logged in a user can see their basic info here</p>
-                    <h4>Quick navigation</h4>
-                    <ul class="nav nav-pills flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Home</a>
-                        </li>
-                        <li class="nav-item" sec:authorize="hasAuthority('USER')">
-                            <a class="nav-link" th:href="@{/profile_view/{id}(id=${userinfo.pathname})}">Profile</a>
-                        </li>
-                        <li class="nav-item" sec:authorize="isAnonymous()">
-                            <a class="nav-link" href="/auth/login">Sign in</a>
-                        </li>
-                        <li class="nav-item" sec:authorize="hasAuthority('USER')">
-                            <a class="nav-link" href="/logout">Sign out</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#">If logged in active, if not, disabled?</a>
-                        </li>
-                    </ul>
+
+                    
+                    <hr class="d-sm-none">                    
+                    <div th:replace="fragments/layout :: quicknav"></div>
                     <hr class="d-sm-none">
                 </div>
                 <div class="col-sm-8">
-                    <h2>Post feed</h2>
-                    <h5 sec:authorize="isAnonymous()">Sign in or sign up to comment or like posts</h5>
+                    
+                    
+                    <h2>Welcome to Waypoint<span sec:authorize="hasAuthority('USER')">, <span th:text="${userinfo.name}">Name</span></span>!</h2>
+                    <p sec:authorize="hasAuthority('USER')">
+                        Your profile information has last been updated on <span th:text="${#temporals.format(userProfile.updateDate, 'dd.MM.yyyy')}"></span>. Is everything up to date?
+                        <br />
+                        <br />
+                        For testing purposes you can choose either to view all posts or only posts by your contacts by pressing the button below.
+                    </p>
+                    
+                    
+                    
+                    <form sec:authorize="hasAuthority('USER')" method="GET" th:action="@{/filtercontacts}">
+                        <div class="form-group">
+                           <input type="hidden" id="pathname" name="show" th:value="${show}"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary" th:text="${show}">Filter posts</button>
+                    </form>
+                    
+                    <p sec:authorize="isAnonymous()">
+                        Waypoint is a social connecting site for UNSC professionals. 
+                        Registered users can personalize their profile, connect with 
+                        other users and participate in discussion. Please be sure to 
+                        read through the documentation in the footer before signing up. 
+                    </p>
                     
                     <div th:replace='fragments/layout :: error'></div>
-                    <p>Feeds start here. Each feed includes, profile pic, post content, comments. If logged in, you can like and comment</p>
+                    
                     
                     <div th:replace='fragments/layout :: postform' sec:authorize="hasAuthority('USER')"></div>
                     
+                    <div th:if="${show =='My contacts'}">
+                        <div th:replace='fragments/layout :: msgs'></div>
+                    </div>
                     
-                    <div th:replace='fragments/layout :: msgs'></div>
+                    <p>Below you can see your contacts posts:</p>
+                    
+                    <div th:if="${show =='All users'}">
+                        <div th:replace='fragments/layout :: msgsContacts'></div>
+                    </div>
+                        
                     <br />
                     <br />
 

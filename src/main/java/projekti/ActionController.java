@@ -48,18 +48,30 @@ public class ActionController {
     @Autowired
     private DomainService domainService;
     
-    // Luodaan yksi virheet kerävä olio. TARKASTA VIELÄ, VOISIKO TÄMÄN LUODA AUTOMAATTISESTI
+    @Autowired
+    private SearchObjectRepository searchObjectRepository;
+    
+    // Creates Objects used to manage information. One for errors, one for contact filtering
     ErrorObject actionError = new ErrorObject();
+    ShowObject showObject = new ShowObject();
     
     @GetMapping("/index")
     public String returnHome(Model model) {
         
         if (!SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
-            model.addAttribute("userinfo", accountRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+            Account user = domainService.getCurrentUser();
+            model.addAttribute("userinfo", user);
+            model.addAttribute("userProfile", userInfoRepository.findByUser(user));
+            model.addAttribute("contactmessages", messageRepository.findByContacts(user.getId()));
         }
                 
         
         model.addAttribute("postedmessages", messageRepository.findByOriginal(0L));
+        
+        // Button to filter what posts are shown
+        model.addAttribute("show", showObject.toString());
+        System.out.println(showObject.toString());
+        
         if (actionError.toString().length() > 3) {
             model.addAttribute("actionError", actionError.toString());
             actionError.setError("");
@@ -68,6 +80,19 @@ public class ActionController {
         return "index";
     }
     
+    @GetMapping("/filtercontacts")
+    public String filterContacts(Model model, @RequestParam String show) {
+        
+        if (show.equals("My contacts")) {
+            showObject.setShow("All users");
+        } else {
+            showObject.setShow("My contacts");
+        }
+        
+        return "redirect:/index";
+    }
+    
+
     @PostMapping("/postmessage")
     public String postMessage(@RequestParam String content) {
 
@@ -147,15 +172,18 @@ public class ActionController {
     @GetMapping("profile_view/{pathname}")
     public String profilePage(Model model, @PathVariable String pathname) {
         
-        String username = domainService.getCurrentUsername();
+        
         Account user = domainService.getCurrentUser();
+        String username = user.getName();
         UserInfo userInfo = userInfoRepository.findByUser(user);
         
-        String viewedUser = accountRepository.findByPathname(pathname).getUsername();
+        
         Account viewed = accountRepository.findByPathname(pathname);
+        String viewedUser = viewed.getName();
         
         if (username.equals(viewedUser)) {
             model.addAttribute("modify", "true");
+            System.out.println("Modify true");
         }
         
         Long id = viewed.getProfileImgId();
@@ -170,18 +198,27 @@ public class ActionController {
             model.addAttribute("contactrequest", "Send contact request");            
         }
         
+        if (userInfo.getFriendRequests().contains(viewed) || userInfo.getFriends().contains(viewed)) {
+            model.addAttribute("requestreceived", "true");
+        } else {
+            model.addAttribute("requestreceived", "false");
+        }
+        
         if (!userInfo.getFriendRequests().isEmpty()) {
             model.addAttribute("pending", "You have pending requests");
         }
         
         
-        Pageable topSkills = PageRequest.of(0, 3, Sort.by("endorsements", "skill").descending());
+//        Pageable topSkills = PageRequest.of(0, 3, Sort.by("endorsements", "skill").descending());
         
-        model.addAttribute("topSkills", skillRepository.findByUser(accountRepository.findByUsername(viewedUser),topSkills));
-        model.addAttribute("otherSkills", skillRepository.findByUserOffset(accountRepository.findByUsername(viewedUser).getId()));
-        model.addAttribute("userinfo", accountRepository.findByUsername(username));
-        model.addAttribute("viewedProfile", accountRepository.findByPathname(pathname));
-        model.addAttribute("userProfile", userInfoRepository.findByUser(accountRepository.findByPathname(pathname)));
+
+
+        model.addAttribute("topSkills", skillRepository.findByUserTopThree(viewed.getId()));
+        model.addAttribute("otherSkills", skillRepository.findByUserOffset(viewed.getId()));
+        model.addAttribute("userinfo", user);
+        model.addAttribute("viewedProfile", viewed);
+        model.addAttribute("userProfile", userInfoRepository.findByUser(viewed));
+        model.addAttribute("contacts", accountRepository.findAllFriends(viewed.getId()));
         
         if (actionError.toString().length() > 3) {
             model.addAttribute("actionError", actionError.toString());
@@ -227,6 +264,7 @@ public class ActionController {
             Skill newSkill = new Skill();
             newSkill.setSkill(skill);
             newSkill.setEndorsements(0);
+            newSkill.setOnList(1);
             newSkill.setUser(accountRepository.findByUsername(username));
             skillRepository.save(newSkill);
             info.setUpdateDate(LocalDateTime.now());
@@ -238,6 +276,17 @@ public class ActionController {
         
         String pathname = accountRepository.findByUsername(username).getPathname();
         return "redirect:/updatemode/";
+    }
+    
+    @PostMapping("/removeskill")
+    public String removeSkill(@RequestParam Long id) {
+        
+        Skill skill = skillRepository.getOne(id);
+        skill.setOnList(0);
+        
+        skillRepository.save(skill);
+        
+        return "redirect:/updatemode";
     }
     
     @GetMapping("/endorse/{id}")
@@ -305,6 +354,16 @@ public class ActionController {
         
         Account user = accountRepository.findByUsername(username);
         user.setProfileImgId(fo.getId());
+        accountRepository.save(user);
+        
+        return "redirect:/updatemode/";
+    }
+    
+    @PostMapping("/removepicture")
+    public String removePic() {
+        
+        Account user = domainService.getCurrentUser();
+        user.setProfileImgId(0L);
         accountRepository.save(user);
         
         return "redirect:/updatemode/";
@@ -486,40 +545,44 @@ public class ActionController {
     @PostMapping("/searchpost")
     public String searchByName(@RequestParam String search) {
         
-//        if (search.isEmpty()) {
-//            System.out.println("searchByName if ran");
-//            search = "_";
-//        } 
+        SearchObject so = new SearchObject();
         
-        return "redirect:/searchresults?search=" + search;
+        so.setUser(domainService.getCurrentUser());
+        so.setValue(search);
+        searchObjectRepository.save(so);
+
+        
+        return "redirect:/searchresults";
                
         
     }
     
     @GetMapping("/searchresults")
-    public String searchGet(Model model, @RequestParam String search) {
-        
+    public String searchGet(Model model) {
         
         Account user = domainService.getCurrentUser();
         UserInfo userInfo = userInfoRepository.findByUser(user);
+        SearchObject so = searchObjectRepository.FindByUserNewest(user);
+        
+        System.out.println(so.toString());
         
         model.addAttribute("userinfo", user);
-        if (search.equals("*")) {
+        if (so.getValue().equals("*")) {
             List<Account> allUsers = accountRepository.findAll();
             model.addAttribute("searchresults", allUsers);
             if (allUsers.size() == 1) {
                 model.addAttribute("notification", "No other users found in the service.");
             }
-        } else if (search.equals("_")) {
+        } else if (so.getValue().equals("_")) {
             List<Account> users = new ArrayList<>();
             model.addAttribute("notification", "No results.");
             model.addAttribute("searchresults", users);
-        } else if (search.equals("")) {
+        } else if (so.getValue().equals("")) {
             List<Account> users = new ArrayList<>();
             model.addAttribute("notification", "You searched for nothing and thus found nothing.");
             model.addAttribute("searchresults", users); 
         } else {
-            model.addAttribute("searchresults", accountRepository.findAllByNameContainingIgnoreCase(search));
+            model.addAttribute("searchresults", accountRepository.findAllByNameContainingIgnoreCase(so.getValue()));
             model.addAttribute("notification", "No users found. Find all users, by typing the symbol '*' in the search field.");
             
         }   

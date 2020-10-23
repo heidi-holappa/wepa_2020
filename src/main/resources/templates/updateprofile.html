@@ -23,20 +23,7 @@
                 
                 <hr class="d-sm-none">
                                 
-                <ul class="nav nav-pills flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Active</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#">Disabled</a>
-                    </li>
-                </ul>
+                <div th:replace="fragments/layout :: quicknav"></div>
                 
                 <hr class="d-sm-none">    
             </div>
@@ -64,6 +51,11 @@
                         <input class="btn btn-primary" type="submit" value="Update picture"/>
                     </form>
                 </div>
+                <div>
+                    <form th:if="${profilepic != null}" method="POST" th:action="@{/removepicture}" enctype="multipart/form-data">
+                        <input class="btn btn-primary" type="submit" value="Remove current picture"/>
+                    </form>   
+                </div>
                 
                 <br />
                 <br />
@@ -88,9 +80,9 @@
                     <li th:each="skill : ${skills}">
                         <span th:text="${skill.skill}">Top skills here</span> - Endorsements: 
                         <span th:text="${skill.endorsements}"></span>
-                        <span>
-                            <a href="#">Delete</a>
-                        </span>
+                        <form method="POST" th:action="@{/removeskill}">
+                            <input class="btn btn-primary" th:name="${skill.id}" type="submit" value="Remove skill"/>
+                        </form> 
                     </li>
                 </ul>                    
        
@@ -110,7 +102,7 @@
                 
                 <form method="GET" th:action="@{/updatedone}">
                     <div class="form-group">
-                       <button type="submit" class="btn btn-primary" value="Post">Done</button>
+                       <button type="submit" class="btn btn-primary" value="Post">Back to profile</button>
                     </div>
                 </form>
 

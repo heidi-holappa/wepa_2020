@@ -24,8 +24,16 @@ public interface SkillRepository extends JpaRepository<Skill, Long> {
     
     List<Skill> findByUser(Account user);
     
-    @Query(value = "SELECT * FROM Skill S WHERE S.USER_ID = ?1 ORDER BY ENDORSEMENTS DESC, SKILL DESC OFFSET 3", nativeQuery = true)
+    
+// Find top 3 skills with query
+    @Query(value = "SELECT * FROM Skill S WHERE S.USER_ID = ?1 AND ON_LIST = 1 ORDER BY ENDORSEMENTS DESC, SKILL DESC LIMIT 3", nativeQuery = true)
+    List<Skill> findByUserTopThree(Long id);
+
+// Find the skills that are not in top 3
+    @Query(value = "SELECT * FROM Skill S WHERE S.USER_ID = ?1 AND ON_LIST = 1 ORDER BY ENDORSEMENTS DESC, SKILL DESC OFFSET 3", nativeQuery = true)
     List<Skill> findByUserOffset(Long id);
+    
+    
     
     
 }

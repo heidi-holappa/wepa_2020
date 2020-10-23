@@ -23,20 +23,7 @@
                 
                 <hr class="d-sm-none">
                                 
-                <ul class="nav nav-pills flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Active</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#">Disabled</a>
-                    </li>
-                </ul>
+                <div th:replace="fragments/layout :: quicknav"></div>
                 
                 <hr class="d-sm-none">    
             </div>
@@ -44,13 +31,7 @@
             <div class="col-sm-8">
                 <h2>Contacts</h2>
                 <div th:text="${error}">Possible error</div>
-                <ul>
-                    <li>Käyttäjä voi tarkastella omia yhteyksiään. </li>
-                    <li>Yhteyden ohessa näytetään toisen henkilön nimi joka toimii linkkinä henkilön profiiliin sekä painikkeet yhteyden hyväksyntään ja hylkäykseen.</li>
-                    <li>Mikäli yhteys on jo muodostettu, on tilalla painike yhteyden katkaisemiseksi.</li>
-                    <li>Korjaa vielä: kaksi käyttäjää eivät voi lähettää toisilleen ystäväkutsua</li>
-                </ul>
-                
+                <p>On this page you can view and manage your contacts, received contact requests and sent requests.</p>
                             
 
                 <table>
@@ -94,7 +75,7 @@
                             <td colspan="3">No contact requests</td>
                         </tr>
                         <tr th:each="received : ${friendRequests}">
-                            <td th:text="${received.name}">Name here</td>
+                            <td><a th:href="@{/profile_view/{id}(id=${received.pathname})}" th:text="${received.name}">Name here</a></td>
                             <td>
                                 <form th:method="POST" th:action="@{/handlerequest}">
                                     <input type="hidden" id="contactId" name="contactId" th:value="${received.id}"/>
@@ -128,7 +109,7 @@
                             <td colspan="2">No sent contact requests</td>
                         </tr>
                         <tr th:each="sent : ${sentRequests}">
-                            <td th:text="${sent.name}">Name here</td>
+                            <td><a th:href="@{/profile_view/{id}(id=${sent.pathname})}" th:text="${sent.name}">Name here</a></td>
                             <td>
                                 <form method="POST" th:action="@{/contactrequest}">
                                     <div class="form-group">

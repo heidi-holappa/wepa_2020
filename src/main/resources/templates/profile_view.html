@@ -9,70 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <style>
-        .fakeimg {
-            height: 200px;
-            background: #aaa;
-        }
-
-/*        * {
-          box-sizing: border-box;
-        }
-
-        body {
-          margin: 0;
-          font-family: Arial;
-        }
-
-        .header {
-          text-align: center;
-          padding: 32px;
-        }
-
-        .row {
-          display: flex;
-          flex-wrap: wrap;
-          padding: 0 4px;
-        }
-
-         Create four equal columns that sits next to each other 
-        .column {
-          flex: 25%;
-          max-width: 25%;
-          padding: 0 4px;
-        }
-
-        .column img {
-          margin-top: 8px;
-          vertical-align: middle;
-          width: 100%;
-        }
-
-         Responsive layout - makes a two column-layout instead of four columns 
-        @media screen and (max-width: 800px) {
-          .column {
-            flex: 50%;
-            max-width: 50%;
-          }
-        }
-
-         Responsive layout - makes the two columns stack on top of each other instead of next to each other 
-        @media screen and (max-width: 600px) {
-          .column {
-            flex: 100%;
-            max-width: 100%;
-          }
-        }
-        img {
-            border-radius: 50%;
-        }
-        .avatar {
-            vertical-align: middle;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-        }*/
-    </style>
+    <style></style>
 </head>
 <body>
     
@@ -84,55 +21,53 @@
         <div class="row">
             <div class="col-sm-4">
                 
+                <hr class="d-sm-none">
+                                
+                <div th:replace="fragments/layout :: quicknav"></div>
                 
+                <hr class="d-sm-none">
                 
-                <div th:if="${profilepic != null}">
-                    <img class="img-tumbnail" style="width:100%" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
-                </div>
                 <br />                
                 <br />
                 
-                <hr class="d-sm-none">
-                                
-                <ul class="nav nav-pills flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Active</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#">Disabled</a>
-                    </li>
-                </ul>
-                
-                <hr class="d-sm-none">
-                
-                
+                    
+                <div th:if="${profilepic != null}">
+                    <img class="img-tumbnail" style="width:100%" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
+                </div>
 
                     
             </div>
             <div class="col-sm-8">
-                <div th:replace='fragments/layout :: error'></div>
                 <h2 th:text='${viewedProfile.name}'>User's name</h2>
+                <div th:replace='fragments/layout :: error'></div>
                 
                 
-                <form th:unless="${modify =='true'}" method="POST" th:action="@{/contactrequest}">
-                    <div class="form-group">
-                       <input type="hidden" id="pathname" name="pathname" th:value="${viewedProfile.pathname}"/>
-                    </div>
-                    <button type="submit" class="btn btn-primary" th:text="${contactrequest}">Send or cancel</button>
-                </form>
-                
+                <div th:if="${requestreceived == 'false'}">
+                    <form th:unless="${modify =='true'}" method="POST" th:action="@{/contactrequest}">
+                        <div class="form-group">
+                           <input type="hidden" id="pathname" name="pathname" th:value="${viewedProfile.pathname}"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary" th:text="${contactrequest}">Send or cancel</button>
+                    </form>
+                </div>
                 <p>
                     Profile created:  <span th:text="${#temporals.format(userProfile.created, 'dd.MM.yyyy')}"></span>
                     <br />
                     Updated: <span th:text="${#temporals.format(userProfile.updateDate, 'dd.MM.yyyy')}"></span>
                 </p>
                 <p th:text='${userProfile.description}' class="font-italic">User can add a description here</p>
+                
+                <h4>Contacts: </h4>
+                <div>
+                    <ul>
+                        <li th:if="${contacts.empty}">
+                            No contacts
+                        </li>
+                        <li th:each="contact : ${contacts}">
+                            <a th:href="@{/profile_view/{id}(id=${contact.pathname})}"><span th:text="${contact.name}"></span></a>
+                        </li>
+                    </ul>
+                </div>
                 
                 
                 <div>
