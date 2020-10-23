@@ -388,7 +388,7 @@ public class ActionController {
         String username = domainService.getCurrentUsername();
         Account user = domainService.getCurrentUser();
         model.addAttribute("userinfo", accountRepository.findByUsername(username));
-        model.addAttribute("skills", skillRepository.findByUser(user));
+        model.addAttribute("skills", skillRepository.findByUserActive(user.getId()));
         model.addAttribute("userProfile", userInfoRepository.findByUser(user));
         Long id = user.getProfileImgId();
         if ( id != 0) {

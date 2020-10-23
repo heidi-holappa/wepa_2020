@@ -30,10 +30,10 @@ public class FileObject extends AbstractPersistable<Long> {
     @ManyToOne
     private Account user;
         
-    @Lob 
-    @Basic(fetch = FetchType.LAZY)
-    @Column(columnDefinition="BLOB")
-//    @Type(type = "org.hibernate.type.BinaryType")    
+//    @Lob 
+//    @Basic(fetch = FetchType.LAZY)
+//    @Column(columnDefinition="BLOB")
+    @Type(type = "org.hibernate.type.BinaryType")    
     private byte[] content;
     
 }

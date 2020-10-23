@@ -33,6 +33,8 @@ public interface SkillRepository extends JpaRepository<Skill, Long> {
     @Query(value = "SELECT * FROM Skill S WHERE S.USER_ID = ?1 AND ON_LIST = 1 ORDER BY ENDORSEMENTS DESC, SKILL DESC OFFSET 3", nativeQuery = true)
     List<Skill> findByUserOffset(Long id);
     
+    @Query(value = "SELECT * FROM Skill S WHERE S.USER_ID = ?1 AND ON_LIST = 1 ORDER BY ENDORSEMENTS DESC, SKILL DESC", nativeQuery = true)
+    List<Skill> findByUserActive(Long id);
     
     
     

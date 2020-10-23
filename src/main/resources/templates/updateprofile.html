@@ -81,7 +81,8 @@
                         <span th:text="${skill.skill}">Top skills here</span> - Endorsements: 
                         <span th:text="${skill.endorsements}"></span>
                         <form method="POST" th:action="@{/removeskill}">
-                            <input class="btn btn-primary" th:name="${skill.id}" type="submit" value="Remove skill"/>
+                            <input type="hidden" id="id" name="id" th:value="${skill.id}"/>
+                            <input class="btn btn-primary" type="submit" value="Remove skill"/>
                         </form> 
                     </li>
                 </ul>                    
