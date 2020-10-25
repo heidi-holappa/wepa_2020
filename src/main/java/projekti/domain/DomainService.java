@@ -49,17 +49,17 @@ public class DomainService {
         return fo;
     }
     
-    @Cacheable("user-cache")
+    @Cacheable(value = "user-cache")
     public Account getCurrentUser() {
         return accountRepository.findByUsername(getCurrentUsername());
     }
     
-    @Cacheable("user-byId-cache")
+    @Cacheable(value = "user-byId-cache", key = "#id")
     public Account getUserById(Long id) {
         return accountRepository.getOne(id);
     }
     
-    @Cacheable("viewed-cache")
+    @Cacheable(value = "viewed-cache", key = "#pathname")
     public Account getViewedUserByPathname(String pathname) {
         return accountRepository.findByPathname(pathname);
     }
@@ -71,44 +71,44 @@ public class DomainService {
     }
     
     @Transactional
-    @Cacheable("userinfo-cache")
+    @Cacheable(value = "userinfo-cache", key = "#user.id")
     public UserInfo getUserInfo(Account user) {
         return userInfoRepository.findByUser(user);
     }
     
-    @Cacheable("userinfo_friendrequests-cache")
+    @Cacheable(value = "userinfo_friendrequests-cache", key = "#info.id")
     public List<Account> getUserInfoFriendRequests(UserInfo info) {
         return info.getFriendRequests();
     }
     
-    @Cacheable("userinfo-friends-cache") 
+    @Cacheable(value = "userinfo-friends-cache", key = "#info.id") 
     public List<Account> getUserInfoFriends(UserInfo info) {
         return info.getFriends();
     }
     
-    @Cacheable("userinfo-sentrequests-cache")
+    @Cacheable(value = "userinfo-sentrequests-cache", key = "#info.id")
     public List<Account> getUserInfoSentRequests(UserInfo info) {
         return info.getSentRequests();
     }
     
     
     
-    @Cacheable("topskills-cache")
+    @Cacheable(value = "topskills-cache", key = "#id")
     public List<Skill> getTopThreeSkillsById(Long id) {
         return skillRepository.findByUserTopThree(id);
     }
     
-    @Cacheable("otherskills-cache")
+    @Cacheable(value = "otherskills-cache", key = "#id")
     public List<Skill> getOtherSkillsById(Long id) {
         return skillRepository.findByUserOffset(id);
     }
     
-    @Cacheable("userfriends-cache")
+    @Cacheable(value = "userfriends-cache", key = "#id")
     public List<Account> getUserFriendsById(Long id) {
         return accountRepository.findAllFriends(id);
     }
     
-    @Cacheable("messages-contacts-cache")
+    @Cacheable(value = "messages-contacts-cache", key = "#id")
     public List<Message> getContactMessagesByUserId(Long id) {
         return messageRepository.findByContacts(id);
     }

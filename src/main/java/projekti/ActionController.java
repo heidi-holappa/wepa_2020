@@ -440,7 +440,8 @@ public class ActionController {
         return "contacts";
     }
     
-    @CacheEvict(value = {"userinfo-cache",
+    @CacheEvict(value = {"user-cache",
+                        "userinfo-cache",
                         "viewed-cache",
                         "user-byId-cache",
                         "userinfo-sentrequests-cache", 
