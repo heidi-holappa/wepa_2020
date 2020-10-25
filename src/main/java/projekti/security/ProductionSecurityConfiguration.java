@@ -31,7 +31,7 @@ public class ProductionSecurityConfiguration extends WebSecurityConfigurerAdapte
                 .antMatchers("/h2-console", "/h2-console/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/").permitAll()
                 .antMatchers(HttpMethod.GET, "/index", "/docs/", "/docs/**", "/auth/", "/auth/**", "/media/", "/media/**", "/css/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/auth/", "/auth/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/auth/", "/auth/**", "docs/**").permitAll()
                 .anyRequest().authenticated();
         http.formLogin()
                 .loginPage("/auth/login")
@@ -43,7 +43,7 @@ public class ProductionSecurityConfiguration extends WebSecurityConfigurerAdapte
 //                .failureHandler(authenticationFailureHandler())
                 .and()
             .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/index") 
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/auth/login?logout")
 //                .logoutUrl("/logout")
 //                .deleteCookies("JSESSIONID")
 //                .logoutSuccessHandler(logoutSuccessHandler())

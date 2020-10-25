@@ -9,6 +9,7 @@ import projekti.domain.*;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +36,20 @@ public class AuthController {
 
     
     // Custom login-sivu
+    @CacheEvict(value = {"user-cache",
+                    "user-byId-cache",
+                    "viewed-cache",
+                    "username-cache",
+                    "userinfo-cache", 
+                    "userinfo_friendrequests-cache",
+                    "userinfo-friends-cache", 
+                    "userinfo-sentrequests-cache", 
+                    "topskills-cache",
+                    "otherskills-cache",
+                    "userfriends-cache",
+                    "messages-contacts-cache",
+                    "messages-op-cache"
+                    }, allEntries = true, beforeInvocation=true)
     @GetMapping("/auth/login")
     public String login() {
         return "auth/login";
@@ -122,7 +137,7 @@ public class AuthController {
         
         
         
-        return "redirect:/auth/login";
+        return "redirect:/auth/login?createsuccess";
     }
     
     

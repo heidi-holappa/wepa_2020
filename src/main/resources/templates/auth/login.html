@@ -25,6 +25,20 @@
         <div class="row">
             <div class="col-sm">
                 <h1>Please submit your username and password</h2>
+                
+                <div th:if="${param.error}" class="alert alert-danger">    
+                    Login failed. Please check your username and password and try again.
+                </div>
+                
+                <div th:if="${param.logout}" class="alert alert-success">    
+                    You have been successfully logged out.
+                </div>
+                
+                <div th:if="${param.createsuccess}" class="alert alert-success">    
+                    Account created. Sign in to begin your Waypoint-adventure.
+                </div>
+
+ 
                 <form name='f' th:action="@{/auth/login}" method='POST'>
                     
                     <table>

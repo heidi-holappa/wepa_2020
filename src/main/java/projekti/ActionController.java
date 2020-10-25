@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -58,20 +59,23 @@ public class ActionController {
     @GetMapping("/index")
     public String returnHome(Model model) {
         
+        System.out.println("method returnHome");
+        
+        // Username for non-authenticated user is anonymousUser
         if (!SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
             Account user = domainService.getCurrentUser();
             model.addAttribute("userinfo", user);
-            model.addAttribute("userProfile", userInfoRepository.findByUser(user));
-            model.addAttribute("contactmessages", messageRepository.findByContacts(user.getId()));
+            model.addAttribute("userProfile", domainService.getUserInfo(user));
+            model.addAttribute("contactmessages", domainService.getContactMessagesByUserId(user.getId()));
         }
-                
         
-        model.addAttribute("postedmessages", messageRepository.findByOriginal(0L));
+        // Get all messages
+        model.addAttribute("postedmessages", domainService.getAllOpMessages());
         
         // Button to filter what posts are shown
         model.addAttribute("show", showObject.toString());
-        System.out.println(showObject.toString());
         
+        // Show possible actionError. Showing it here, because in some cases user may be returned to /index when something goes wrong.
         if (actionError.toString().length() > 3) {
             model.addAttribute("actionError", actionError.toString());
             actionError.setError("");
@@ -81,8 +85,11 @@ public class ActionController {
     }
     
     @GetMapping("/filtercontacts")
-    public String filterContacts(Model model, @RequestParam String show) {
+    public String filterContacts(@RequestParam String show) {
         
+        System.out.println("method filterContacts");
+        
+        // set value for showObject
         if (show.equals("My contacts")) {
             showObject.setShow("All users");
         } else {
@@ -92,9 +99,11 @@ public class ActionController {
         return "redirect:/index";
     }
     
-
+    @CacheEvict(value = { "messages-op-cache", "messages-contacts-cache" }, allEntries = true)
     @PostMapping("/postmessage")
     public String postMessage(@RequestParam String content) {
+        
+        System.out.println("method postMessage");
 
         if (content.length() < 10) {
             this.actionError.setError("Your post must be at least 10 characters long.");
@@ -115,31 +124,24 @@ public class ActionController {
         msg.setLikers(likers);
         
         // Get the user who has logged in    
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
+        String username = domainService.getCurrentUsername();
+        Account user = domainService.getCurrentUser();
         
-        System.out.println(username);
+        msg.setUser(user);
         
-        Account user = accountRepository.findByUsername(username);
-        System.out.println(user);
-                
-        msg.setUser(user); 
-        
-        System.out.println(msg);
         messageRepository.save(msg);
-
         
         return "redirect:/index";
     }
     
+    @CacheEvict(value = { "messages-op-cache", "messages-contacts-cache" }, allEntries = true)
     @GetMapping("/like/{id}")
     public String addLike(Model model, @PathVariable Long id) {
         
-        System.out.println("addLike käynnistyy. Long id: " + id);
+        System.out.println("method addLike");
         
         // Get the user who has logged in
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
+        String username = domainService.getCurrentUsername();
         
         // Get message and users who have liked it
         Message msg = messageRepository.getOne(id);
@@ -151,15 +153,11 @@ public class ActionController {
             msg.setLikes(msg.getLikes() - 1);
             messageRepository.save(msg);
             return "redirect:/index";
-        }        
-        System.out.println("Message content: " + msg.getContent());
-        System.out.println("Ohitettiin if-lauseke");
+        }
         
         // Add one like to counter and add the user who liked the post
         msg.setLikes(msg.getLikes() + 1);
         likers.add(accountRepository.findByUsername(username));
-        
-        System.out.println("Added one to like counter and the userlike");
         
         // save message
         messageRepository.save(msg);
@@ -169,75 +167,79 @@ public class ActionController {
         return "redirect:/index";
     }
     
+    
+    @CacheEvict(value = {"userinfo-cache",
+                    "viewed-cache",
+                    "user-byId-cache",
+                    "userinfo-sentrequests-cache", 
+                    "userinfo-friends-cache", 
+                    "userinfo_friendrequests-cache"
+                }, allEntries = true, beforeInvocation=true)
     @GetMapping("profile_view/{pathname}")
     public String profilePage(Model model, @PathVariable String pathname) {
         
+        System.out.println("Method profilePage");
         
         Account user = domainService.getCurrentUser();
         String username = user.getName();
-        UserInfo userInfo = userInfoRepository.findByUser(user);
+        UserInfo userInfo = domainService.getUserInfo(user);
         
         
-        Account viewed = accountRepository.findByPathname(pathname);
+        Account viewed = domainService.getViewedUserByPathname(pathname);
+        UserInfo viewedInfo = domainService.getUserInfo(viewed);
         String viewedUser = viewed.getName();
+        Long id = viewed.getProfileImgId();
         
         if (username.equals(viewedUser)) {
             model.addAttribute("modify", "true");
             System.out.println("Modify true");
         }
         
-        Long id = viewed.getProfileImgId();
-        
         if ( id != 0) {
             model.addAttribute("profilepic", id);
         }
         
-        if (userInfo.getSentRequests().contains(viewed)) {
+        if (domainService.getUserInfoSentRequests(userInfo).contains(viewed)) {
             model.addAttribute("contactrequest", "Cancel contact request");
         } else {
             model.addAttribute("contactrequest", "Send contact request");            
         }
         
-        if (userInfo.getFriendRequests().contains(viewed) || userInfo.getFriends().contains(viewed)) {
+        if (domainService.getUserInfoFriendRequests(userInfo).contains(viewed) || domainService.getUserInfoFriends(userInfo).contains(viewed)) {
             model.addAttribute("requestreceived", "true");
         } else {
             model.addAttribute("requestreceived", "false");
         }
         
-        if (!userInfo.getFriendRequests().isEmpty()) {
+        if (!domainService.getUserInfoFriendRequests(userInfo).isEmpty()) {
             model.addAttribute("pending", "You have pending requests");
         }
-        
-        
-//        Pageable topSkills = PageRequest.of(0, 3, Sort.by("endorsements", "skill").descending());
-        
 
 
-        model.addAttribute("topSkills", skillRepository.findByUserTopThree(viewed.getId()));
-        model.addAttribute("otherSkills", skillRepository.findByUserOffset(viewed.getId()));
+        // Get all information needed on the profile page
         model.addAttribute("userinfo", user);
         model.addAttribute("viewedProfile", viewed);
-        model.addAttribute("userProfile", userInfoRepository.findByUser(viewed));
-        model.addAttribute("contacts", accountRepository.findAllFriends(viewed.getId()));
-        
-        if (actionError.toString().length() > 3) {
-            model.addAttribute("actionError", actionError.toString());
-            actionError.setError("");
-        }
+        model.addAttribute("userProfile", viewedInfo);
+        // These come from the domainService - class and are cached
+        model.addAttribute("topSkills", domainService.getTopThreeSkillsById(viewed.getId()));
+        model.addAttribute("otherSkills", domainService.getOtherSkillsById(viewed.getId()));
+        model.addAttribute("contacts", domainService.getUserFriendsById(viewed.getId()));
         
         return "profile_view";
     }
     
+    @CacheEvict(value = "userinfo-cache", allEntries = true)
     @PostMapping("/updatedescription")
     public String updateDescription(@RequestParam String description) {
         
         
         String username = domainService.getCurrentUsername();
+        Account user = domainService.getCurrentUser();
         
         actionError.setError("");
         
         if (description.length() > 4 && description.length() < 200) {
-            UserInfo info = userInfoRepository.findByUser(accountRepository.findByUsername(username));
+            UserInfo info = domainService.getUserInfo(user);
             info.setDescription(description);
             info.setUpdateDate(LocalDateTime.now());
             userInfoRepository.save(info);
@@ -245,27 +247,30 @@ public class ActionController {
             actionError.addError("Your description must be between 4-200 characters. ");
         }
         
-        String pathname = accountRepository.findByUsername(username).getPathname();
-        return "redirect:/updatemode/";
+        String pathname = user.getPathname();
+        return "redirect:/updatemode";
     }
     
     
-     @PostMapping("/updateskill")
+    @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
+    @PostMapping("/updateskill")
     public String updateSkill(@RequestParam String skill) {
         
         String username = domainService.getCurrentUsername();
+        Account user = domainService.getCurrentUser();
+        UserInfo info = domainService.getUserInfo(user);
     
         
         actionError.setError("");
         
         if (skill.length() >= 1 && skill.length() < 41) {
-            UserInfo info = userInfoRepository.findByUser(accountRepository.findByUsername(username));
+            
             
             Skill newSkill = new Skill();
             newSkill.setSkill(skill);
             newSkill.setEndorsements(0);
             newSkill.setOnList(1);
-            newSkill.setUser(accountRepository.findByUsername(username));
+            newSkill.setUser(user);
             skillRepository.save(newSkill);
             info.setUpdateDate(LocalDateTime.now());
             userInfoRepository.save(info);
@@ -278,6 +283,7 @@ public class ActionController {
         return "redirect:/updatemode/";
     }
     
+    @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
     @PostMapping("/removeskill")
     public String removeSkill(@RequestParam Long id) {
         
@@ -289,14 +295,14 @@ public class ActionController {
         return "redirect:/updatemode";
     }
     
+    @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
     @GetMapping("/endorse/{id}")
     public String addEndorse(Model model, @PathVariable Long id) {
         
-        System.out.println("addEndorse käynnistyy. Long id: " + id);
+        System.out.println("method addEndorse");
         
         // Get the user who has logged in
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
+        String username = domainService.getCurrentUsername();
         
         // Get skill and users who have liked it
         Skill skill = skillRepository.getOne(id);
@@ -321,44 +327,43 @@ public class ActionController {
     }
     
     
+    @CacheEvict(value = {"userinfo-cache", "user-cache", "viewed-cache", "messages-op-cache", "messages-contacts-cache"}, allEntries = true, beforeInvocation=true)
     @PostMapping("/updatePicture")
     public String add(@RequestParam("file") MultipartFile file) throws IOException {
         
         // Get the user who has logged in
         String username = domainService.getCurrentUsername();
-        
+        Account user = domainService.getCurrentUser();
         // Get user's pathname
-        String pathname = accountRepository.findByUsername(username).getPathname();
+        String pathname = user.getPathname();
         
+        
+        // If ContentType is image, it can be used as a profile image. 
         if (!file.getContentType().contains("image/")) {
             actionError.setError("File's content-type needs to be image/*");
-            return "redirect:/profile_view/" + pathname;
+            return "redirect:/updatemode";
         }
         
         FileObject fo = domainService.fileSaver(file);
-
-//        FileObject fo = new FileObject();
-//
-//        fo.setName(file.getOriginalFilename());
-//        fo.setContentType(file.getContentType());
-//        fo.setContentLength(file.getSize());
-//        fo.setContent(file.getBytes());
-//        fileObjectRepository.save(fo);
         
-        UserInfo userinfo = userInfoRepository.findByUser(accountRepository.findByUsername(username));
-//        userinfo.setProfilePic(fo);
+        UserInfo userinfo = domainService.getUserInfo(user);
+
         userinfo.setUpdateDate(LocalDateTime.now());
 
         userInfoRepository.save(userinfo);
- 
         
-        Account user = accountRepository.findByUsername(username);
         user.setProfileImgId(fo.getId());
         accountRepository.save(user);
         
         return "redirect:/updatemode/";
     }
     
+    @CacheEvict(value = {"userinfo-cache", 
+                        "user-cache", 
+                        "viewed-cache", 
+                        "messages-op-cache", 
+                        "messages-contacts-cache"
+                }, allEntries = true, beforeInvocation=true)
     @PostMapping("/removepicture")
     public String removePic() {
         
@@ -383,16 +388,21 @@ public class ActionController {
     }
     
     
+    @CacheEvict(value = {"userinfo-cache", "user-cache"}, allEntries = true)
     @GetMapping("/updatemode")
     public String updateProfile(Model model) {
         String username = domainService.getCurrentUsername();
         Account user = domainService.getCurrentUser();
-        model.addAttribute("userinfo", accountRepository.findByUsername(username));
+        model.addAttribute("userinfo", user);
         model.addAttribute("skills", skillRepository.findByUserActive(user.getId()));
-        model.addAttribute("userProfile", userInfoRepository.findByUser(user));
+        model.addAttribute("userProfile", domainService.getUserInfo(user));
         Long id = user.getProfileImgId();
         if ( id != 0) {
             model.addAttribute("profilepic", id);
+        }
+        if (actionError.toString().length() > 3) {
+            model.addAttribute("actionError", actionError.toString());
+            actionError.setError("");
         }
         
         return "updateprofile";
@@ -403,65 +413,104 @@ public class ActionController {
         return "redirect:/profile_view/" + domainService.getCurrentUser().getPathname();
     }
     
+    @CacheEvict(value = {"userinfo-cache",
+                    "viewed-cache",
+                    "user-byId-cache",
+                    "userinfo-sentrequests-cache", 
+                    "userinfo-friends-cache", 
+                    "userinfo_friendrequests-cache"
+                }, allEntries = true, beforeInvocation=true)
     @GetMapping("/contacts")
     public String contacts(Model model) {
         String username = domainService.getCurrentUsername();
         Account user = domainService.getCurrentUser();
-        UserInfo userInfo = userInfoRepository.findByUser(user);
+        UserInfo userInfo = domainService.getUserInfo(user);
         
         if (actionError.toString().length() > 3) {
             model.addAttribute("error", actionError.toString());
             actionError.setError("");
         }
-        model.addAttribute("userinfo", accountRepository.findByUsername(username));
-        model.addAttribute("skills", skillRepository.findByUser(user));
+        model.addAttribute("userinfo", user);
         model.addAttribute("userProfile", userInfo);
-        model.addAttribute("friends", userInfo.getFriends());
-        model.addAttribute("friendRequests", userInfo.getFriendRequests());
-        model.addAttribute("sentRequests", userInfo.getSentRequests());
+        model.addAttribute("friends", domainService.getUserInfoFriends(userInfo));
+        model.addAttribute("friendRequests", domainService.getUserInfoFriendRequests(userInfo));
+        model.addAttribute("sentRequests", domainService.getUserInfoSentRequests(userInfo));
         
         
         return "contacts";
     }
     
+    @CacheEvict(value = {"userinfo-cache",
+                        "viewed-cache",
+                        "user-byId-cache",
+                        "userinfo-sentrequests-cache", 
+                        "userinfo-friends-cache", 
+                        "userinfo_friendrequests-cache"
+                    }, allEntries = true, beforeInvocation=true)
     @Transactional
     @PostMapping("/contactrequest")
     public String contactRequest(@RequestParam String pathname) {
         
-        UserInfo user = userInfoRepository.findByUser(domainService.getCurrentUser());
-        Account contact = accountRepository.findByPathname(pathname);
-        UserInfo contactInfo = userInfoRepository.findByUser(contact);
+        Account user = domainService.getCurrentUser();
+        UserInfo userInfo = domainService.getUserInfo(user);
+        Account contact = domainService.getViewedUserByPathname(pathname);
+        UserInfo contactInfo = domainService.getUserInfo(contact);
+//        Account contact = accountRepository.findByPathname(pathname);
+//        UserInfo contactInfo = userInfoRepository.findByUser(contact);
+        
                 
-        if (!user.getSentRequests().contains(contact)) {
-            user.getSentRequests().add(contact);
-            contactInfo.getFriendRequests().add(domainService.getCurrentUser());
+//        if (!user.getSentRequests().contains(contact)) {
+        if (!domainService.getUserInfoSentRequests(userInfo).contains(contact)) {
+            domainService.getUserInfoSentRequests(userInfo).add(contact);
+            domainService.getUserInfoFriendRequests(contactInfo).add(user);
+//            user.getSentRequests().add(contact);
+//            contactInfo.getFriendRequests().add(domainService.getCurrentUser());
+            
         } else {
-            user.getSentRequests().remove(contact);
-            contactInfo.getFriendRequests().remove(domainService.getCurrentUser());
+            domainService.getUserInfoSentRequests(userInfo).remove(contact);
+            domainService.getUserInfoFriendRequests(contactInfo).remove(user);
+//            user.getSentRequests().remove(contact);
+//            contactInfo.getFriendRequests().remove(domainService.getCurrentUser());
         }
         
-        userInfoRepository.save(user);
+        userInfoRepository.save(userInfo);
         userInfoRepository.save(contactInfo);
         
         return "redirect:/contacts";
     }
     
+    @CacheEvict(value = {"userinfo-cache",
+                        "viewed-cache",
+                        "user-byId-cache",
+                        "userinfo-sentrequests-cache", 
+                        "userinfo-friends-cache", 
+                        "userinfo_friendrequests-cache"
+                    }, allEntries = true, beforeInvocation=true)
     @PostMapping("/handlerequest")
     public String handleRequest(@RequestParam String decision, @RequestParam Long contactId) {
         
         Account user = domainService.getCurrentUser();
-        UserInfo userInfo = userInfoRepository.findByUser(user);
-        Account contact = accountRepository.getOne(contactId);
-        UserInfo contactInfo = userInfoRepository.findByUser(contact);        
+        UserInfo userInfo = domainService.getUserInfo(user);
+        Account contact = domainService.getUserById(contactId);
+        UserInfo contactInfo = domainService.getUserInfo(contact);
+//        Account contact = accountRepository.getOne(contactId);
+//        UserInfo contactInfo = userInfoRepository.findByUser(contact);        
+
         
         if (decision.equals("accept")) {
-            userInfo.getFriends().add(contact);
-            userInfo.getFriendRequests().remove(contact);
-            contactInfo.getFriends().add(user);
-            contactInfo.getSentRequests().remove(user);
+            domainService.getUserInfoFriends(userInfo).add(contact);
+            domainService.getUserInfoFriendRequests(userInfo).remove(contact);
+            domainService.getUserInfoFriends(contactInfo).add(user);
+            domainService.getUserInfoSentRequests(contactInfo).remove(user);
+//            userInfo.getFriends().add(contact);
+//            userInfo.getFriendRequests().remove(contact);
+//            contactInfo.getFriends().add(user);
+//            contactInfo.getSentRequests().remove(user);
         } else if (decision.equals("decline")) {
-            userInfo.getFriendRequests().remove(contact);
-            contactInfo.getSentRequests().remove(user);
+            domainService.getUserInfoFriendRequests(userInfo).remove(contact);
+            domainService.getUserInfoSentRequests(contactInfo).remove(user);
+//            userInfo.getFriendRequests().remove(contact);
+//            contactInfo.getSentRequests().remove(user);
         } else {
             actionError.setError("You tried to answer a contact request, but something went wrong. Please contact system admin.");
         }
@@ -472,16 +521,27 @@ public class ActionController {
         return "redirect:/contacts/";
     }
     
+    @CacheEvict(value = {"userinfo-cache",
+                        "viewed-cache",
+                        "user-byId-cache",
+                        "userinfo-sentrequests-cache", 
+                        "userinfo-friends-cache", 
+                        "userinfo_friendrequests-cache"
+                    }, allEntries = true, beforeInvocation=true)
     @PostMapping("/terminatecontact")
     public String terminateContact(@RequestParam String pathname) {
         
         Account user = domainService.getCurrentUser();
-        UserInfo userInfo = userInfoRepository.findByUser(user);
-        Account contact = accountRepository.findByPathname(pathname);
-        UserInfo contactInfo = userInfoRepository.findByUser(contact);
+        UserInfo userInfo = domainService.getUserInfo(user);
+        Account contact = domainService.getViewedUserByPathname(pathname);
+        UserInfo contactInfo = domainService.getUserInfo(contact);
+//        Account contact = accountRepository.findByPathname(pathname);
+//        UserInfo contactInfo = userInfoRepository.findByUser(contact);
         
-        contactInfo.getFriends().remove(user);
-        userInfo.getFriends().remove(contact);
+        domainService.getUserInfoFriends(contactInfo).remove(user);
+        domainService.getUserInfoFriends(userInfo).remove(contact);
+//        contactInfo.getFriends().remove(user);
+//        userInfo.getFriends().remove(contact);
         
         userInfoRepository.save(userInfo);
         userInfoRepository.save(contactInfo);
@@ -494,7 +554,7 @@ public class ActionController {
     public String comment(Model model, @PathVariable Long id) {
         
         Account user = domainService.getCurrentUser();
-        UserInfo userInfo = userInfoRepository.findByUser(user);
+        UserInfo userInfo = domainService.getUserInfo(user);
         
         model.addAttribute("userinfo", user);
         model.addAttribute("message", messageRepository.getOne(id));
@@ -506,9 +566,11 @@ public class ActionController {
         return "comment";
     }
     
+    @CacheEvict(value = {"messages-op-cache", "messages-contacts-cache"}, allEntries = true)
     @PostMapping("/postcomment")
     public String postComment(@RequestParam String content, @RequestParam Long messageId) {
         
+        // Set error-message, if comment too short or too long
         if (content.length() < 10) {
             this.actionError.setError("Your post must be at least 10 characters long.");
             return "redirect:/index";
@@ -538,7 +600,6 @@ public class ActionController {
         op.setComments(n);
         messageRepository.save(op);
         
-        
         return "redirect:/comment/" + messageId;
     }
     
@@ -553,7 +614,6 @@ public class ActionController {
 
         
         return "redirect:/searchresults";
-               
         
     }
     
@@ -561,12 +621,12 @@ public class ActionController {
     public String searchGet(Model model) {
         
         Account user = domainService.getCurrentUser();
-        UserInfo userInfo = userInfoRepository.findByUser(user);
+        UserInfo userInfo = domainService.getUserInfo(user);
         SearchObject so = searchObjectRepository.FindByUserNewest(user);
         
-        System.out.println(so.toString());
-        
         model.addAttribute("userinfo", user);
+        
+        // Some conditions for searching
         if (so.getValue().equals("*")) {
             List<Account> allUsers = accountRepository.findAll();
             model.addAttribute("searchresults", allUsers);
@@ -590,9 +650,5 @@ public class ActionController {
         return "searchresults";
         
     }
-    
-    
-
-
     
 }
