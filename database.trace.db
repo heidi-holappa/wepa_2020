@@ -372,3 +372,9 @@ Caused by: java.lang.IllegalStateException: The file is locked: nio:C:/Users/104
 	at org.h2.mvstore.FileStore.open(FileStore.java:173)
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:350)
 	... 65 more
+2020-10-25 21:50:29 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "DELETE USER_INFO_FRIEND_REQUESTS FROM[*] USER_INFO_SENT_REQUESTS"; SQL statement:
+DELETE USER_INFO_FRIEND_REQUESTS FROM USER_INFO_SENT_REQUESTS [42000-197]
+2020-10-25 22:14:51 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "DELETEFROM[*] USER_INFO_FRIENDS"; expected "DELETE, DROP, DECLARE, DEALLOCATE, {"; SQL statement:
+DELETEFROM USER_INFO_FRIENDS [42001-197]

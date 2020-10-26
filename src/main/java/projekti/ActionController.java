@@ -8,14 +8,10 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -327,7 +323,12 @@ public class ActionController {
     }
     
     
-    @CacheEvict(value = {"userinfo-cache", "user-cache", "viewed-cache", "messages-op-cache", "messages-contacts-cache"}, allEntries = true, beforeInvocation=true)
+    @CacheEvict(value = {"userinfo-cache", 
+                        "user-cache", 
+                        "viewed-cache", 
+                        "messages-op-cache", 
+                        "messages-contacts-cache"
+                    }, allEntries = true, beforeInvocation=true)
     @PostMapping("/updatePicture")
     public String add(@RequestParam("file") MultipartFile file) throws IOException {
         
@@ -358,12 +359,12 @@ public class ActionController {
         return "redirect:/updatemode/";
     }
     
-    @CacheEvict(value = {"userinfo-cache", 
-                        "user-cache", 
-                        "viewed-cache", 
-                        "messages-op-cache", 
-                        "messages-contacts-cache"
-                }, allEntries = true, beforeInvocation=true)
+//    @CacheEvict(value = {"userinfo-cache", 
+//                        "user-cache", 
+//                        "viewed-cache", 
+//                        "messages-op-cache", 
+//                        "messages-contacts-cache"
+//                }, allEntries = true, beforeInvocation=true)
     @PostMapping("/removepicture")
     public String removePic() {
         
@@ -413,13 +414,20 @@ public class ActionController {
         return "redirect:/profile_view/" + domainService.getCurrentUser().getPathname();
     }
     
-    @CacheEvict(value = {"userinfo-cache",
-                    "viewed-cache",
+    @CacheEvict(value = {"user-cache",
                     "user-byId-cache",
-                    "userinfo-sentrequests-cache", 
+                    "viewed-cache",
+                    "username-cache",
+                    "userinfo-cache", 
+                    "userinfo_friendrequests-cache",
                     "userinfo-friends-cache", 
-                    "userinfo_friendrequests-cache"
-                }, allEntries = true, beforeInvocation=true)
+                    "userinfo-sentrequests-cache", 
+                    "topskills-cache",
+                    "otherskills-cache",
+                    "userfriends-cache",
+                    "messages-contacts-cache",
+                    "messages-op-cache"
+                    }, allEntries = true, beforeInvocation=true)
     @GetMapping("/contacts")
     public String contacts(Model model) {
         String username = domainService.getCurrentUsername();
@@ -441,14 +449,19 @@ public class ActionController {
     }
     
     @CacheEvict(value = {"user-cache",
-                        "userinfo-cache",
-                        "viewed-cache",
-                        "user-byId-cache",
-                        "userinfo-sentrequests-cache", 
-                        "userinfo-friends-cache", 
-                        "userinfo_friendrequests-cache"
+                    "user-byId-cache",
+                    "viewed-cache",
+                    "username-cache",
+                    "userinfo-cache", 
+                    "userinfo_friendrequests-cache",
+                    "userinfo-friends-cache", 
+                    "userinfo-sentrequests-cache", 
+                    "topskills-cache",
+                    "otherskills-cache",
+                    "userfriends-cache",
+                    "messages-contacts-cache",
+                    "messages-op-cache"
                     }, allEntries = true, beforeInvocation=true)
-    @Transactional
     @PostMapping("/contactrequest")
     public String contactRequest(@RequestParam String pathname) {
         
@@ -480,54 +493,71 @@ public class ActionController {
         return "redirect:/contacts";
     }
     
-    @CacheEvict(value = {"userinfo-cache",
-                        "viewed-cache",
-                        "user-byId-cache",
-                        "userinfo-sentrequests-cache", 
-                        "userinfo-friends-cache", 
-                        "userinfo_friendrequests-cache"
+    @CacheEvict(value = {"user-cache",
+                    "user-byId-cache",
+                    "viewed-cache",
+                    "username-cache",
+                    "userinfo-cache", 
+                    "userinfo_friendrequests-cache",
+                    "userinfo-friends-cache", 
+                    "userinfo-sentrequests-cache", 
+                    "topskills-cache",
+                    "otherskills-cache",
+                    "userfriends-cache",
+                    "messages-contacts-cache",
+                    "messages-op-cache"
                     }, allEntries = true, beforeInvocation=true)
     @PostMapping("/handlerequest")
     public String handleRequest(@RequestParam String decision, @RequestParam Long contactId) {
         
         Account user = domainService.getCurrentUser();
-        UserInfo userInfo = domainService.getUserInfo(user);
         Account contact = domainService.getUserById(contactId);
-        UserInfo contactInfo = domainService.getUserInfo(contact);
+//        UserInfo userInfo = domainService.getUserInfo(user);
+//        UserInfo contactInfo = domainService.getUserInfo(contact);
 //        Account contact = accountRepository.getOne(contactId);
 //        UserInfo contactInfo = userInfoRepository.findByUser(contact);        
 
         
         if (decision.equals("accept")) {
-            domainService.getUserInfoFriends(userInfo).add(contact);
-            domainService.getUserInfoFriendRequests(userInfo).remove(contact);
-            domainService.getUserInfoFriends(contactInfo).add(user);
-            domainService.getUserInfoSentRequests(contactInfo).remove(user);
+            domainService.acceptRequest(user, contact);
+//            domainService.getUserInfoFriends(userInfo).add(contact);
+//            domainService.getUserInfoFriendRequests(userInfo).remove(contact);
+//            domainService.getUserInfoFriends(contactInfo).add(user);
+//            domainService.getUserInfoSentRequests(contactInfo).remove(user);
+            
 //            userInfo.getFriends().add(contact);
 //            userInfo.getFriendRequests().remove(contact);
 //            contactInfo.getFriends().add(user);
 //            contactInfo.getSentRequests().remove(user);
         } else if (decision.equals("decline")) {
-            domainService.getUserInfoFriendRequests(userInfo).remove(contact);
-            domainService.getUserInfoSentRequests(contactInfo).remove(user);
+            domainService.declineRequest(user, contact);
+//            domainService.getUserInfoFriendRequests(userInfo).remove(contact);
+//            domainService.getUserInfoSentRequests(contactInfo).remove(user);
 //            userInfo.getFriendRequests().remove(contact);
 //            contactInfo.getSentRequests().remove(user);
         } else {
             actionError.setError("You tried to answer a contact request, but something went wrong. Please contact system admin.");
         }
         
-        userInfoRepository.save(userInfo);
-        userInfoRepository.save(contactInfo);
+//        userInfoRepository.save(userInfo);
+//        userInfoRepository.save(contactInfo);
         
         return "redirect:/contacts/";
     }
     
-    @CacheEvict(value = {"userinfo-cache",
-                        "viewed-cache",
-                        "user-byId-cache",
-                        "userinfo-sentrequests-cache", 
-                        "userinfo-friends-cache", 
-                        "userinfo_friendrequests-cache"
+    @CacheEvict(value = {"user-cache",
+                    "user-byId-cache",
+                    "viewed-cache",
+                    "username-cache",
+                    "userinfo-cache", 
+                    "userinfo_friendrequests-cache",
+                    "userinfo-friends-cache", 
+                    "userinfo-sentrequests-cache", 
+                    "topskills-cache",
+                    "otherskills-cache",
+                    "userfriends-cache",
+                    "messages-contacts-cache",
+                    "messages-op-cache"
                     }, allEntries = true, beforeInvocation=true)
     @PostMapping("/terminatecontact")
     public String terminateContact(@RequestParam String pathname) {
@@ -567,7 +597,7 @@ public class ActionController {
         return "comment";
     }
     
-    @CacheEvict(value = {"messages-op-cache", "messages-contacts-cache"}, allEntries = true)
+//    @CacheEvict(value = {"messages-op-cache", "messages-contacts-cache"}, allEntries = true)
     @PostMapping("/postcomment")
     public String postComment(@RequestParam String content, @RequestParam Long messageId) {
         
