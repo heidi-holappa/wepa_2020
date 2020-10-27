@@ -31,32 +31,51 @@
             <div class="col-sm-8">
                 <div th:replace='fragments/layout :: error'></div>
                 <h2>Update profile-information</h2>
+                <p> 
+                    On this page you can update and edit your profile picture, personal description and skills. 
+                    Please note that using square pictures quarantees the best experience in this service. 
+                </p>
                 <div th:text="${actionError}"></div>
                 <br />
                 <br />
                 
-                <span class="font-weight-bold">Current profile picture:</span>
-                <div th:if="${profilepic != null}">
-                    <img class="img-tumbnail" style="width:50%" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
-                </div>
-                
-                <br />
-                <br />
-                
-                <div> 
-                    <form method="POST" th:action="@{/updatePicture}" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label class="font-weight-bold">Update your profile picture:</label>
-                            <input type="file" class="form-control-file border" name="file" id="file"/>
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <h3 class="font-weight-bold">Current profile picture:</h3>
+                            <span th:unless="${profilepic != null}"> No profile picture. Upload one below.</span>
                         </div>
-                        <input class="btn btn-primary" type="submit" value="Update picture"/>
-                    </form>
+                    </div>
+                    <div th:if="${profilepic != null}" class="row">
+                        <div class="col">
+                            <img class="rounded-circle" style="width:50%" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <form method="POST" th:action="@{/updatePicture}" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Update your profile picture:</label>
+                                    <input type="file" class="form-control-file border" name="file" id="file"/>
+                                </div>
+                                <input class="btn btn-primary" type="submit" value="Update picture"/>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row" th:if="${profilepic != null}">
+                        <div class="col">
+                            You can remove your profile picture below:
+                        </div>
+                    </div>
+                    <div class="row" th:if="${profilepic != null}">
+                        <div class "col">                    
+                            <form method="POST" th:action="@{/removepicture}" enctype="multipart/form-data">
+                                <input class="btn btn-primary" type="submit" value="Remove current picture"/>
+                            </form>  
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <form th:if="${profilepic != null}" method="POST" th:action="@{/removepicture}" enctype="multipart/form-data">
-                        <input class="btn btn-primary" type="submit" value="Remove current picture"/>
-                    </form>   
-                </div>
+                
                 
                 <br />
                 <br />

@@ -25,6 +25,9 @@
         <div class="row">
             <div class="col-sm">
                 <h1>Sign up to Waypoint</h2>
+                <div th:if="${param.error}" class="alert alert-danger" th:text="${errors}">    
+                    Login failed. Please check your username and password and try again.
+                </div>
                 <p>
                     Here are some tips to help you create an account: 
                     

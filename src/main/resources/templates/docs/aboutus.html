@@ -9,10 +9,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
-    .fakeimg {
-        height: 200px;
-        background: #aaa;
-    }
   * {
       box-sizing: border-box;
     }
@@ -83,7 +79,7 @@
                 <div class="col-sm-4">
                     <h2>About us</h2>
                     <h5>Team photo</h5>
-                    <img th:src="@{/media/waypointteam.PNG}" class="img-tumbnail" style="width:100%" alt="Waypoint team" />
+                    <img th:src="@{/media/waypointteam.PNG}" class="rounded" style="width:100%" alt="Waypoint team" />
                     <p>Waypoint was built by a diverse team of stuffed animals.</p>
                     
                 </div>
@@ -91,16 +87,25 @@
                 <div class="col">
                     <h1>Waypoint to your dreams</h1>
 
-                    <p>Add a silly description of what Waypoint is</p>
+                    <p>
+                        Waypoint is a networking service for the <a href="https://halo.fandom.com/wiki/United_Nations_Space_Command">UNSC (United Nations Space Command)</a> personel. 
+                        Waypoint creates opportunities for networking, discussion and showcasing your competences. 
+                        Please remember, that as a personel of UNSC you will be expected to behave according to the highest standards. 
+                        Be polite and respectful. Do not discriminate. But remember, making fun of Spartan 4s is not only permitted, 
+                        but also encouraged.
+                    </p>
 
                     <h2>Vision</h2>
-                    <p>Add content</p>
+                    <p>
+                        UNSC is an organization that gets the best out of people. The human resource of UNSC makes it the most formidable 
+                        military organization in the local galaxy. 
+                    </p>
                     
                     <h2>Mission</h2>
-                    <p>Add content</p>
+                    <p>To help UNSC have motivated and driven peronel and to help the members of the organization to excel in their careers.</p>
                     
                     <h2>Stategy</h2>
-                    <p>Add content</p>
+                    <p>See project documentation in the footer.</p>
 
                     
                 </div>

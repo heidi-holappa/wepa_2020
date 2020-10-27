@@ -32,20 +32,11 @@
                     
                     <h2>Welcome to Waypoint<span sec:authorize="hasAuthority('USER')">, <span th:text="${userinfo.name}">Name</span></span>!</h2>
                     <p sec:authorize="hasAuthority('USER')">
-                        Your profile information has last been updated on <span th:text="${#temporals.format(userProfile.updateDate, 'dd.MM.yyyy')}"></span>. Is everything up to date?
+                        <i>Your profile information has last been updated on <span th:text="${#temporals.format(userProfile.updateDate, 'dd.MM.yyyy')}"></span>. Is everything up to date?</i>
                         <br />
                         <br />
-                        For testing purposes you can choose either to view all posts or only posts by your contacts by pressing the button below.
                     </p>
                     
-                    
-                    
-                    <form sec:authorize="hasAuthority('USER')" method="GET" th:action="@{/filtercontacts}">
-                        <div class="form-group">
-                           <input type="hidden" id="pathname" name="show" th:value="${show}"/>
-                        </div>
-                        <button type="submit" class="btn btn-primary" th:text="${show}">Filter posts</button>
-                    </form>
                     
                     <p sec:authorize="isAnonymous()">
                         Waypoint is a social connecting site for UNSC professionals. 
@@ -55,6 +46,18 @@
                     </p>
                     
                     <div th:replace='fragments/layout :: error'></div>
+                    
+                    <h4>Filter messages</h4>
+                    <p>
+                        <b>Note: </b>For testing purposes you can choose either to view all posts or only posts by your contacts by pressing the button below.
+                    </p>
+                    
+                    <form sec:authorize="hasAuthority('USER')" method="GET" th:action="@{/filtercontacts}">
+                        <div class="form-group">
+                           <input type="hidden" id="pathname" name="show" th:value="${show}"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary" th:text="${show}">Filter posts</button>
+                    </form>
                     
                     
                     <div th:replace='fragments/layout :: postform' sec:authorize="hasAuthority('USER')"></div>

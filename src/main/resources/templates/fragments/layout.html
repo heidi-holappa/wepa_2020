@@ -68,13 +68,13 @@
                     <a th:href="@{/profile_view/{id}(id=${userinfo.pathname})}" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/profile_view') ? 'nav-link active':'nav-link'}">Profile</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasAuthority('USER')">
+                    <a class="nav-link" href="/updatemode" th:classappend="${#httpServletRequest.getRequestURI() == '/updatemode' ? 'nav-link active':'nav-link'}">Edit profile</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasAuthority('USER')">
                     <a th:href="@{/contacts}" th:classappend="${#httpServletRequest.getRequestURI() == '/contacts' ? 'nav-link active':'nav-link'}">Contacts</a>
                 </li>
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" href="/auth/login">Sign in</a>
-                </li>
-                <li class="nav-item" sec:authorize="hasAuthority('USER')">
-                    <a class="nav-link" href="/updatemode">Edit profile</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasAuthority('USER')">
                     <a class="nav-link" href="/logout">Sign out</a>

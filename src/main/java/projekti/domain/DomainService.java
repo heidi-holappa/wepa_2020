@@ -144,5 +144,37 @@ public class DomainService {
     public List<Message> getAllOpMessages() {
         return messageRepository.findByOriginal(0L);
     }
+    
+    // Checks that the username and pathname only contain letters, digits, underscore and dashes
+    public boolean checkString(String s) {
+        if (s == null) {
+            return false;
+        }
+        
+        if (s.replaceAll(" ", "").length() < s.length()) {
+            return false;
+        }
+        
+        if (s.matches(".*[!#¤%&=@£$+?].*")) {
+            return false;
+        }
+        
+        return s.matches("^(?=.*\\d*)(?=.*[a-z])(?=.*[A-Z]*)(?=.*[\\-\\_]*).{4,16}$");
+        
+    }
+    
+    public boolean checkPassword(String s) {
+        
+        if (s == null) {
+            return false;
+        }
+        
+        if (s.replaceAll(" ", "").length() < s.length()) {
+            return false;
+        }
+        
+        return s.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]*).{8,16}$");
+
+    }
        
 }

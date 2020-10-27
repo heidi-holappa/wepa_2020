@@ -31,7 +31,10 @@ public class AuthController {
     @Autowired
     PasswordEncoder passwordEncoder;
     
-    // Luodaan yksi virheet kerävä olio. TARKASTA VIELÄ, VOISIKO TÄMÄN LUODA AUTOMAATTISESTI
+    @Autowired
+    private DomainService domainService;
+    
+    // Create an object for errors 
     ErrorObject error = new ErrorObject();
 
     
@@ -55,19 +58,36 @@ public class AuthController {
         return "auth/login";
     }
     
-    // Käyttäjätunnuksen luominen näkymä. 
-    // Jos virhe-oliossa on virhe tallennettuna, virhe-viesti lisätään Modeliin. 
+    // Sign up view  
+    // Object error contains error-messages 
+    @CacheEvict(value = {"user-cache",
+            "user-byId-cache",
+            "viewed-cache",
+            "username-cache",
+            "userinfo-cache", 
+            "userinfo_friendrequests-cache",
+            "userinfo-friends-cache", 
+            "userinfo-sentrequests-cache", 
+            "topskills-cache",
+            "otherskills-cache",
+            "userfriends-cache",
+            "messages-contacts-cache",
+            "messages-op-cache"
+            }, allEntries = true, beforeInvocation=true)
     @GetMapping("/auth/signup")
     public String signup(@ModelAttribute Account account, Model model) {
         
         if (error.toString().length() > 1 ) {
             model.addAttribute("errors", error.toString());
         }
+        error.setError("");
                 
         return "auth/signup";
     }
     
-    // Käyttäjätunnuksen luominen POST
+    
+
+    // POST to create user account
     @PostMapping("/auth/signup")
     public String createUsername(
             @Valid
@@ -76,37 +96,59 @@ public class AuthController {
             @RequestParam String password,
             @RequestParam String passwordtwo) {
         
-        // Tarkastetaan BindingResult - virheet
+        // Check for BindingResult - errors
         if(bindingResult.hasErrors()) {
             return "auth/signup";
         }
         
-        // Muut virheet: käyttäjätunnus varattu
+        
+        // Check that username only contains letters and digits
+        if (!domainService.checkString(account.getUsername())) {
+            error.setError("Username must only contain letters, digits or symbols '-' and '_'");
+            return "redirect:/auth/signup?error";
+        }
+        
+        System.out.println("Pathname: " + account.getPathname());
+        // Check that pathname only contains letters and digits
+        if (!domainService.checkString(account.getPathname())) {
+            error.setError("Pathname must only contain letters, digits or or symbols '-' and '_'");
+            return "redirect:/auth/signup?error";
+        }
+        
+        if (!domainService.checkPassword(password)) {
+            error.setError("Password must only contain letters, digits or selected special characters");
+            return "redirect:/auth/signup?error";
+        }
+        
+        
+        // Other errors: username taken
         if (accountRepository.findByUsername(account.getUsername()) != null) {
             error.setError("Username is already in use. Choose another username.");
             System.out.println("createUserError: " + error.toString());
-            return "redirect:/auth/signup";
+            return "redirect:/auth/signup?error";
         }
         
-        // Muut virheet: polku varattu
+        
+        
+        // Other errors: path reserved 
         if (accountRepository.findByPathname(account.getPathname()) != null) {
             error.setError("Path is already in use. Choose another path.");
             System.out.println("createUserError: " + error.toString());
-            return "redirect:/auth/signup";
+            return "redirect:/auth/signup?error";
         }
         
-        // Muut virheet: salasanat eivät täsmää
+        // Other errors: passwords do not match 
         if (!password.equals(passwordtwo)) {
             error.setError("Passwords didn't match. Please try again.");
             System.out.println("createUserError: " + error.toString());
-            return "redirect:/auth/signup";
+            return "redirect:/auth/signup?error";
         }
         
-        // Muut virheet: salasana liian lyhyt tai liian pitkä
+        // Other errors: password too short or too long
         if (password.length() < 8 || password.length() > 16) {
             error.setError("Password must be 8-16 characters long.");
             System.out.println("createUserError: " + error.toString());
-            return "redirect:/auth/signup";
+            return "redirect:/auth/signup?error";
         }
         
         //Luodaan lista käyttäjäoikeuksista
