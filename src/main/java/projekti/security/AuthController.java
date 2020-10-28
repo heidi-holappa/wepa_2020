@@ -116,7 +116,7 @@ public class AuthController {
         }
         
         if (!domainService.checkPassword(password)) {
-            error.setError("Password must only contain letters, digits or selected special characters");
+            error.setError("Password must contain at least one UpperCase letter, one LowerCase letter and one digit and 8 characters.");
             return "redirect:/auth/signup?error";
         }
         

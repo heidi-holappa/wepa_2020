@@ -52,6 +52,8 @@ public class ActionController {
     ErrorObject actionError = new ErrorObject();
     ShowObject showObject = new ShowObject();
     
+    
+    // This method prepares the index-view
     @GetMapping("/index")
     public String returnHome(Model model) {
         
@@ -80,6 +82,7 @@ public class ActionController {
         return "index";
     }
     
+    // This method handles "filtering" of posted messages (rather which query to use)
     @GetMapping("/filtercontacts")
     public String filterContacts(@RequestParam String show) {
         
@@ -95,6 +98,7 @@ public class ActionController {
         return "redirect:/index";
     }
     
+    // This method handles posting messages
     @CacheEvict(value = { "messages-op-cache", "messages-contacts-cache" }, allEntries = true)
     @PostMapping("/postmessage")
     public String postMessage(@RequestParam String content) {
@@ -130,6 +134,7 @@ public class ActionController {
         return "redirect:/index";
     }
     
+    // This method handles liking posts. 
     @CacheEvict(value = { "messages-op-cache", "messages-contacts-cache" }, allEntries = true)
     @GetMapping("/like/{id}")
     public String addLike(Model model, @PathVariable Long id) {
@@ -164,6 +169,64 @@ public class ActionController {
     }
     
     
+    // This method prepares the comment - view
+    @GetMapping("/comment/{id}")
+    public String comment(Model model, @PathVariable Long id) {
+        
+        Account user = domainService.getCurrentUser();
+        UserInfo userInfo = domainService.getUserInfo(user);
+        
+        model.addAttribute("userinfo", user);
+        model.addAttribute("message", messageRepository.getOne(id));
+        model.addAttribute("comments", messageRepository.findAllByOpId(id));
+        model.addAttribute("error", actionError.toString());
+        actionError.setError("");
+        
+        
+        return "comment";
+    }
+    
+    
+    // This method handles posting comments
+    @CacheEvict(value = {"messages-op-cache", "messages-contacts-cache"}, allEntries = true)
+    @PostMapping("/postcomment")
+    public String postComment(@RequestParam String content, @RequestParam Long messageId) {
+        
+        // Set error-message, if comment too short or too long
+        if (content.length() < 10) {
+            this.actionError.setError("Your post must be at least 10 characters long.");
+            return "redirect:/index";
+        }
+        
+        if (content.length() > 500) {
+            this.actionError.setError("Your post must not be more than 500 characters long.");
+            return "redirect:/index";
+        }
+        
+        // Create a new reply
+        Message msg = new Message();
+        msg.setContent(content);
+        msg.setLikes(0);
+        msg.setComments(0);
+        msg.setOpId(messageId);
+        List<Account> likers = new ArrayList<>();
+        msg.setLikers(likers);
+        
+        // Get the user who has logged in    
+        msg.setUser(domainService.getCurrentUser());
+        
+        messageRepository.save(msg);
+        
+        Message op = messageRepository.getOne(messageId);
+        Integer n = op.getComments() + 1;
+        op.setComments(n);
+        messageRepository.save(op);
+        
+        return "redirect:/comment/" + messageId;
+    }
+    
+    
+    // This method prepares the page profile_view
     @CacheEvict(value = {"userinfo-cache",
                     "viewed-cache",
                     "user-byId-cache",
@@ -224,6 +287,7 @@ public class ActionController {
         return "profile_view";
     }
     
+    // This method handles updating the user description
     @CacheEvict(value = "userinfo-cache", allEntries = true)
     @PostMapping("/updatedescription")
     public String updateDescription(@RequestParam String description) {
@@ -248,6 +312,7 @@ public class ActionController {
     }
     
     
+    // This method handles adding skills
     @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
     @PostMapping("/updateskill")
     public String updateSkill(@RequestParam String skill) {
@@ -279,6 +344,7 @@ public class ActionController {
         return "redirect:/updatemode/";
     }
     
+    // This method handles removing skills (Bonus-feature)
     @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
     @PostMapping("/removeskill")
     public String removeSkill(@RequestParam Long id) {
@@ -291,6 +357,7 @@ public class ActionController {
         return "redirect:/updatemode";
     }
     
+    // This method handles endorsing
     @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
     @GetMapping("/endorse/{id}")
     public String addEndorse(Model model, @PathVariable Long id) {
@@ -323,6 +390,7 @@ public class ActionController {
     }
     
     
+    // This method adds a new profile picture
     @CacheEvict(value = {"userinfo-cache", 
                         "user-cache", 
                         "viewed-cache", 
@@ -330,7 +398,7 @@ public class ActionController {
                         "messages-contacts-cache"
                     }, allEntries = true, beforeInvocation=true)
     @PostMapping("/updatePicture")
-    public String add(@RequestParam("file") MultipartFile file) throws IOException {
+    public String addPicure(@RequestParam("file") MultipartFile file) throws IOException {
         
         // Get the user who has logged in
         String username = domainService.getCurrentUsername();
@@ -345,14 +413,17 @@ public class ActionController {
             return "redirect:/updatemode";
         }
         
+        // A method in domainService handles saving the file
         FileObject fo = domainService.fileSaver(file);
         
+        // Updating current users UserInfo
         UserInfo userinfo = domainService.getUserInfo(user);
 
         userinfo.setUpdateDate(LocalDateTime.now());
 
         userInfoRepository.save(userinfo);
         
+        // User's account information is updated
         user.setProfileImgId(fo.getId());
         accountRepository.save(user);
         
@@ -581,58 +652,7 @@ public class ActionController {
         
     }
     
-    @GetMapping("/comment/{id}")
-    public String comment(Model model, @PathVariable Long id) {
-        
-        Account user = domainService.getCurrentUser();
-        UserInfo userInfo = domainService.getUserInfo(user);
-        
-        model.addAttribute("userinfo", user);
-        model.addAttribute("message", messageRepository.getOne(id));
-        model.addAttribute("comments", messageRepository.findAllByOpId(id));
-        model.addAttribute("error", actionError.toString());
-        actionError.setError("");
-        
-        
-        return "comment";
-    }
-    
-//    @CacheEvict(value = {"messages-op-cache", "messages-contacts-cache"}, allEntries = true)
-    @PostMapping("/postcomment")
-    public String postComment(@RequestParam String content, @RequestParam Long messageId) {
-        
-        // Set error-message, if comment too short or too long
-        if (content.length() < 10) {
-            this.actionError.setError("Your post must be at least 10 characters long.");
-            return "redirect:/index";
-        }
-        
-        if (content.length() > 500) {
-            this.actionError.setError("Your post must not be more than 500 characters long.");
-            return "redirect:/index";
-        }
-        
-        // Create a new reply
-        Message msg = new Message();
-        msg.setContent(content);
-        msg.setLikes(0);
-        msg.setComments(0);
-        msg.setOpId(messageId);
-        List<Account> likers = new ArrayList<>();
-        msg.setLikers(likers);
-        
-        // Get the user who has logged in    
-        msg.setUser(domainService.getCurrentUser());
-        
-        messageRepository.save(msg);
-        
-        Message op = messageRepository.getOne(messageId);
-        Integer n = op.getComments() + 1;
-        op.setComments(n);
-        messageRepository.save(op);
-        
-        return "redirect:/comment/" + messageId;
-    }
+
     
     @PostMapping("/searchpost")
     public String searchByName(@RequestParam String search) {
