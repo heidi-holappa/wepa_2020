@@ -39,7 +39,10 @@
             </div>
             <div class="col-sm-8">
                 <h2 th:text='${viewedProfile.name}'>User's name</h2>
-                <div th:replace='fragments/layout :: error'></div>
+                
+                <div th:if="${actionError != null}">
+                        <div th:replace='fragments/layout :: error'></div>
+                </div>
                 
                 
                 <div th:if="${requestreceived == 'false'}">

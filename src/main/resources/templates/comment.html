@@ -49,7 +49,7 @@
                                         <br />
                                         Likes: <span th:text="${message.likes}">-1</span>
                                     </p>
-                                    <a th:href="@{/like/{id}(id=${message.id})}" class="card-link">Like</a>
+                                    <a th:href="@{/like/{path}/{id}(id=${message.id}, path='comment')}" class="card-link">Like</a>
                                 </div>
                             </div>
                         </div>
@@ -87,7 +87,7 @@
                                         <br />
                                         Likes: <span th:text="${comment.likes}">-1</span>
                                     </p>
-                                    <a th:href="@{/like/{id}(id=${comment.id})}" class="card-link">Like</a>
+                                    <a th:href="@{/like/{path}/{id}(id=${comment.id}, path='comment')}" class="card-link">Like</a>
                                 </div>
                             </div>
                         </div>

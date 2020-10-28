@@ -72,6 +72,11 @@ public class ActionController {
         
         // Button to filter what posts are shown
         model.addAttribute("show", showObject.toString());
+        if (showObject.toString().equals("All users")) {
+            model.addAttribute("showInverted", "My contacts");
+        } else {
+            model.addAttribute("showInverted", "All users");
+        }
         
         // Show possible actionError. Showing it here, because in some cases user may be returned to /index when something goes wrong.
         if (actionError.toString().length() > 3) {
@@ -136,8 +141,8 @@ public class ActionController {
     
     // This method handles liking posts. 
     @CacheEvict(value = { "messages-op-cache", "messages-contacts-cache" }, allEntries = true)
-    @GetMapping("/like/{id}")
-    public String addLike(Model model, @PathVariable Long id) {
+    @GetMapping("/like/{path}/{id}")
+    public String addLike(Model model, @PathVariable("id") Long id, @PathVariable("path") String path) {
         
         System.out.println("method addLike");
         
@@ -153,7 +158,16 @@ public class ActionController {
             likers.remove(accountRepository.findByUsername(username));
             msg.setLikes(msg.getLikes() - 1);
             messageRepository.save(msg);
-            return "redirect:/index";
+            if (path.equals("comment")) {
+                if (msg.getOpId() == 0) {
+                    return "redirect:/comment/" + msg.getId();
+                } else {
+                    return "redirect:/comment/" + msg.getOpId();
+                }
+                    
+            } else {
+                return "redirect:/index";
+            }
         }
         
         // Add one like to counter and add the user who liked the post
@@ -165,7 +179,16 @@ public class ActionController {
         
         System.out.println("Saved message");
         
-        return "redirect:/index";
+            if (path.equals("comment")) {
+                if (msg.getOpId() == 0) {
+                    return "redirect:/comment/" + msg.getId();
+                } else {
+                    return "redirect:/comment/" + msg.getOpId();
+                }
+                    
+            } else {
+                return "redirect:/index";
+            }
     }
     
     

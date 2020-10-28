@@ -127,7 +127,7 @@
                             </p>
 
 
-                            <a th:href="@{/like/{id}(id=${message.id})}" class="card-link" sec:authorize="hasAuthority('USER')">Like</a>
+                            <a th:href="@{/like/{path}/{id}(id=${message.id}, path='index')}" class="card-link" sec:authorize="hasAuthority('USER')">Like</a>
                             <a th:href="@{/comment/{id}(id=${message.id})}" class="card-link" sec:authorize="hasAuthority('USER')">Comment</a>
                             
 
@@ -156,7 +156,7 @@
                             </p>
 
 
-                            <a th:href="@{/like/{id}(id=${message.id})}" class="card-link" sec:authorize="hasAuthority('USER')">Like</a>
+                            <a th:href="@{/like/{path}/{id}(id=${message.id}, path='comment')}" class="card-link" sec:authorize="hasAuthority('USER')">Like</a>
                             <a th:href="@{/comment/{id}(id=${message.id})}" class="card-link" sec:authorize="hasAuthority('USER')">Comment</a>
                             
 

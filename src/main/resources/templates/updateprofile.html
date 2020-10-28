@@ -29,7 +29,11 @@
             </div>
             
             <div class="col-sm-8">
-                <div th:replace='fragments/layout :: error'></div>
+                
+                <div th:if="${actionError != null}">
+                    <div th:replace='fragments/layout :: error'></div>
+                </div>
+                
                 <h2>Update profile-information</h2>
                 <p> 
                     On this page you can update and edit your profile picture, personal description and skills. 
