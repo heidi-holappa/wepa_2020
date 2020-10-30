@@ -53,6 +53,7 @@ public class AuthController {
                     "messages-contacts-cache",
                     "messages-op-cache"
                     }, allEntries = true, beforeInvocation=true)
+    
     @GetMapping("/auth/login")
     public String login() {
         return "auth/login";
@@ -151,12 +152,12 @@ public class AuthController {
             return "redirect:/auth/signup?error";
         }
         
-        //Luodaan lista käyttäjäoikeuksista
+        // Create a list of authorities 
         ArrayList<String> rights = new ArrayList<>();
         rights.add("USER");
         account.setAuthorities(rights);
         
-        //Salasanan suojaus
+        //Encoding the password
         account.setSecuredPassword(passwordEncoder.encode(password));
         
         //Profile-image-id to zero (no image added):
@@ -174,7 +175,7 @@ public class AuthController {
         info.setUpdateDate(LocalDateTime.now());
         userInfoRepository.save(info);
 
-        //Tallennetaan uusi käyttäjätunnus
+        //Save the new object
         accountRepository.save(account);
         
         

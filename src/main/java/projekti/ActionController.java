@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -88,6 +89,7 @@ public class ActionController {
     }
     
     // This method handles "filtering" of posted messages (rather which query to use)
+    @Secured("ROLE_USER")
     @GetMapping("/filtercontacts")
     public String filterContacts(@RequestParam String show) {
         
@@ -105,6 +107,7 @@ public class ActionController {
     
     // This method handles posting messages
     @CacheEvict(value = { "messages-op-cache", "messages-contacts-cache" }, allEntries = true)
+    @Secured("ROLE_USER")
     @PostMapping("/postmessage")
     public String postMessage(@RequestParam String content) {
         
@@ -141,6 +144,7 @@ public class ActionController {
     
     // This method handles liking posts. 
     @CacheEvict(value = { "messages-op-cache", "messages-contacts-cache" }, allEntries = true)
+    @Secured("ROLE_USER")
     @GetMapping("/like/{path}/{id}")
     public String addLike(Model model, @PathVariable("id") Long id, @PathVariable("path") String path) {
         
@@ -193,6 +197,7 @@ public class ActionController {
     
     
     // This method prepares the comment - view
+    @Secured("ROLE_USER")
     @GetMapping("/comment/{id}")
     public String comment(Model model, @PathVariable Long id) {
         
@@ -212,6 +217,7 @@ public class ActionController {
     
     // This method handles posting comments
     @CacheEvict(value = {"messages-op-cache", "messages-contacts-cache"}, allEntries = true)
+    @Secured("ROLE_USER")
     @PostMapping("/postcomment")
     public String postComment(@RequestParam String content, @RequestParam Long messageId) {
         
@@ -257,6 +263,7 @@ public class ActionController {
                     "userinfo-friends-cache", 
                     "userinfo_friendrequests-cache"
                 }, allEntries = true, beforeInvocation=true)
+    @Secured("ROLE_USER")
     @GetMapping("profile_view/{pathname}")
     public String profilePage(Model model, @PathVariable String pathname) {
         
@@ -312,6 +319,7 @@ public class ActionController {
     
     // This method handles updating the user description
     @CacheEvict(value = "userinfo-cache", allEntries = true)
+    @Secured("ROLE_USER")
     @PostMapping("/updatedescription")
     public String updateDescription(@RequestParam String description) {
         
@@ -337,6 +345,7 @@ public class ActionController {
     
     // This method handles adding skills
     @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
+    @Secured("ROLE_USER")
     @PostMapping("/updateskill")
     public String updateSkill(@RequestParam String skill) {
         
@@ -369,6 +378,7 @@ public class ActionController {
     
     // This method handles removing skills (Bonus-feature)
     @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
+    @Secured("ROLE_USER")
     @PostMapping("/removeskill")
     public String removeSkill(@RequestParam Long id) {
         
@@ -382,6 +392,7 @@ public class ActionController {
     
     // This method handles endorsing
     @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
+    @Secured("ROLE_USER")
     @GetMapping("/endorse/{id}")
     public String addEndorse(Model model, @PathVariable Long id) {
         
@@ -420,6 +431,7 @@ public class ActionController {
                         "messages-op-cache", 
                         "messages-contacts-cache"
                     }, allEntries = true, beforeInvocation=true)
+    @Secured("ROLE_USER")
     @PostMapping("/updatePicture")
     public String addPicure(@RequestParam("file") MultipartFile file) throws IOException {
         
@@ -459,6 +471,7 @@ public class ActionController {
 //                        "messages-op-cache", 
 //                        "messages-contacts-cache"
 //                }, allEntries = true, beforeInvocation=true)
+    @Secured("ROLE_USER")
     @PostMapping("/removepicture")
     public String removePic() {
         
@@ -470,6 +483,7 @@ public class ActionController {
     }
     
     @Transactional
+    @Secured("ROLE_USER")
     @GetMapping(value = "/profilePic/{id}")
     public ResponseEntity<byte[]> viewFile(@PathVariable Long id) {
         FileObject fo = fileObjectRepository.getOne(id);
@@ -484,6 +498,7 @@ public class ActionController {
     
     
     @CacheEvict(value = {"userinfo-cache", "user-cache"}, allEntries = true)
+    @Secured("ROLE_USER")
     @GetMapping("/updatemode")
     public String updateProfile(Model model) {
         String username = domainService.getCurrentUsername();
@@ -504,6 +519,7 @@ public class ActionController {
     }
     
     @GetMapping("/updatedone")
+    @Secured("ROLE_USER")
     public String updateDone() {
         return "redirect:/profile_view/" + domainService.getCurrentUser().getPathname();
     }
@@ -557,6 +573,7 @@ public class ActionController {
                     "messages-op-cache"
                     }, allEntries = true, beforeInvocation=true)
     @PostMapping("/contactrequest")
+    @Secured("ROLE_USER")
     public String contactRequest(@RequestParam String pathname) {
         
         Account user = domainService.getCurrentUser();
@@ -602,6 +619,7 @@ public class ActionController {
                     "messages-op-cache"
                     }, allEntries = true, beforeInvocation=true)
     @PostMapping("/handlerequest")
+    @Secured("ROLE_USER")
     public String handleRequest(@RequestParam String decision, @RequestParam Long contactId) {
         
         Account user = domainService.getCurrentUser();
@@ -654,6 +672,7 @@ public class ActionController {
                     "messages-op-cache"
                     }, allEntries = true, beforeInvocation=true)
     @PostMapping("/terminatecontact")
+    @Secured("ROLE_USER")
     public String terminateContact(@RequestParam String pathname) {
         
         Account user = domainService.getCurrentUser();
@@ -678,6 +697,7 @@ public class ActionController {
 
     
     @PostMapping("/searchpost")
+    @Secured("ROLE_USER")
     public String searchByName(@RequestParam String search) {
         
         SearchObject so = new SearchObject();
@@ -692,6 +712,7 @@ public class ActionController {
     }
     
     @GetMapping("/searchresults")
+    @Secured("ROLE_USER")
     public String searchGet(Model model) {
         
         Account user = domainService.getCurrentUser();
