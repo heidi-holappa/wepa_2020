@@ -45,7 +45,7 @@ public class ProductionSecurityConfiguration extends WebSecurityConfigurerAdapte
             .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/auth/login?logout")
 //                .logoutUrl("/logout")
-//                .deleteCookies("JSESSIONID")
+                .deleteCookies("JSESSIONID", "show-alert")
 //                .logoutSuccessHandler(logoutSuccessHandler())
             ;
     }
