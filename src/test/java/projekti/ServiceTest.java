@@ -16,9 +16,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class ServiceTester {
+public class ServiceTest {
     
-    // This class tests methods in Service-classes. 
+    // This class tests methods in Service-class DomainService (package projekti.domain). 
 
     @Autowired
     private DomainService domainService;

@@ -17,9 +17,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class RepositoryTests {
+public class RepositoryTest {
     
-    // Some repositorytests
+    // This class contains tests for selected repositories
     
     @Autowired
     private MessageRepository messageRepository;

@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class FluentTesting extends org.fluentlenium.adapter.junit.FluentTest {
+public class FluentRunTest extends org.fluentlenium.adapter.junit.FluentTest {
     
     @LocalServerPort
     private Integer port;

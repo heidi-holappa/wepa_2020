@@ -64,8 +64,12 @@ public class ActionController {
         if (!SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
             Account user = domainService.getCurrentUser();
             model.addAttribute("userinfo", user);
-            model.addAttribute("userProfile", domainService.getUserInfo(user));
             model.addAttribute("contactmessages", domainService.getContactMessagesByUserId(user.getId()));
+            
+            UserInfo userInfo = domainService.getUserInfo(user);
+            model.addAttribute("userProfile", userInfo);
+            boolean friendRequests = !userInfo.getFriendRequests().isEmpty();
+            model.addAttribute("friendRequests", friendRequests);
         }
         
         // Get all messages

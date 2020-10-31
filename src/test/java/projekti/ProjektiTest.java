@@ -12,8 +12,6 @@
 //public class ProjektiTest {
 //
 //    // Project tests are in this file-directory, but in separate classes.
-//    // You can run each class in NetBeans by right-clicking it and choosing Test file
-//    // or with key combination CTRL+F6
 //    
 //    @Test
 //    public void noTests() {

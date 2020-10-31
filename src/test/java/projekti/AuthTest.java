@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 
 @RunWith(SpringRunner.class)
@@ -24,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class AuthTest {
     
-    // This class tests user access 
+    // This class tests authentication and authorization
     
     @Autowired
     private AccountRepository accountRepository;    
@@ -93,9 +95,28 @@ public class AuthTest {
         mockMvc.perform(get("/soemrandompaththatdoesntexist"))
                 .andExpect(redirectedUrl("http://localhost/auth/login"));
         
+        mockMvc.perform(get("/testhtml"))
+                .andExpect(redirectedUrl("http://localhost/auth/login"));
+        
         System.out.println("AUTOMATED TESTS: Test method statusNotOk from class AuthTest ran successfully");
 
     }
     
+    // This tests that an authenticated user can access paths that require authentication
+    @Test
+    @WithMockUser
+    public void statusOkAuth() throws Exception {
+        
+        mockMvc.perform(get("/testhtml"))
+                .andExpect(status().isOk());
+        
+        // Page should containt the following string: 1234!"#¤asqw
+                
+        System.out.println("AUTOMATED TESTS: Test method statusOkAuth from class AuthTest ran successfully");
+
+    }
+
+
+   
     
 }

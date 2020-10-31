@@ -5,6 +5,7 @@ package projekti;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -114,5 +115,17 @@ public class StaticNavController {
         return new ModelAndView("login");
     }
     
+    @Secured("ROLE_USER")
+    @GetMapping("/testhtml")
+    public String testPage(Model model) {
+        Account user = domainService.getCurrentUser();
+        UserInfo userInfo = domainService.getUserInfo(user);
+        
+        model.addAttribute("userinfo", userInfo);
+        boolean friendRequests = !userInfo.getFriendRequests().isEmpty();
+        model.addAttribute("friendRequests", friendRequests);
+        
+        return "testhtml";
+    }
     
 }

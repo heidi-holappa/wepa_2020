@@ -1,31 +1,39 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Bootstrap Example</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</head>
-<body>
+<html lang="en">
+    <head>
+        <title>Waypoint</title>
+        <meta charset="utf-8" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" th:href="@{/css/stylesheet.css}"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <style></style>
+    </head>
+    
+    
+    <body>
+        <!--<input type="hidden" id="friendRequests" value=th:text="${friendRequests}"/></input>-->
 
-<div class="container">
-  <h2>Dropdowns</h2>
-  <p>The .dropdown class is used to indicate a dropdown menu.</p>
-  <p>Use the .dropdown-menu class to actually build the dropdown menu.</p>
-  <p>To open the dropdown menu, use a button or a link with a class of .dropdown-toggle and data-toggle="dropdown".</p>                                          
-  <div class="dropdown">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-      Dropdown button
-    </button>
-    <div class="dropdown-menu">
-      <a class="dropdown-item" href="#">Link 1</a>
-      <a class="dropdown-item" href="#">Link 2</a>
-      <a class="dropdown-item" href="#">Link 3</a>
-    </div>
-  </div>
-</div>
+        <h2>Welcome to test page.</h2>
+        <p>This page is meant for testing site development.</p>
+        
+        <p>Value of boolean check friendRequests: <span th:text='${friendRequests}'></span></p>
 
-</body>
+        <h3>Can a string of characters be found?</h3>
+        <p>1234!"#¤asqw</p>
+        
+
+
+<!--        <script onload="showAlert()"></script>-->
+        <script th:src="@{/javascript/testcode.js}" defer></script>
+        <script th:inline="javascript">
+            var friendRequests = /*[[${friendRequests}]]*/ {};
+            console.log(friendRequests);
+        </script>
+        
+
+    </body>
+    
 </html>

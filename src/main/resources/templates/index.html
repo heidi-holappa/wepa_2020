@@ -97,5 +97,10 @@
             </div>
         </div>
         <div th:replace="fragments/layout :: footer">Footer comes here</div>
+        <script sec:authorize="hasAuthority('USER')" th:src="@{/javascript/index.js}" defer></script>
+        <script sec:authorize="hasAuthority('USER')" th:inline="javascript">
+            var friendRequests = /*[[${friendRequests}]]*/ {};
+            console.log(friendRequests);
+        </script>
     </body>
 </html>
