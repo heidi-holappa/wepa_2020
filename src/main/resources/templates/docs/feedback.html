@@ -25,7 +25,9 @@
             <div class="row">
                 <div class="col">
                     <h1>We value your feedback</h1>
-                    
+                    <div th:if="${param.success}" class="alert alert-success">    
+                        Feedback sent successfully. Thank you for your feedback!
+                    </div>
                     <div th:unless="${notification == 'empty'}" th:text="${notification}" style="color:red;">Notification here</div>
 
                     <p>

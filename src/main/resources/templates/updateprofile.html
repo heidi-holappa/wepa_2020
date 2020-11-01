@@ -121,7 +121,8 @@
                         <button type="submit" class="btn btn-primary" value="Post">Send skill</button>    
                     </form> 
                 </div>
-                                
+                                                
+               
                 <br />
                 <br />
                 
@@ -130,6 +131,20 @@
                        <button type="submit" class="btn btn-primary" value="Post">Back to profile</button>
                     </div>
                 </form>
+                
+                <br />
+                <br />
+                
+                <h5>BONUS: View all your data</h5>
+                
+                Want to see what has been stored to the PostgreSQL database about your activities? Click here:
+                
+                <form method="GET" th:action="@{/alldata}">
+                    <div class="form-group">
+                       <button type="submit" class="btn btn-primary" value="Post">Check all data</button>
+                    </div>
+                </form>
+
 
             </div>
         </div>

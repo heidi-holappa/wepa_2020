@@ -79,7 +79,7 @@ public class StaticNavController {
         feedbackRepository.save(fb);      
         
         
-        return "redirect:/docs/feedback";
+        return "redirect:/docs/feedback?success";
     }
     
     @GetMapping("/docs/aboutus")

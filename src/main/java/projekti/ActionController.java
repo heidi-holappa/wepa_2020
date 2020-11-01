@@ -49,6 +49,9 @@ public class ActionController {
     @Autowired
     private SearchObjectRepository searchObjectRepository;
     
+    @Autowired
+    private FeedbackRepository feedbackRepository;
+    
     // Creates Objects used to manage information. One for errors, one for contact filtering
     ErrorObject actionError = new ErrorObject();
     ShowObject showObject = new ShowObject();
@@ -722,7 +725,7 @@ public class ActionController {
         
         Account user = domainService.getCurrentUser();
         UserInfo userInfo = domainService.getUserInfo(user);
-        SearchObject so = searchObjectRepository.FindByUserNewest(user);
+        SearchObject so = searchObjectRepository.findByUserNewest(user);
         
         model.addAttribute("userinfo", user);
         
@@ -749,6 +752,26 @@ public class ActionController {
         
         return "searchresults";
         
+    }
+    
+    @GetMapping("/alldata")
+    public String getAllData(Model model) {
+        
+        Account user = domainService.getCurrentUser();
+        UserInfo userInfo = domainService.getUserInfo(user);
+        
+        model.addAttribute("userinfo", user);
+        model.addAttribute("userProfile", userInfo);
+        model.addAttribute("friends", domainService.getUserInfoFriends(userInfo));
+        model.addAttribute("friendRequests", domainService.getUserInfoFriendRequests(userInfo));
+        model.addAttribute("sentRequests", domainService.getUserInfoSentRequests(userInfo));
+        model.addAttribute("skills", skillRepository.findByUserActive(user.getId()));
+        model.addAttribute("files", fileObjectRepository.findByUser(user));
+        model.addAttribute("messages", messageRepository.findByUser(user));
+        model.addAttribute("search", searchObjectRepository.findByUser(user));
+        model.addAttribute("feedback", feedbackRepository.findByUser(user));
+        
+        return "alldata";
     }
     
 }

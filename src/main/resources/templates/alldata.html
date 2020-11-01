@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Waypoint - update profile</title>
+    <meta charset="utf-8" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style></style>
+</head>
+<body>
+    
+        <div th:replace="fragments/layout :: pageTitle">Page title</div>
+        <nav th:replace="fragments/layout :: nav">Navigation</nav>
+    
+
+    <div class="container" style="margin-top:30px">
+        <div class="row">
+            <div class="col-sm-4">
+                
+                <hr class="d-sm-none">
+                                
+                <div th:replace="fragments/layout :: quicknav"></div>
+                
+                <hr class="d-sm-none">    
+            </div>
+            
+            <div class="col-sm-8">
+                
+                <h2>Userdata</h2>
+                
+                <p>
+                    Below you can see all the data stored about you on PostgreSQL - server. 
+                    Please note that some additional data may be stored.
+                </p>
+                
+                <h5>Account information</h5>
+                <ul>
+                    <li>Username: <span th:text="${userinfo.username}"></span></li>
+                    <li>Name: <span th:text="${userinfo.name}"></span></li>
+                    <li>Path: <span th:text="${userinfo.pathname}"></span></li>
+                    <li>Note: for security reasons your password is not showns here</li>
+                </ul>
+                
+                <h5>Additional information</h5>
+                
+                <ul>
+                    <li>Description: <span th:text="${userProfile.description}"></span></li>
+                    <li>Profile created:  <span th:text="${#temporals.format(userProfile.created, 'dd.MM.yyyy')}"></span></li>
+                    <li>Profile last updated: <span th:text="${#temporals.format(userProfile.updateDate, 'dd.MM.yyyy')}"></span></li>
+                </ul>
+                
+                <h5>Skills</h5>
+                <ul>
+                    <li th:each="skill : ${skills}"><span th:text="${skill.skill}"></span></li>                    
+                </ul>
+                
+                <h5>Contacts</h5>
+                <ul>
+                    <li th:each="contact : ${friends}"><span th:text="${contact.name}"></span></li>                    
+                </ul>
+                
+                <h5>Active sent requests</h5>
+                <ul>
+                    <li th:each="contact : ${sentRequests}"><span th:text="${contact.name}"></span></li>                    
+                </ul>
+                
+                <h5>Active received requests</h5>
+                <ul>
+                    <li th:each="contact : ${friendRequests}"><span th:text="${contact.name}"></span></li>                    
+                </ul>
+                
+                <h5>Posted messages</h5>
+                
+                <ul>
+                    <li th:each="message : ${messages}"><span th:text="${#temporals.format(message.messageDate, 'dd.MM.yyyy HH:mm')}"></span>: <span th:text="${message.content}"></span></li>
+                </ul>
+                
+                <h5>Files</h5>
+                <p><b>Note: </b>at the time only filenames are shown. Please contact system administrator to receive the files.</p>
+                <ul>
+                    <li th:each="file : ${files}"><span th:text="${file.name}"></span></li>
+                    
+                </ul>
+                
+                <h5>Search words</h5>
+                <p>This list contains words that you have submitted into the search bar</p>
+                <ul>
+                    <li th:each="search : ${search}"><span th:text="${search.value}"></span></li>
+                </ul>
+                
+                <h5>Feedback</h5>
+                <p>All feedbacks you have submitted.</p>
+                <ul th:each="feedback : ${feedback}">
+                    <li>Date: <span th:text="${#temporals.format(feedback.messageDate, 'dd.MM.yyyy HH:mm')}"></span></li>
+                    <li>Useful: <span th:text="${feedback.useful}"></span></li>
+                    <li>Recommend: <span th:text="${feedback.recommend}"></span></li>
+                    <li>Feedback: <span th:text="${feedback.openFeedback}"></span></li>                    
+                </ul>
+                
+                
+                <form method="GET" th:action="@{/updatedone}">
+                    <div class="form-group">
+                       <button type="submit" class="btn btn-primary" value="Post">Back to profile</button>
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+
+    <div class="jumbotron text-center" style="margin-bottom:0">
+        <footer th:replace="fragments/layout :: footer">Footer comes here</footer>
+    </div>
+
+</body>
+</html>
+
+
