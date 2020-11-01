@@ -121,6 +121,7 @@ public class StaticNavController {
         Account user = domainService.getCurrentUser();
         UserInfo userInfo = domainService.getUserInfo(user);
         
+        model.addAttribute("useraccount", user);
         model.addAttribute("userinfo", userInfo);
         boolean friendRequests = !userInfo.getFriendRequests().isEmpty();
         model.addAttribute("friendRequests", friendRequests);

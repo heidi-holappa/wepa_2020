@@ -273,47 +273,48 @@ public class ActionController {
         
         System.out.println("Method profilePage");
         
-        Account user = domainService.getCurrentUser();
-        String username = user.getName();
-        UserInfo userInfo = domainService.getUserInfo(user);
-        
-        
         Account viewed = domainService.getViewedUserByPathname(pathname);
         UserInfo viewedInfo = domainService.getUserInfo(viewed);
         String viewedUser = viewed.getName();
         Long id = viewed.getProfileImgId();
         
-        if (username.equals(viewedUser)) {
-            model.addAttribute("modify", "true");
-            System.out.println("Modify true");
+        if (!SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
+            Account user = domainService.getCurrentUser();
+            String username = user.getName();
+            UserInfo userInfo = domainService.getUserInfo(user);
+            model.addAttribute("userinfo", user);
+            
+            if (domainService.getUserInfoSentRequests(userInfo).contains(viewed)) {
+                model.addAttribute("contactrequest", "Cancel contact request");
+            } else {
+                model.addAttribute("contactrequest", "Send contact request");            
+            }
+
+            if (domainService.getUserInfoFriendRequests(userInfo).contains(viewed) || domainService.getUserInfoFriends(userInfo).contains(viewed)) {
+                model.addAttribute("requestreceived", "true");
+            } else {
+                model.addAttribute("requestreceived", "false");
+            }
+
+            if (!domainService.getUserInfoFriendRequests(userInfo).isEmpty()) {
+                model.addAttribute("pending", "You have pending requests");
+            }
+            
+            if (username.equals(viewedUser)) {
+                model.addAttribute("modify", "true");
+                System.out.println("Modify true");
+            }
         }
         
         if ( id != 0) {
             model.addAttribute("profilepic", id);
         }
-        
-        if (domainService.getUserInfoSentRequests(userInfo).contains(viewed)) {
-            model.addAttribute("contactrequest", "Cancel contact request");
-        } else {
-            model.addAttribute("contactrequest", "Send contact request");            
-        }
-        
-        if (domainService.getUserInfoFriendRequests(userInfo).contains(viewed) || domainService.getUserInfoFriends(userInfo).contains(viewed)) {
-            model.addAttribute("requestreceived", "true");
-        } else {
-            model.addAttribute("requestreceived", "false");
-        }
-        
-        if (!domainService.getUserInfoFriendRequests(userInfo).isEmpty()) {
-            model.addAttribute("pending", "You have pending requests");
-        }
-
 
         // Get all information needed on the profile page
-        model.addAttribute("userinfo", user);
+        
         model.addAttribute("viewedProfile", viewed);
         model.addAttribute("userProfile", viewedInfo);
-        // These come from the domainService - class and are cached
+        // These come from the domainService-class and are cached
         model.addAttribute("topSkills", domainService.getTopThreeSkillsById(viewed.getId()));
         model.addAttribute("otherSkills", domainService.getOtherSkillsById(viewed.getId()));
         model.addAttribute("contacts", domainService.getUserFriendsById(viewed.getId()));
@@ -414,7 +415,7 @@ public class ActionController {
             endorsers.remove(accountRepository.findByUsername(username));
             skill.setEndorsements(skill.getEndorsements() - 1);
             skillRepository.save(skill);
-            return "redirect:/index";
+            return "redirect:/profile_view/" + skill.getUser().getPathname();
         }
         
         // Add one like to counter and add the user who liked the post

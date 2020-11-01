@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-  <title>Bootstrap 4 Website Example</title>
+  <title>Waypoint project</title>
   <meta charset="utf-8" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -26,16 +26,28 @@
                 <div class="col">
                     <h1>Project documentation</h1>
                     
-                    <p>Alla voit tutustua kurssin verkko-oppimisympäristössä annettuun tehtävänantoon ja ohjelman tekijän kommentteihin.</p>
+                    <p>
+                        This page documents the project requirements and comments from the page creator. 
+                        Project requirements and comments are both in Finnish.
+                    </p>
+                    
+                    <p>
+                        Alla voit tutustua kurssin verkko-oppimisympäristössä annettuun tehtävänantoon ja ohjelman tekijän kommentteihin.
+                    </p>
 
-                    <p>Kurssiin kuuluu ohjelmointiprojekti, jossa luodaan ansioluettelo- ja työntekijähakusovellus eli tuttavallisemmin vanhan kansan LinkedIn.</p>
+                    <p>
+                        Kurssiin kuuluu ohjelmointiprojekti, jossa luodaan ansioluettelo- ja työntekijähakusovellus eli 
+                        tuttavallisemmin vanhan kansan LinkedIn.
+                    </p>
 
                     <h2>Sovellukselta odotetut ominaisuudet:</h2>
 
                     <p>
                         <b>Käyttäjien rekisteröityminen</b>
                         <br/>
-                        Käyttäjä rekisteröityy sovellukseen kirjaamalla sovellukseen käyttäjätunnuksen, salasanan sekä nimen. Tämän lisäksi käyttäjältä kysytään profiilin näyttämisessä käytettävää merkkijonoa, jonka perusteella käyttäjän sivu voidaan löytää sovelluksesta. Esim. “https://sovellus.net/kayttajat/profiili-merkkijono”
+                        Käyttäjä rekisteröityy sovellukseen kirjaamalla sovellukseen käyttäjätunnuksen, salasanan sekä nimen. 
+                        Tämän lisäksi käyttäjältä kysytään profiilin näyttämisessä käytettävää merkkijonoa, jonka 
+                        perusteella käyttäjän sivu voidaan löytää sovelluksesta. Esim. “https://sovellus.net/kayttajat/profiili-merkkijono”
                         <br />
                         <br /> 
                         Toteutettu:
@@ -48,17 +60,21 @@
                         </ul>
                         <b>Käyttäjien etsiminen ja yhdistäminen</b>
                         <br/>
-                        Käyttäjä voi etsiä muita käyttäjiä nimen perusteella. Käyttäjä voi lisätä yhteyksiinsä toisen henkilön. Yhteyttä ei kuitenkaan hyväksytä ellei toinen osapuoli hyväksy sitä.
+                        Käyttäjä voi etsiä muita käyttäjiä nimen perusteella. Käyttäjä voi lisätä yhteyksiinsä toisen henkilön. 
+                        Yhteyttä ei kuitenkaan hyväksytä ellei toinen osapuoli hyväksy sitä.
                         <br />
                         <br />
                         Toteutettu:
                         <ul>
                             <li>Hakutoiminto on toteutettu. Hakutulos näyttää muut käyttäjät kuin hakijan itse.</li>
                             <li>Kontaktipyyntö ja hyväksymisprosessi toteutuu tehtävänannossa kuvatulla tavalla</li>
+                            <li>BONUS: Kun käyttäjällä on uusi kontaktipyyntö, hän saa sisäänkirjautuessa ponnahdusilmoituksen tästä.</li>
                         </ul>
                         <b>Yhteydet</b>
                         <br/>
-                        Käyttäjä voi tarkastella omia yhteyksiään. Yhteyden ohessa näytetään toisen henkilön nimi joka toimii linkkinä henkilön profiiliin sekä painikkeet yhteyden hyväksyntään ja hylkäykseen. Mikäli yhteys on jo muodostettu, on tilalla painike yhteyden katkaisemiseksi.
+                        Käyttäjä voi tarkastella omia yhteyksiään. Yhteyden ohessa näytetään toisen henkilön nimi joka 
+                        toimii linkkinä henkilön profiiliin sekä painikkeet yhteyden hyväksyntään ja hylkäykseen. 
+                        Mikäli yhteys on jo muodostettu, on tilalla painike yhteyden katkaisemiseksi.
                         <br />
                         <br />
                         Toteutettu:
@@ -75,11 +91,15 @@
                         <ul>
                             <li>Käyttäjä voi ladata profiilikuvan.</li>
                             <li>Lisävaatimus moodlessa: Profiilikuvan voi poistaa (toteutettu)</li>                         
-                            <li>Bonus: Profiilikuvan voi vaihtaa.</li>
+                            <li>BONUS: Profiilikuvan voi vaihtaa.</li>
                         </ul>
                         <b>Henkilökohtainen etusivu</b>
                         <br/>
-                        Jokaisella käyttäjällä on henkilökohtainen "seinä", joka sisältää yllä henkilön nimen sekä mahdollisesti määritellyn profiilikuvan. Tämän lisäksi seinällä on lista taidoista joita henkilöllä on. Käyttäjä voi lisätä taitoja omalta sivultaan. Muut käyttäjät voivat käydä kehumassa toisen käyttäjän taitoja hänen etusivullaan - tällöin taidon vieressä oleva kehujen lukumäärä kasvaa. Taidoista korostetaan 3 kaikkein kehuttua taitoa, ja loput ovat erillään.
+                        Jokaisella käyttäjällä on henkilökohtainen "seinä", joka sisältää yllä henkilön nimen sekä mahdollisesti 
+                        määritellyn profiilikuvan. Tämän lisäksi seinällä on lista taidoista joita henkilöllä on. Käyttäjä voi 
+                        lisätä taitoja omalta sivultaan. Muut käyttäjät voivat käydä kehumassa toisen käyttäjän taitoja hänen 
+                        etusivullaan - tällöin taidon vieressä oleva kehujen lukumäärä kasvaa. Taidoista korostetaan 3 kaikkein 
+                        kehuttua taitoa, ja loput ovat erillään.
                         <br />
                         <br />
                         Toteutettu:
@@ -91,11 +111,11 @@
                             <li>Käyttäjät voivat endorsata toisten käyttäjien taitoja. </li>
                             <li>Taidot näkyvät järjestyksessä endorsements DESC ja nimi DESC</li>
                             <li>BONUS: Käyttäjä voi lisätä kuvauksen itselleen</li>
+                            <li>BONUS: taitoja voi poistaa</li>
                         </ul>
                         Moita ylimääräisiä toiminnallisuuksia
                         <ul>
                             <li>BONUS: Sivustohaut tallentuvat tietokantaan</li>
-                            <li>BONUS: poista taito</li>
                         </ul>
                         <b>Postaaminen</b>
                         <br/>

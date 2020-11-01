@@ -158,3 +158,10 @@ org.h2.jdbc.JdbcSQLException: Column "op_id" not found [42122-197]
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:834)
+2020-11-01 13:46:33 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Table "TABLE" not found; SQL statement:
+UPDATE table
+SET 
+    ENDORSEMENTS = 0
+WHERE
+    ENDORSEMENTS != 0 [42102-197]
