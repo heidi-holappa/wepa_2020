@@ -1,4 +1,9 @@
+// This class is only for testing javaScript. It was not used in the project
+
 var http = new XMLHttpRequest();
+
+// This was for testing how to do the pop-up notification on index-view when new contact requests have arrived.
+// This code was used in the project. 
 
 window.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded and parsed');

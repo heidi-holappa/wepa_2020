@@ -25,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 import projekti.domain.*;
 
 
+// This class includes most of the methods that involve user interaction on the application
+
 @Controller
 public class ActionController {
     
@@ -68,6 +70,8 @@ public class ActionController {
             Account user = domainService.getCurrentUser();
             model.addAttribute("userinfo", user);
             model.addAttribute("contactmessages", domainService.getContactMessagesByUserId(user.getId()));
+            System.out.println(domainService.getContactMessagesByUserId(user.getId()));
+            
             
             UserInfo userInfo = domainService.getUserInfo(user);
             model.addAttribute("userProfile", userInfo);
@@ -80,6 +84,9 @@ public class ActionController {
         
         // Button to filter what posts are shown
         model.addAttribute("show", showObject.toString());
+        
+        System.out.println(showObject.toString());
+        
         if (showObject.toString().equals("All users")) {
             model.addAttribute("showInverted", "My contacts");
         } else {
@@ -473,12 +480,14 @@ public class ActionController {
         return "redirect:/updatemode/";
     }
     
-//    @CacheEvict(value = {"userinfo-cache", 
-//                        "user-cache", 
-//                        "viewed-cache", 
-//                        "messages-op-cache", 
-//                        "messages-contacts-cache"
-//                }, allEntries = true, beforeInvocation=true)
+    // This method removes the current picture from profile. 
+    // Picture is still left in the repository
+    @CacheEvict(value = {"userinfo-cache", 
+                        "user-cache", 
+                        "viewed-cache", 
+                        "messages-op-cache", 
+                        "messages-contacts-cache"
+                    }, allEntries = true, beforeInvocation=true)
     @Secured("ROLE_USER")
     @PostMapping("/removepicture")
     public String removePic() {
@@ -490,6 +499,7 @@ public class ActionController {
         return "redirect:/updatemode/";
     }
     
+    // This methods returns a file for viewing. 
     @Transactional
     @Secured("ROLE_USER")
     @GetMapping(value = "/profilePic/{id}")
@@ -505,6 +515,7 @@ public class ActionController {
     }
     
     
+    // This prepares the view updateprofile
     @CacheEvict(value = {"userinfo-cache", "user-cache"}, allEntries = true)
     @Secured("ROLE_USER")
     @GetMapping("/updatemode")
@@ -526,12 +537,15 @@ public class ActionController {
         return "updateprofile";
     }
     
+    // This method returns the user to their own profile_view
     @GetMapping("/updatedone")
     @Secured("ROLE_USER")
     public String updateDone() {
         return "redirect:/profile_view/" + domainService.getCurrentUser().getPathname();
     }
     
+    
+    // This method prepares the view contacts
     @CacheEvict(value = {"user-cache",
                     "user-byId-cache",
                     "viewed-cache",
@@ -566,6 +580,8 @@ public class ActionController {
         return "contacts";
     }
     
+    
+    // This method handles the sending contactrequests
     @CacheEvict(value = {"user-cache",
                     "user-byId-cache",
                     "viewed-cache",
@@ -612,6 +628,7 @@ public class ActionController {
         return "redirect:/contacts";
     }
     
+    // This method handles contact requests
     @CacheEvict(value = {"user-cache",
                     "user-byId-cache",
                     "viewed-cache",
@@ -665,6 +682,8 @@ public class ActionController {
         return "redirect:/contacts/";
     }
     
+    
+    // This method handles the termination of a friendship. Sad.
     @CacheEvict(value = {"user-cache",
                     "user-byId-cache",
                     "viewed-cache",
@@ -703,7 +722,7 @@ public class ActionController {
     }
     
 
-    
+    // This method handles saving the search-string
     @PostMapping("/searchpost")
     @Secured("ROLE_USER")
     public String searchByName(@RequestParam String search) {
@@ -719,6 +738,7 @@ public class ActionController {
         
     }
     
+    // This method returns the last search string from the current user
     @GetMapping("/searchresults")
     @Secured("ROLE_USER")
     public String searchGet(Model model) {
@@ -748,12 +768,15 @@ public class ActionController {
             model.addAttribute("searchresults", accountRepository.findAllByNameContainingIgnoreCase(so.getValue()));
             model.addAttribute("notification", "No users found. Find all users, by typing the symbol '*' in the search field.");
             
-        }   
+        } 
+        
+        model.addAttribute("newest", accountRepository.findNewest(user.getId()));
         
         return "searchresults";
         
     }
     
+    // This method prepares the view alldata that lists all data stored about the current user
     @GetMapping("/alldata")
     public String getAllData(Model model) {
         

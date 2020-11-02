@@ -110,7 +110,7 @@ public class AuthTest {
         mockMvc.perform(get("/testhtml"))
                 .andExpect(status().isOk());
         
-        // Page should containt the following string: 1234!"#¤asqw
+        // Page should contain the following string: 1234!"#¤asqw
                 
         System.out.println("AUTOMATED TESTS: Test method statusOkAuth from class AuthTest ran successfully");
 

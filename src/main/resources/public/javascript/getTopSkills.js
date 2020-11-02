@@ -1,3 +1,5 @@
+// This class is only for testing javaScript. It was not used in the project
+
 var urlTopSkills = contextRoot + "getTopSkills/" + userid
 var urlOtherSkills = contextRoot + "getOtherSkills/" + userid
 var urlEndorse = contextRoot + "endorseJs/" 

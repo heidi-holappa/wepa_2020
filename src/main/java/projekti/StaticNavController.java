@@ -115,9 +115,19 @@ public class StaticNavController {
         return new ModelAndView("login");
     }
     
+    // This method prepares the page for project testing
     @Secured("ROLE_USER")
     @GetMapping("/testhtml")
     public String testPage(Model model) {
+        
+        return "testing/testhtml";
+    }
+    
+        
+    // This method prepares the view for jsTesting
+    @Secured("ROLE_USER")
+    @GetMapping("/jstests")
+    public String jsTestPage(Model model) {
         Account user = domainService.getCurrentUser();
         UserInfo userInfo = domainService.getUserInfo(user);
         
@@ -126,7 +136,7 @@ public class StaticNavController {
         boolean friendRequests = !userInfo.getFriendRequests().isEmpty();
         model.addAttribute("friendRequests", friendRequests);
         
-        return "testhtml";
+        return "testing/jstests";
     }
     
 }

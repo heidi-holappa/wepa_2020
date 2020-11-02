@@ -137,6 +137,7 @@ public class DomainService {
     
     @Cacheable(value = "messages-contacts-cache", key = "#id", unless = "#result != null")
     public List<Message> getContactMessagesByUserId(Long id) {
+        System.out.println("method getContactMessagesByUserId id is: " + id);
         return messageRepository.findByContacts(id);
     }
     
