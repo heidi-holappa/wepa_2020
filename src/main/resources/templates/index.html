@@ -71,7 +71,7 @@
                     
                     
 
-                    <div>
+                    <div sec:authorize="hasAuthority('USER')">
                         <br />
                         <br />
                         Showings posts from: <span th:text="${showInverted}"></span>

@@ -70,8 +70,6 @@ public class ActionController {
             Account user = domainService.getCurrentUser();
             model.addAttribute("userinfo", user);
             model.addAttribute("contactmessages", domainService.getContactMessagesByUserId(user.getId()));
-            System.out.println(domainService.getContactMessagesByUserId(user.getId()));
-            
             
             UserInfo userInfo = domainService.getUserInfo(user);
             model.addAttribute("userProfile", userInfo);
@@ -84,8 +82,6 @@ public class ActionController {
         
         // Button to filter what posts are shown
         model.addAttribute("show", showObject.toString());
-        
-        System.out.println(showObject.toString());
         
         if (showObject.toString().equals("All users")) {
             model.addAttribute("showInverted", "My contacts");

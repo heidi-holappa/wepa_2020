@@ -31,7 +31,11 @@
                 <div class="col-sm-8">
                     
                     <h2>Search results:</h2>
-                    <div class="alert alert-info"><b>Tip:</b> If you want to see all users, search with the asterix symbol '*'.</div>
+                    
+                    <div th:if="${searchresults.empty}" class="alert alert-info"><b>Tip:</b> If you want to see all users, search with the asterix symbol '*'.</div>
+                    
+                    <br />
+                    <br />                    
                     
                     <div>
                         <div th:if="${searchresults.empty}">
@@ -51,11 +55,11 @@
                         </div>
 
                     </div>
+                    <br />
+                    <br />
+                    <h4>Newest users</h4>
+                    <div class="alert alert-info">Didn't find what you were looking for? Check out Waypoint's most recent new members from below!</div>
                     
-                    <h2>Newest users</h2>
-                    <p
-                        >Didn't find what you were looking for? Check out Waypoint's most recent new members from below!
-                    </p>
                     
                     <div>
                         <div th:if="${newest.empty}"></div>
