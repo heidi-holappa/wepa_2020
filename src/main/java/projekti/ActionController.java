@@ -131,6 +131,7 @@ public class ActionController {
     
     // This method handles posting messages
     @CacheEvict(value = { "messages-op-cache", "messages-contacts-cache" }, allEntries = true)
+    @Transactional
     @Secured("ROLE_USER")
     @PostMapping("/postmessage")
     public String postMessage(@RequestParam String content) {
@@ -253,6 +254,7 @@ public class ActionController {
     
     // This method handles posting comments
     @CacheEvict(value = {"messages-op-cache", "messages-contacts-cache"}, allEntries = true)
+    @Transactional
     @Secured("ROLE_USER")
     @PostMapping("/postcomment")
     public String postComment(@RequestParam String content, @RequestParam Long messageId) {

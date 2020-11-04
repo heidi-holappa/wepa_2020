@@ -170,7 +170,7 @@ public class AuthController {
         
         // Create the basic userInfo
         UserInfo info = new UserInfo();
-        info.setDescription(account.getName() + " is a highly accomplished professional. Their career has been described as groundbreaking, innovative and bold.");
+        info.setDescription(account.getName() + " has not yet updated a profile description.");
         ArrayList<Account> friendRequests = new ArrayList<>();
         ArrayList<Account> friends = new ArrayList<>();
         info.setFriendRequests(friendRequests);
