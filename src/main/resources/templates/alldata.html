@@ -33,7 +33,7 @@
                 <h2>Userdata</h2>
                 
                 <p>
-                    Below you can see all the data stored about you on PostgreSQL - server. 
+                    Below you can see all the data stored about you in PostgreSQL - database. 
                     Please note that some additional data may be stored.
                 </p>
                 
@@ -54,33 +54,38 @@
                 </ul>
                 
                 <h5>Skills</h5>
+                <div th:if="${skills.empty}" class="alert alert-danger">No skills found. I'm sure you have a lot to offer. Don't be shy, add some skills!</div>
                 <ul>
                     <li th:each="skill : ${skills}"><span th:text="${skill.skill}"></span></li>                    
                 </ul>
                 
                 <h5>Contacts</h5>
+                <div th:if="${friends.empty}" class="alert alert-danger">No contacts found. You should network on Waypoint. It's easy!</div>
                 <ul>
                     <li th:each="contact : ${friends}"><span th:text="${contact.name}"></span></li>                    
                 </ul>
                 
                 <h5>Active sent requests</h5>
+                <div th:if="${sentRequests.empty}" class="alert alert-danger">No active sent requests found.</div>
                 <ul>
                     <li th:each="contact : ${sentRequests}"><span th:text="${contact.name}"></span></li>                    
                 </ul>
                 
                 <h5>Active received requests</h5>
+                <div th:if="${friendRequests.empty}" class="alert alert-danger">No active received requests found.</div>
                 <ul>
                     <li th:each="contact : ${friendRequests}"><span th:text="${contact.name}"></span></li>                    
                 </ul>
                 
                 <h5>Posted messages</h5>
-                
+                <div th:if="${messages.empty}" class="alert alert-danger">No posted messages found.</div>
                 <ul>
                     <li th:each="message : ${messages}"><span th:text="${#temporals.format(message.messageDate, 'dd.MM.yyyy HH:mm')}"></span>: <span th:text="${message.content}"></span></li>
                 </ul>
                 
                 <h5>Files</h5>
                 <p><b>Note: </b>at the time only filenames are shown. Please contact system administrator to receive the files.</p>
+                <div th:if="${files.empty}" class="alert alert-danger">No files found.</div>
                 <ul>
                     <li th:each="file : ${files}"><span th:text="${file.name}"></span></li>
                     
@@ -88,12 +93,16 @@
                 
                 <h5>Search words</h5>
                 <p>This list contains words that you have submitted into the search bar</p>
+                
+                <div th:if="${search.empty}" class="alert alert-danger">No searches found.</div>
+                
                 <ul>
                     <li th:each="search : ${search}"><span th:text="${search.value}"></span></li>
                 </ul>
                 
                 <h5>Feedback</h5>
                 <p>All feedbacks you have submitted.</p>
+                <div th:if="${feedback.empty}" class="alert alert-danger">You haven't given us any feedback yet. Feedback form can be found in the footer.</div>
                 <ul th:each="feedback : ${feedback}">
                     <li>Date: <span th:text="${#temporals.format(feedback.messageDate, 'dd.MM.yyyy HH:mm')}"></span></li>
                     <li>Useful: <span th:text="${feedback.useful}"></span></li>
