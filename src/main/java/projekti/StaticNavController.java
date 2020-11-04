@@ -1,5 +1,5 @@
-// Tämä kontrolleri sisältää sivuston staattisen sisällön kontrollerit (esim. footer)
-
+// This class is a controller class, that mainly contains more static views from the application
+// Methods on this page are not logged at the time.
 
 package projekti;
 
@@ -18,6 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import projekti.domain.*;
+
+/**
+ *
+ * @author Heidi Holappa
+ */
 
 @Controller
 public class StaticNavController {
@@ -76,7 +81,7 @@ public class StaticNavController {
         fb.setRecommend(recommend);
         fb.setUseful(useful);
         fb.setOpenFeedback(openfeedback);
-        feedbackRepository.save(fb);      
+        feedbackRepository.save(fb);
         
         
         return "redirect:/docs/feedback?success";

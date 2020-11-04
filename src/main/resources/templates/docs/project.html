@@ -1,19 +1,15 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-  <title>Waypoint project</title>
-  <meta charset="utf-8" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <style>
-  .fakeimg {
-    height: 200px;
-    background: #aaa;
-  }
-  </style>
+    <title>Waypoint project</title>
+    <meta charset="utf-8" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style></style>
 </head>
     <body>
         
@@ -52,12 +48,10 @@
                         <br /> 
                         Toteutettu:
                         <ul>
-                            <li>Päyttäjätunnus, nimi salasana ja polku pyydetään ja tallennetaan tietokantaan.</li>                        
+                            <li>Päyttäjätunnus, nimi salasana ja polku pyydetään ja tallennetaan tietokantaan.</li>
+                            <li>Käyttäjätilin tietoihin liittyy validointia (esim. ei välilyöntejä, salasanalle tietyt ehdot)</li>
                         </ul>
-                        Tee jos aikaa (bonus):
-                        <ul>
-                            <li>Käyttäjänimen, salasanan ja polun vaihtaminen.</li>                        
-                        </ul>
+                        
                         <b>Käyttäjien etsiminen ja yhdistäminen</b>
                         <br/>
                         Käyttäjä voi etsiä muita käyttäjiä nimen perusteella. Käyttäjä voi lisätä yhteyksiinsä toisen henkilön. 
@@ -69,6 +63,8 @@
                             <li>Hakutoiminto on toteutettu. Hakutulos näyttää muut käyttäjät kuin hakijan itse.</li>
                             <li>Kontaktipyyntö ja hyväksymisprosessi toteutuu tehtävänannossa kuvatulla tavalla</li>
                             <li>BONUS: Kun käyttäjällä on uusi kontaktipyyntö, hän saa sisäänkirjautuessa ponnahdusilmoituksen tästä.</li>
+                            <li>BONUS: Sivustohaut tallentuvat tietokantaan</li>
+                            <li>BONUS: Hakusivu näyttää kolme uusinta rekisteröitynyttä hakutulosten alla.</li>
                         </ul>
                         <b>Yhteydet</b>
                         <br/>
@@ -113,10 +109,7 @@
                             <li>BONUS: Käyttäjä voi lisätä kuvauksen itselleen</li>
                             <li>BONUS: taitoja voi poistaa</li>
                         </ul>
-                        Moita ylimääräisiä toiminnallisuuksia
-                        <ul>
-                            <li>BONUS: Sivustohaut tallentuvat tietokantaan</li>
-                        </ul>
+
                         <b>Postaaminen</b>
                         <br/>
                         Kirjautuneet käyttäjät voivat lähettää postauksia yhteisellä sivulla. Postaussivulla näkyy yhteydessä olevien henkilöiden postaukset. Jokaisesta viestistä näytetään viestin lähettäjän nimi, viestin lähetysaika, sekä viestin tekstimuotoinen sisältö. Viestit näytetään postauslistassa niiden saapumisjärjestyksessä siten, että postauslistassa näkyy aina korkeintaan 25 uusinta viestiä.
@@ -149,6 +142,14 @@
                         <ul>
                             <li>Toteutettu tehtävänannon mukaisesti</li>
                             <li>Kommentit näkyvät erillisellä sivulla. Kurssin ohjaaja Jami Kousa kommentoi Telegramissa, että tämä on hyvä toteutustapa kun kysyin onko näin ok.</li>
+                        </ul>
+                        <br />
+                        <b>Muista bonus-ominaisuuksia</b>
+                        <ul>
+                            <li>Sovellus sisältää sivun all data, jossa käyttäjä voi tarkastella hänestä tallennettua tietoa</li>
+                            <li>Sovellus tallentaa tietokantaan käyttäjän aktiivisuutta sivulla. Tallennetut tiedot näkyvät all data sivulla.</li>
+                            
+                        
                         </ul>
                     </p>
                 </div>

@@ -1,4 +1,4 @@
-
+// This class includes most of the methods that involve user interaction on the application
 package projekti;
 
 import java.io.IOException;
@@ -24,8 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import projekti.domain.*;
 
+/**
+ *
+ * @author Heidi Holappa
+ */
 
-// This class includes most of the methods that involve user interaction on the application
 
 @Controller
 public class ActionController {
@@ -54,6 +57,9 @@ public class ActionController {
     @Autowired
     private FeedbackRepository feedbackRepository;
     
+    @Autowired
+    private LogObjectRepository logObjectRepository;
+    
     // Creates Objects used to manage information. One for errors, one for contact filtering
     ErrorObject actionError = new ErrorObject();
     ShowObject showObject = new ShowObject();
@@ -75,6 +81,9 @@ public class ActionController {
             model.addAttribute("userProfile", userInfo);
             boolean friendRequests = !userInfo.getFriendRequests().isEmpty();
             model.addAttribute("friendRequests", friendRequests);
+            
+            // Log the current action
+            domainService.logAction("GET: index");
         }
         
         // Get all messages
@@ -95,6 +104,8 @@ public class ActionController {
             actionError.setError("");
         }
         
+        
+        
         return "index";
     }
     
@@ -112,6 +123,9 @@ public class ActionController {
             showObject.setShow("My contacts");
         }
         
+        // Log the current action
+        domainService.logAction("GET: Filtered post-view. View set to: " + showObject.toString());
+        
         return "redirect:/index";
     }
     
@@ -125,11 +139,13 @@ public class ActionController {
 
         if (content.length() < 10) {
             this.actionError.setError("Your post must be at least 10 characters long.");
+            domainService.logAction("POST: posting message failed: too short");
             return "redirect:/index";
         }
         
         if (content.length() > 500) {
             this.actionError.setError("Your post must not be more than 500 characters long.");
+            domainService.logAction("POST: posting message failed: too long");
             return "redirect:/index";
         }
         
@@ -148,6 +164,9 @@ public class ActionController {
         msg.setUser(user);
         
         messageRepository.save(msg);
+        
+        // Log the current action
+        domainService.logAction("POST: posted a message");
         
         return "redirect:/index";
     }
@@ -172,6 +191,8 @@ public class ActionController {
             likers.remove(accountRepository.findByUsername(username));
             msg.setLikes(msg.getLikes() - 1);
             messageRepository.save(msg);
+            // Log the current action
+            domainService.logAction("GET: removed a like from post " + id);
             if (path.equals("comment")) {
                 if (msg.getOpId() == 0) {
                     return "redirect:/comment/" + msg.getId();
@@ -188,6 +209,9 @@ public class ActionController {
         msg.setLikes(msg.getLikes() + 1);
         likers.add(accountRepository.findByUsername(username));
         
+        // Log the current action
+        domainService.logAction("GET: liked post " + id);
+
         // save message
         messageRepository.save(msg);
         
@@ -220,6 +244,8 @@ public class ActionController {
         model.addAttribute("error", actionError.toString());
         actionError.setError("");
         
+        // Log the current action
+        domainService.logAction("GET: viewed comment " + id);
         
         return "comment";
     }
@@ -234,11 +260,15 @@ public class ActionController {
         // Set error-message, if comment too short or too long
         if (content.length() < 10) {
             this.actionError.setError("Your post must be at least 10 characters long.");
+            // Log the current action
+            domainService.logAction("POST: posting comment failed: too short");
             return "redirect:/index";
         }
         
         if (content.length() > 500) {
             this.actionError.setError("Your post must not be more than 500 characters long.");
+            // Log the current action
+            domainService.logAction("POST: posting comment failed: too long");
             return "redirect:/index";
         }
         
@@ -251,8 +281,9 @@ public class ActionController {
         List<Account> likers = new ArrayList<>();
         msg.setLikers(likers);
         
-        // Get the user who has logged in    
-        msg.setUser(domainService.getCurrentUser());
+        // Get the user who has logged in
+        Account user = domainService.getCurrentUser();
+        msg.setUser(user);
         
         messageRepository.save(msg);
         
@@ -260,6 +291,9 @@ public class ActionController {
         Integer n = op.getComments() + 1;
         op.setComments(n);
         messageRepository.save(op);
+        
+        // Log the current action
+        domainService.logAction("POST: posted a comment");
         
         return "redirect:/comment/" + messageId;
     }
@@ -289,6 +323,9 @@ public class ActionController {
             String username = user.getName();
             UserInfo userInfo = domainService.getUserInfo(user);
             model.addAttribute("userinfo", user);
+            
+            // Log the current action
+            domainService.logAction("GET: viewed profilepath " + pathname);
             
             if (domainService.getUserInfoSentRequests(userInfo).contains(viewed)) {
                 model.addAttribute("contactrequest", "Cancel contact request");
@@ -325,6 +362,8 @@ public class ActionController {
         model.addAttribute("otherSkills", domainService.getOtherSkillsById(viewed.getId()));
         model.addAttribute("contacts", domainService.getUserFriendsById(viewed.getId()));
         
+        
+        
         return "profile_view";
     }
     
@@ -337,6 +376,9 @@ public class ActionController {
         
         String username = domainService.getCurrentUsername();
         Account user = domainService.getCurrentUser();
+        
+        // Log the current action
+        domainService.logAction("POST: updated description");
         
         actionError.setError("");
         
@@ -363,7 +405,9 @@ public class ActionController {
         String username = domainService.getCurrentUsername();
         Account user = domainService.getCurrentUser();
         UserInfo info = domainService.getUserInfo(user);
-    
+        
+        // Log the current action
+        domainService.logAction("POST: updated skill");
         
         actionError.setError("");
         
@@ -393,6 +437,9 @@ public class ActionController {
     @PostMapping("/removeskill")
     public String removeSkill(@RequestParam Long id) {
         
+        // Log the current action
+        domainService.logAction("POST: removed skill from users skills");
+                
         Skill skill = skillRepository.getOne(id);
         skill.setOnList(0);
         
@@ -416,11 +463,13 @@ public class ActionController {
         Skill skill = skillRepository.getOne(id);
         List<Account> endorsers = skill.getEndorsers();
         
-        // If likers already include current user, redirect to index
+        // If already endorsed, remove endorse
         if (endorsers.contains(accountRepository.findByUsername(username))) {
             endorsers.remove(accountRepository.findByUsername(username));
             skill.setEndorsements(skill.getEndorsements() - 1);
             skillRepository.save(skill);
+            // Log the current action
+            domainService.logAction("GET: removed endorse from skill" + id);
             return "redirect:/profile_view/" + skill.getUser().getPathname();
         }
         
@@ -430,6 +479,9 @@ public class ActionController {
         
         // save 
         skillRepository.save(skill);
+        
+        // Log the current action
+        domainService.logAction("GET: endorsed skill " + id);
         
         return "redirect:/profile_view/" + skill.getUser().getPathname();
     }
@@ -473,6 +525,9 @@ public class ActionController {
         user.setProfileImgId(fo.getId());
         accountRepository.save(user);
         
+        // Log the current action
+        domainService.logAction("POST: updated profile picture");
+        
         return "redirect:/updatemode/";
     }
     
@@ -492,6 +547,9 @@ public class ActionController {
         user.setProfileImgId(0L);
         accountRepository.save(user);
         
+        // Log the current action
+        domainService.logAction("POST: removed profile picture");
+        
         return "redirect:/updatemode/";
     }
     
@@ -500,6 +558,9 @@ public class ActionController {
     @Secured("ROLE_USER")
     @GetMapping(value = "/profilePic/{id}")
     public ResponseEntity<byte[]> viewFile(@PathVariable Long id) {
+        
+        // This method does not have a log-action, because it's not a user action
+        
         FileObject fo = fileObjectRepository.getOne(id);
  
         final HttpHeaders headers = new HttpHeaders();
@@ -530,6 +591,9 @@ public class ActionController {
             actionError.setError("");
         }
         
+        // Log the current action
+        domainService.logAction("GET: updateprofile");
+        
         return "updateprofile";
     }
     
@@ -537,6 +601,8 @@ public class ActionController {
     @GetMapping("/updatedone")
     @Secured("ROLE_USER")
     public String updateDone() {
+        // Log the current action
+        domainService.logAction("GET: return to profile_view from updateprofile");
         return "redirect:/profile_view/" + domainService.getCurrentUser().getPathname();
     }
     
@@ -572,7 +638,8 @@ public class ActionController {
         model.addAttribute("friendRequests", domainService.getUserInfoFriendRequests(userInfo));
         model.addAttribute("sentRequests", domainService.getUserInfoSentRequests(userInfo));
         
-        
+        // Log the current action
+        domainService.logAction("GET: contacts");
         return "contacts";
     }
     
@@ -621,6 +688,9 @@ public class ActionController {
         userInfoRepository.save(userInfo);
         userInfoRepository.save(contactInfo);
         
+        // Log the current action
+        domainService.logAction("GET: contact requests");
+        
         return "redirect:/contacts";
     }
     
@@ -645,35 +715,17 @@ public class ActionController {
         
         Account user = domainService.getCurrentUser();
         Account contact = domainService.getUserById(contactId);
-//        UserInfo userInfo = domainService.getUserInfo(user);
-//        UserInfo contactInfo = domainService.getUserInfo(contact);
-//        Account contact = accountRepository.getOne(contactId);
-//        UserInfo contactInfo = userInfoRepository.findByUser(contact);        
-
         
         if (decision.equals("accept")) {
             domainService.acceptRequest(user, contact);
-//            domainService.getUserInfoFriends(userInfo).add(contact);
-//            domainService.getUserInfoFriendRequests(userInfo).remove(contact);
-//            domainService.getUserInfoFriends(contactInfo).add(user);
-//            domainService.getUserInfoSentRequests(contactInfo).remove(user);
-            
-//            userInfo.getFriends().add(contact);
-//            userInfo.getFriendRequests().remove(contact);
-//            contactInfo.getFriends().add(user);
-//            contactInfo.getSentRequests().remove(user);
         } else if (decision.equals("decline")) {
             domainService.declineRequest(user, contact);
-//            domainService.getUserInfoFriendRequests(userInfo).remove(contact);
-//            domainService.getUserInfoSentRequests(contactInfo).remove(user);
-//            userInfo.getFriendRequests().remove(contact);
-//            contactInfo.getSentRequests().remove(user);
         } else {
             actionError.setError("You tried to answer a contact request, but something went wrong. Please contact system admin.");
         }
         
-//        userInfoRepository.save(userInfo);
-//        userInfoRepository.save(contactInfo);
+        // Log the current action
+        domainService.logAction("POST: handled contact request from user id " + contactId + ". Action: " + decision);
         
         return "redirect:/contacts/";
     }
@@ -713,6 +765,9 @@ public class ActionController {
         userInfoRepository.save(userInfo);
         userInfoRepository.save(contactInfo);
         
+        // Log the current action
+        domainService.logAction("POST: terminated contact from: " + pathname);
+        
         return "redirect:/contacts/";
         
     }
@@ -729,6 +784,9 @@ public class ActionController {
         so.setValue(search);
         searchObjectRepository.save(so);
 
+        // Log the current action
+        domainService.logAction("POST: searchpost. Redirects to searchresults");
+        
         
         return "redirect:/searchresults";
         
@@ -766,6 +824,9 @@ public class ActionController {
             
         } 
         
+        // Log the current action
+        domainService.logAction("GET: searchresults");
+        
         model.addAttribute("newest", accountRepository.findNewest(user.getId()));
         
         return "searchresults";
@@ -789,6 +850,10 @@ public class ActionController {
         model.addAttribute("messages", messageRepository.findByUser(user));
         model.addAttribute("search", searchObjectRepository.findByUser(user));
         model.addAttribute("feedback", feedbackRepository.findByUser(user));
+        model.addAttribute("activitylog", logObjectRepository.findByUserId(user.getId()));
+        
+        // Log the current action
+        domainService.logAction("GET: viewed all data");
         
         return "alldata";
     }

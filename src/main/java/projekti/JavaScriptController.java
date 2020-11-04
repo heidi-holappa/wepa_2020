@@ -30,18 +30,6 @@ public class JavaScriptController {
     @Autowired
     private DomainService domainService;
     
-    @ResponseBody
-    @GetMapping("/getTopSkills/{id}")
-    public List<Skill> getTopSkills(@PathVariable Long id) {
-        return skillRepository.findByUserTopThree(id);
-    }
-    
-    @ResponseBody
-    @GetMapping("/getOtherSkills/{id}")
-    public List<Skill> getOtherSkills(@PathVariable Long id) {
-        return skillRepository.findByUserOffset(id);
-    }
-    
     @Async
     @PostMapping("/endorseJs/{id}")
     public void endorseJs(@PathVariable Long id) {
@@ -68,5 +56,19 @@ public class JavaScriptController {
         
         // save 
         skillRepository.save(skill);
+    }
+    
+    @ResponseBody
+    @GetMapping("/getTopSkills/{id}")
+    public List<Skill> getTopSkills(@PathVariable Long id) {
+        // This is not used in the final application
+        return skillRepository.findByUserTopThree(id);
+    }
+    
+    @ResponseBody
+    @GetMapping("/getOtherSkills/{id}")
+    public List<Skill> getOtherSkills(@PathVariable Long id) {
+        // This is not used in the final application
+        return skillRepository.findByUserOffset(id);
     }
 }

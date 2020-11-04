@@ -1,12 +1,12 @@
+// This class contains controllers that deal with user authentication in some way
+// Methods in this class do not contain logging action. 
+
 package projekti.security;
 
-import com.google.common.io.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import projekti.domain.*;
 
-import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -18,7 +18,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+
+/**
+ *
+ * @author Heidi Holappa
+ */
 
 @Controller
 public class AuthController {

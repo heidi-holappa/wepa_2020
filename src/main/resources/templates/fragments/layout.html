@@ -68,6 +68,9 @@
                     <a class="nav-link" href="/updatemode" th:classappend="${#httpServletRequest.getRequestURI() == '/updatemode' ? 'nav-link active':'nav-link'}">Edit profile</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasAuthority('USER')">
+                    <a class="nav-link" href="/alldata" th:classappend="${#httpServletRequest.getRequestURI() == '/alldata' ? 'nav-link active':'nav-link'}">View stored data</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasAuthority('USER')">
                     <a th:href="@{/contacts}" th:classappend="${#httpServletRequest.getRequestURI() == '/contacts' ? 'nav-link active':'nav-link'}">Contacts</a>
                 </li>
                 <li class="nav-item" sec:authorize="isAnonymous()">

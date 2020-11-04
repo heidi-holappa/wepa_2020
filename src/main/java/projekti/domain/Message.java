@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -27,6 +28,7 @@ public class Message extends AbstractPersistable<Long> {
     
     private Long opId;
     
+    @Lob
     private String content;
     
     @ManyToMany(cascade = {CascadeType.ALL})

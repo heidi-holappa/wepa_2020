@@ -102,6 +102,26 @@
                 </ul>
                 
                 
+                <h5>Activity log</h5>
+                <p>Below you can see what has been logged about your activity on the site.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th><th>Logged activity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${sentRequests.empty}">
+                            <td colspan="2">No logged activity found. This should not happen. We track almost everything.</td>
+                        </tr>
+                        <tr th:each="log : ${activitylog}">
+                            <td th:text="${#temporals.format(log.logDate, 'dd.MM.yyyy HH:mm')}"></td>
+                            <td th:text="${log.userAction}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                
                 <form method="GET" th:action="@{/updatedone}">
                     <div class="form-group">
                        <button type="submit" class="btn btn-primary" value="Post">Back to profile</button>

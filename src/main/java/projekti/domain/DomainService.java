@@ -1,4 +1,4 @@
-// This class contains methods for the domain
+// This service class contains methods for the package domain
 
 package projekti.domain;
 
@@ -11,6 +11,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+/**
+ *
+ * @author Heidi Holappa
+ */
 
 @Service
 public class DomainService {
@@ -29,6 +34,9 @@ public class DomainService {
     
     @Autowired
     private FileRepository fileObjectRepository;
+    
+    @Autowired
+    private LogObjectRepository logObjectRepository;
     
        
     
@@ -137,7 +145,6 @@ public class DomainService {
     
     @Cacheable(value = "messages-contacts-cache", key = "#id", unless = "#result != null")
     public List<Message> getContactMessagesByUserId(Long id) {
-        System.out.println("method getContactMessagesByUserId id is: " + id);
         return messageRepository.findByContacts(id);
     }
     
@@ -176,6 +183,13 @@ public class DomainService {
         
         return s.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]*).{8,16}$");
 
+    }
+    
+    public void logAction(String content) {
+        LogObject log = new LogObject();
+        log.setUser(getCurrentUser());
+        log.setUserAction(content);
+        logObjectRepository.save(log);
     }
        
 }
