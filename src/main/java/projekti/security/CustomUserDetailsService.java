@@ -1,3 +1,4 @@
+// CustomUserDetailService, much like the one done during the course. 
 
 package projekti.security;
 

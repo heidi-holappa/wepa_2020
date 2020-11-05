@@ -14,6 +14,7 @@ public class MyApplication {
     
     public static void main(String[] args) {
 //        SpringApplication.run(MyApplication.class);
+//        Found this on Stack Overflow - it prints out all the beans provided at launch. Useful while debugging
         ApplicationContext ctx = SpringApplication.run(MyApplication.class, args);
 
         System.out.println("Let's inspect the beans provided by Spring Boot:");

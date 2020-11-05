@@ -1,3 +1,5 @@
+// This class tests local repository
+
 package projekti;
 
 import java.util.ArrayList;
@@ -13,6 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+/**
+ *
+ * @author Heidi Holappa
+ */
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

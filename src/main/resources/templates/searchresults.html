@@ -32,14 +32,14 @@
                     
                     <h2>Search results:</h2>
                     
-                    <div th:if="${searchresults.empty}" class="alert alert-info"><b>Tip:</b> If you want to see all users, search with the asterix symbol '*'.</div>
-                    
-                    <br />
-                    <br />                    
-                    
                     <div>
-                        <div th:if="${searchresults.empty}">
-                            <span th:text="${notification}"></span>
+                        <div th:if="${searchresults.empty}" class="alert alert-danger">
+                            <div th:unless="${notification.empty}">
+                                <span th:text="${notification}"></span>
+                                <br />
+                                <br />
+                            </div>
+                            <b>Tip:</b> If you want to see all users, search with the asterix symbol '*'.
                         </div>
                         
                         <div class='container' th:each="result : ${searchresults}">

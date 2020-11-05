@@ -1,3 +1,6 @@
+// This class creates a basic user account
+// Additional information about the user is handled with a UserInfo object
+// I wanted to keep the account-information as separate from everything else as possible. 
 
 package projekti.domain;
 
@@ -13,7 +16,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-
+/**
+ *
+ * @author Heidi Holappa
+ */
 
 @Entity
 @Data

@@ -13,6 +13,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+/**
+ *
+ * @author Heidi Holappa
+ */
+
 @Entity
 @Data
 @EqualsAndHashCode(callSuper=true)

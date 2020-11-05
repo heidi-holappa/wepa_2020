@@ -1,0 +1,3 @@
+2020-11-05 18:30:06 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Value too long for column "CONTENT BINARY(255)": "X'ffd8ffe000104a46494600010101004800480000fffe003250726f6365737365642042792065426179207769746820496d6167654d616769636b2c207a312e... (13074)"; SQL statement:
+insert into file_object (content, content_length, content_type, name, user_id, id) values (?, ?, ?, ?, ?, ?) [22001-197]

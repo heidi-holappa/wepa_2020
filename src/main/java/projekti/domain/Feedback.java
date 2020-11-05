@@ -1,3 +1,6 @@
+// This object and it's repository handle feedback from users
+// This was a bonus-feature to the project, not mandatory
+
 package projekti.domain;
 
 import java.time.LocalDateTime;
@@ -7,6 +10,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
+
+/**
+ *
+ * @author Heidi Holappa
+ */
 
 
 @Entity

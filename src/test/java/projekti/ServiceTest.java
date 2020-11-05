@@ -1,3 +1,5 @@
+// This class tests methods in Service-class DomainService (package projekti.domain). 
+
 package projekti;
 
 import static org.junit.Assert.assertTrue;
@@ -11,6 +13,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+/**
+ *
+ * @author Heidi Holappa
+ */
 
 
 @RunWith(SpringRunner.class)
@@ -18,8 +24,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ActiveProfiles("test")
 public class ServiceTest {
     
-    // This class tests methods in Service-class DomainService (package projekti.domain). 
-
     @Autowired
     private DomainService domainService;
     

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package projekti.domain;
 
 import java.util.List;
@@ -12,13 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 
 /**
  *
- * @author 1040
+ * @author Heidi Holappa
  */
+
+
 public interface SkillRepository extends JpaRepository<Skill, Long> {
     
     Skill findBySkill(String skill);
-    
-//    Skill findByUser(Account user, Pageable pageable);
     
     List<Skill> findByUser(Account user, Pageable pageable);
     

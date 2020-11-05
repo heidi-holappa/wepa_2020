@@ -15,7 +15,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-
+/**
+ *
+ * @author Heidi Holappa
+ */
 
 @Entity
 @Data

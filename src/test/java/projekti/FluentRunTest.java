@@ -1,3 +1,5 @@
+// This class uses FluentLenium 
+
 package projekti;
 
 import org.junit.Test;

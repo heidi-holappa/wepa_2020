@@ -1,3 +1,4 @@
+// This configuration class handles application security
 package projekti.security;
  
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
- 
+
+/**
+ *
+ * @author Heidi Holappa
+ */
+
 @Configuration
 @EnableWebSecurity
 public class ProductionSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -22,9 +28,9 @@ public class ProductionSecurityConfiguration extends WebSecurityConfigurerAdapte
  
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // poistetaan csrf-tarkistus käytöstä h2-konsolin vuoksi
+        // remove csrf-check from use for h2-console
         http.csrf().disable();
-        // sallitaan framejen käyttö
+        // allow using frames
         http.headers().frameOptions().sameOrigin();
  
         http.authorizeRequests()
@@ -36,18 +42,11 @@ public class ProductionSecurityConfiguration extends WebSecurityConfigurerAdapte
         http.formLogin()
                 .loginPage("/auth/login")
                 .permitAll()
-//                .loginProcessingUrl("perform_login")
-//                .defaultSuccessUrl("/index", true)
-//                .failureUrl("/login.html?error=true")
-//                .failureUrl("/docs/project")
-//                .failureHandler(authenticationFailureHandler())
                 .and()
             .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/auth/login?logout")
                 .deleteCookies("JSESSIONID", "show-alert")
-//                .logoutUrl("/logout")
-//                .logoutSuccessHandler(logoutSuccessHandler())
             ;
     }
  
@@ -60,16 +59,5 @@ public class ProductionSecurityConfiguration extends WebSecurityConfigurerAdapte
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
-//    @Override
-//    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-//        auth.inMemoryAuthentication()
-//          .withUser("user1").password(passwordEncoder().encode("user1Pass")).roles("USER")
-//          .and()
-//          .withUser("user2").password(passwordEncoder().encode("user2Pass")).roles("USER")
-//          .and()
-//          .withUser("admin").password(passwordEncoder().encode("adminPass")).roles("ADMIN");
-//    }
-    
 
 }

@@ -388,7 +388,7 @@ public class ActionController {
             info.setUpdateDate(LocalDateTime.now());
             userInfoRepository.save(info);
         } else {
-            actionError.addError("Your description must be between 4-200 characters. ");
+            actionError.setError("Your description must be between 4-200 characters.");
         }
         
         String pathname = user.getPathname();
@@ -424,7 +424,7 @@ public class ActionController {
             userInfoRepository.save(info);
             
         } else {
-            actionError.addError("Skills must be between 1-40 characters. ");
+            actionError.setError("Skills must be between 1-40 characters.");
         }
         
         String pathname = accountRepository.findByUsername(username).getPathname();

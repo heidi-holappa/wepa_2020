@@ -1,4 +1,5 @@
-
+// This class creates a customized error-view
+// Found a tutorial for this from LogicBig.com, found it useful while testing
 package projekti.security;
 
 import javax.servlet.http.HttpServletRequest;

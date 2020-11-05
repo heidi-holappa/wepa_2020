@@ -1,3 +1,5 @@
+// This was the project default controller. Didn't add anything here.
+
 package projekti;
 
 import org.springframework.stereotype.Controller;

@@ -1,3 +1,6 @@
+// This controller-class is for JavaScript related functionalities
+// It is not used in the final production version, but these methods can be seen in action in path "/testhtml"
+
 package projekti;
 
 import java.util.List;
@@ -11,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import projekti.domain.*;
 
-// This controller-class is for JavaScript related functionalities
-// It is not used in the final production version, but these methods can be seen in action in path "/testhtml"
+/**
+ *
+ * @author Heidi Holappa
+ */
 
 
 @Controller

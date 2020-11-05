@@ -1,3 +1,5 @@
+// This class includes tests for creating a user account, authentication and authorization
+
 package projekti;
 
 import java.util.ArrayList;
@@ -18,7 +20,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
+/**
+ *
+ * @author Heidi Holappa
+ */
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

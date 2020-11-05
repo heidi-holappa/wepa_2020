@@ -91,7 +91,7 @@
                     <form th:action="@{/updatedescription}" method="POST">
                         <div class="form-group">
                             <label class="font-weight-bold">Update your description:</label>
-                            <textarea class="form-control" id="updatedescription" name="description" rows="3"></textarea>
+                            <textarea class="form-control" id="updatedescription" name="description" rows="3" placeholder="Description must be between 4 and 200 characters."></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary" value="Post">Update description</button>    
                     </form> 
@@ -116,7 +116,7 @@
                     <form th:action="@{/updateskill}" method="POST">
                         <div class="form-group">
                             <label class="font-weight-bold">Add a skill:</label>
-                            <textarea class="form-control" id="addskill" name="skill" rows="1"></textarea>
+                            <textarea class="form-control" id="addskill" name="skill" rows="1" placeholder="Skill must be 1-40 characters long."></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary" value="Post">Send skill</button>    
                     </form> 

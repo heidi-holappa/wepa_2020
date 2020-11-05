@@ -30,13 +30,6 @@ public class UserInfo extends AbstractPersistable<Long> {
     @OneToOne(cascade = {CascadeType.ALL})
     private Account user;
     
-    // Profiilikuvan tieto. Defaultkuvaksi tulee jokin random-kuva
-//    private FileObject profilepic;
-    
-//     Lista käyttäjän taidoista. Loin erillisen olion   
-//    @OneToMany
-//    private List<Skill> skills;
-    
     private String description;
     
     private LocalDateTime updateDate;

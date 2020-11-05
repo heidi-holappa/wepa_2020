@@ -64,7 +64,7 @@
                         <div class="form-group">
                             <label for="exampleFormControlTextarea1">Add a comment:</label>
                             <input type="hidden" id="messageId" name="messageId" th:value="${message.id}"/>
-                            <textarea class="form-control" id="commentarea" name="content" rows="3"></textarea>
+                            <textarea class="form-control" id="commentarea" name="content" rows="3" placeholder="Comment must be between 10 to 500 characters long"></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary" value="Post">Send my comment</button>    
                     </form>    
