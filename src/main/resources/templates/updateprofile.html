@@ -47,7 +47,7 @@
                     <div class="row">
                         <div class="col">
                             <h3 class="font-weight-bold">Current profile picture:</h3>
-                            <span th:unless="${profilepic != null}"> No profile picture. Upload one below.</span>
+                            <span th:unless="${profilepic != null}" class="alert alert-info"> No profile picture. Upload one below.</span>
                         </div>
                     </div>
                     <div th:if="${profilepic != null}" class="row">
@@ -55,6 +55,8 @@
                             <img class="rounded-circle" style="width:50%" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
                         </div>
                     </div>
+                    
+                    
                     <div class="row">
                         <div class="col">
                             <form method="POST" th:action="@{/updatePicture}" enctype="multipart/form-data">
@@ -66,11 +68,14 @@
                             </form>
                         </div>
                     </div>
+                    
+                    
                     <div class="row" th:if="${profilepic != null}">
                         <div class="col">
                             You can remove your profile picture below:
                         </div>
                     </div>
+                                        
                     <div class="row" th:if="${profilepic != null}">
                         <div class "col">                    
                             <form method="POST" th:action="@{/removepicture}" enctype="multipart/form-data">
@@ -78,7 +83,25 @@
                             </form>  
                         </div>
                     </div>
+                    <div class="row">
+                        <div class"col-sm-4">
+                            Manage uploaded images:
+                        </div>
+                        <div class="col-sm-8">
+                            <form method="GET" th:action="@{/picturegallery}">
+                                <div class="form-group">
+                                   <button type="submit" class="btn btn-primary" value="Post">Manage images</button>
+                                </div>
+                            </form>
+                            
+                        </div>
+                        
+                        
+                    </div>
+                    
                 </div>
+                
+                
                 
                 
                 <br />

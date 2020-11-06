@@ -531,6 +531,19 @@ public class ActionController {
         return "redirect:/updatemode/";
     }
     
+    @GetMapping("/picturegallery")
+    public String pictureGallery(Model model) {
+        
+        Account user = domainService.getCurrentUser();
+        
+        model.addAttribute("allpictures", domainService.getAllPictures(user));
+        model.addAttribute("userinfo", user);
+        
+        domainService.logAction("GET: view picturegallery");
+        
+        return "picturegallery";
+    }
+    
     // This method removes the current picture from profile. 
     // Picture is still left in the repository
     @CacheEvict(value = {"userinfo-cache", 
@@ -552,6 +565,49 @@ public class ActionController {
         
         return "redirect:/updatemode/";
     }
+    
+    
+    // This method sets the selected image as profile image
+    @CacheEvict(value = {"userinfo-cache", 
+                        "user-cache", 
+                        "viewed-cache", 
+                        "messages-op-cache", 
+                        "messages-contacts-cache"
+                    }, allEntries = true, beforeInvocation=true)
+    @Secured("ROLE_USER")
+    @PostMapping("/setasprofilepic")
+    public String pictureGallerySetAsProfilePic(@RequestParam Long id) {
+        
+        Account user = domainService.getCurrentUser();
+        user.setProfileImgId(id);
+        accountRepository.save(user);
+        
+        // Log the current action
+        domainService.logAction("POST: set image id:" + id + " as profile image.");
+        
+        return "redirect:/updatemode";
+    }
+    
+    // This method permanently deletes selected image
+    @PostMapping("deletepic")
+    public String pictureGalleryDeletePic(@RequestParam Long id) {
+        
+        Account user = domainService.getCurrentUser();
+        
+        if (user.getProfileImgId() == id) {
+            user.setProfileImgId(0L);
+            accountRepository.save(user);
+        }
+        
+        domainService.deleteImg(id);
+        
+        // Log the current action
+        domainService.logAction("POST: permanately deleted image id " + id);
+        
+        
+        return "redirect:/picturegallery";
+    }
+    
     
     // This methods returns a file for viewing. 
     @Transactional

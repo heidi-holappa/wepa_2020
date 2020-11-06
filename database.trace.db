@@ -1,3 +1,12 @@
-2020-11-05 18:30:06 jdbc[3]: exception
+2020-11-06 17:01:25 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLException: Value too long for column "CONTENT BINARY(255)": "X'ffd8ffe000104a46494600010101004800480000fffe003250726f6365737365642042792065426179207769746820496d6167654d616769636b2c207a312e... (13074)"; SQL statement:
 insert into file_object (content, content_length, content_type, name, user_id, id) values (?, ?, ?, ?, ?, ?) [22001-197]
+2020-11-06 17:23:34 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "USER_INFO_FRIENDS[*]"; expected "UPDATE, USE, {"; SQL statement:
+USER_INFO_FRIENDS [42001-197]
+2020-11-06 17:23:34 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "USER_INFO_FRIEND_REQUESTS[*]"; expected "UPDATE, USE, {"; SQL statement:
+USER_INFO_FRIEND_REQUESTS [42001-197]
+2020-11-06 17:23:34 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "USER_INFO_SENT_REQUESTS[*]"; expected "UPDATE, USE, {"; SQL statement:
+USER_INFO_SENT_REQUESTS [42001-197]
