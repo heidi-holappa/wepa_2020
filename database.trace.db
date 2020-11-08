@@ -10,3 +10,15 @@ USER_INFO_FRIEND_REQUESTS [42001-197]
 2020-11-06 17:23:34 jdbc[13]: exception
 org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "USER_INFO_SENT_REQUESTS[*]"; expected "UPDATE, USE, {"; SQL statement:
 USER_INFO_SENT_REQUESTS [42001-197]
+2020-11-08 12:12:07 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT S.SKILL FROM SKILL S WHERE S.USER_ID = ? AND S.ONLIST != 0)[*] "; SQL statement:
+SELECT S.skill FROM Skill S WHERE S.USER_ID = ? AND S.ONLIST != 0) [42000-197]
+2020-11-08 12:15:50 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT S.SKILL FROM SKILL S WHERE S.USER_ID = ? AND S.ONLIST != 0)[*] "; SQL statement:
+SELECT S.skill FROM Skill S WHERE S.USER_ID = ? AND S.ONLIST != 0) [42000-197]
+2020-11-08 15:53:13 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "MESSAGES" not found; SQL statement:
+SELECT M.content FROM MESSAGES M WHERE USER_ID =? [42102-197]
+2020-11-08 15:56:21 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "MESSAGES" not found; SQL statement:
+SELECT M.content FROM MESSAGES M WHERE M.USER_ID = ? [42102-197]

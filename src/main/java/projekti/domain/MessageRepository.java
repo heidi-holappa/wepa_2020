@@ -1,5 +1,6 @@
 package projekti.domain;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,5 +25,12 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> findByContacts(Long id);
     
     List<Message> findByUser(Account user);
+    
+    @Query(value = "SELECT M.content FROM MESSAGE M WHERE M.USER_ID = ?1", nativeQuery = true)
+    List<String> findContentByUser(Long id);
+    
+    @Query(value = "SELECT M.MESSAGE_DATE FROM MESSAGE M WHERE M.CONTENT =?1 ORDER BY M.MESSAGE_DATE DESC LIMIT 1", nativeQuery = true)
+    LocalDateTime findAndCompareDate(String content);
+    
     
 }
