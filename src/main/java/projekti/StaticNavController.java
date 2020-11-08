@@ -100,20 +100,20 @@ public class StaticNavController {
         return "redirect:/profile_view/" + pathname;
     }
     
-    @CacheEvict(value = {"user-cache",
-                        "user-byId-cache",
-                        "viewed-cache",
-                        "username-cache",
-                        "userinfo-cache", 
-                        "userinfo_friendrequests-cache",
-                        "userinfo-friends-cache", 
-                        "userinfo-sentrequests-cache", 
-                        "topskills-cache",
-                        "otherskills-cache",
-                        "userfriends-cache",
-                        "messages-contacts-cache",
-                        "messages-op-cache"
-                        }, allEntries = true, beforeInvocation=true)
+//    @CacheEvict(value = {"user-cache",
+//                        "user-byId-cache",
+//                        "viewed-cache",
+//                        "username-cache",
+//                        "userinfo-cache", 
+//                        "userinfo_friendrequests-cache",
+//                        "userinfo-friends-cache", 
+//                        "userinfo-sentrequests-cache", 
+//                        "topskills-cache",
+//                        "otherskills-cache",
+//                        "userfriends-cache",
+//                        "messages-contacts-cache",
+//                        "messages-op-cache"
+//                        }, allEntries = true, beforeInvocation=true)
     @RequestMapping("/login")
     public ModelAndView login() {
         return new ModelAndView("login");

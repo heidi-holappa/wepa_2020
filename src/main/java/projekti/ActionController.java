@@ -128,7 +128,7 @@ public class ActionController {
     }
     
     // This method handles posting messages
-    @CacheEvict(value = { "messages-op-cache", "messages-contacts-cache" }, allEntries = true)
+//    @CacheEvict(value = { "messages-op-cache", "messages-contacts-cache" }, allEntries = true)
     @Secured("ROLE_USER")
     @PostMapping("/postmessage")
     public String postMessage(@RequestParam String content) {
@@ -185,7 +185,7 @@ public class ActionController {
     }
     
     // This method handles liking posts. 
-    @CacheEvict(value = { "messages-op-cache", "messages-contacts-cache" }, allEntries = true)
+//    @CacheEvict(value = { "messages-op-cache", "messages-contacts-cache" }, allEntries = true)
     @Secured("ROLE_USER")
     @GetMapping("/like/{path}/{id}")
     public String addLike(Model model, @PathVariable("id") Long id, @PathVariable("path") String path) {
@@ -268,7 +268,7 @@ public class ActionController {
     
     
     // This method handles posting comments
-    @CacheEvict(value = {"messages-op-cache", "messages-contacts-cache"}, allEntries = true)
+//    @CacheEvict(value = {"messages-op-cache", "messages-contacts-cache"}, allEntries = true)
     @Secured("ROLE_USER")
     @PostMapping("/postcomment")
     public String postComment(@RequestParam String content, @RequestParam Long messageId) {
@@ -330,13 +330,13 @@ public class ActionController {
     
     
     // This method prepares the page profile_view
-    @CacheEvict(value = {"userinfo-cache",
-                    "viewed-cache",
-                    "user-byId-cache",
-                    "userinfo-sentrequests-cache", 
-                    "userinfo-friends-cache", 
-                    "userinfo_friendrequests-cache"
-                }, allEntries = true, beforeInvocation=true)
+//    @CacheEvict(value = {"userinfo-cache",
+//                    "viewed-cache",
+//                    "user-byId-cache",
+//                    "userinfo-sentrequests-cache", 
+//                    "userinfo-friends-cache", 
+//                    "userinfo_friendrequests-cache"
+//                }, allEntries = true, beforeInvocation=true)
     @Secured("ROLE_USER")
     @GetMapping("profile_view/{pathname}")
     public String profilePage(Model model, @PathVariable String pathname) {
@@ -398,7 +398,7 @@ public class ActionController {
     }
     
     // This method handles updating the user description
-    @CacheEvict(value = "userinfo-cache", allEntries = true)
+//    @CacheEvict(value = "userinfo-cache", allEntries = true)
     @Secured("ROLE_USER")
     @PostMapping("/updatedescription")
     public String updateDescription(@RequestParam String description) {
@@ -427,7 +427,7 @@ public class ActionController {
     
     
     // This method handles adding skills
-    @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
+//    @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
     @Secured("ROLE_USER")
     @PostMapping("/updateskill")
     public String updateSkill(@RequestParam String skill) {
@@ -467,7 +467,7 @@ public class ActionController {
     }
     
     // This method handles removing skills (Bonus-feature)
-    @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
+//    @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
     @Secured("ROLE_USER")
     @PostMapping("/removeskill")
     public String removeSkill(@RequestParam Long id) {
@@ -484,7 +484,7 @@ public class ActionController {
     }
     
     // This method handles endorsing
-    @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
+//    @CacheEvict(value = { "userinfo-cache", "topskills-cache", "otherskills-cache" }, allEntries = true)
     @Secured("ROLE_USER")
     @GetMapping("/endorse/{id}")
     public String addEndorse(Model model, @PathVariable Long id) {
@@ -523,12 +523,12 @@ public class ActionController {
     
     
     // This method adds a new profile picture
-    @CacheEvict(value = {"userinfo-cache", 
-                        "user-cache", 
-                        "viewed-cache", 
-                        "messages-op-cache", 
-                        "messages-contacts-cache"
-                    }, allEntries = true, beforeInvocation=true)
+//    @CacheEvict(value = {"userinfo-cache", 
+//                        "user-cache", 
+//                        "viewed-cache", 
+//                        "messages-op-cache", 
+//                        "messages-contacts-cache"
+//                    }, allEntries = true, beforeInvocation=true)
     @Secured("ROLE_USER")
     @PostMapping("/updatePicture")
     public String addPicure(@RequestParam("file") MultipartFile file) throws IOException {
@@ -577,12 +577,12 @@ public class ActionController {
     
     // This method removes the current picture from profile. 
     // Picture is still left in the repository
-    @CacheEvict(value = {"userinfo-cache", 
-                        "user-cache", 
-                        "viewed-cache", 
-                        "messages-op-cache", 
-                        "messages-contacts-cache"
-                    }, allEntries = true, beforeInvocation=true)
+//    @CacheEvict(value = {"userinfo-cache", 
+//                        "user-cache", 
+//                        "viewed-cache", 
+//                        "messages-op-cache", 
+//                        "messages-contacts-cache"
+//                    }, allEntries = true, beforeInvocation=true)
     @Secured("ROLE_USER")
     @PostMapping("/removepicture")
     public String removePic() {
@@ -599,12 +599,12 @@ public class ActionController {
     
     
     // This method sets the selected image as profile image
-    @CacheEvict(value = {"userinfo-cache", 
-                        "user-cache", 
-                        "viewed-cache", 
-                        "messages-op-cache", 
-                        "messages-contacts-cache"
-                    }, allEntries = true, beforeInvocation=true)
+//    @CacheEvict(value = {"userinfo-cache", 
+//                        "user-cache", 
+//                        "viewed-cache", 
+//                        "messages-op-cache", 
+//                        "messages-contacts-cache"
+//                    }, allEntries = true, beforeInvocation=true)
     @Secured("ROLE_USER")
     @PostMapping("/setasprofilepic")
     public String pictureGallerySetAsProfilePic(@RequestParam Long id) {
@@ -620,12 +620,12 @@ public class ActionController {
     }
     
     // This method sets the selected image as profile image
-    @CacheEvict(value = {"userinfo-cache", 
-                        "user-cache", 
-                        "viewed-cache", 
-                        "messages-op-cache", 
-                        "messages-contacts-cache"
-                    }, allEntries = true, beforeInvocation=true)
+//    @CacheEvict(value = {"userinfo-cache", 
+//                        "user-cache", 
+//                        "viewed-cache", 
+//                        "messages-op-cache", 
+//                        "messages-contacts-cache"
+//                    }, allEntries = true, beforeInvocation=true)
     @Secured("ROLE_USER")
     // This method permanently deletes selected image
     @PostMapping("deletepic")
@@ -672,7 +672,7 @@ public class ActionController {
     
     
     // This prepares the view updateprofile
-    @CacheEvict(value = {"userinfo-cache", "user-cache"}, allEntries = true)
+//    @CacheEvict(value = {"userinfo-cache", "user-cache"}, allEntries = true)
     @Secured("ROLE_USER")
     @GetMapping("/updatemode")
     public String updateProfile(Model model) {
@@ -706,20 +706,20 @@ public class ActionController {
     
     
     // This method prepares the view contacts
-    @CacheEvict(value = {"user-cache",
-                    "user-byId-cache",
-                    "viewed-cache",
-                    "username-cache",
-                    "userinfo-cache", 
-                    "userinfo_friendrequests-cache",
-                    "userinfo-friends-cache", 
-                    "userinfo-sentrequests-cache", 
-                    "topskills-cache",
-                    "otherskills-cache",
-                    "userfriends-cache",
-                    "messages-contacts-cache",
-                    "messages-op-cache"
-                    }, allEntries = true, beforeInvocation=true)
+//    @CacheEvict(value = {"user-cache",
+//                    "user-byId-cache",
+//                    "viewed-cache",
+//                    "username-cache",
+//                    "userinfo-cache", 
+//                    "userinfo_friendrequests-cache",
+//                    "userinfo-friends-cache", 
+//                    "userinfo-sentrequests-cache", 
+//                    "topskills-cache",
+//                    "otherskills-cache",
+//                    "userfriends-cache",
+//                    "messages-contacts-cache",
+//                    "messages-op-cache"
+//                    }, allEntries = true, beforeInvocation=true)
     @GetMapping("/contacts")
     public String contacts(Model model) {
         Account user = domainService.getCurrentUser();
@@ -742,20 +742,20 @@ public class ActionController {
     
     
     // This method handles the sending contactrequests
-    @CacheEvict(value = {"user-cache",
-                    "user-byId-cache",
-                    "viewed-cache",
-                    "username-cache",
-                    "userinfo-cache", 
-                    "userinfo_friendrequests-cache",
-                    "userinfo-friends-cache", 
-                    "userinfo-sentrequests-cache", 
-                    "topskills-cache",
-                    "otherskills-cache",
-                    "userfriends-cache",
-                    "messages-contacts-cache",
-                    "messages-op-cache"
-                    }, allEntries = true, beforeInvocation=true)
+//    @CacheEvict(value = {"user-cache",
+//                    "user-byId-cache",
+//                    "viewed-cache",
+//                    "username-cache",
+//                    "userinfo-cache", 
+//                    "userinfo_friendrequests-cache",
+//                    "userinfo-friends-cache", 
+//                    "userinfo-sentrequests-cache", 
+//                    "topskills-cache",
+//                    "otherskills-cache",
+//                    "userfriends-cache",
+//                    "messages-contacts-cache",
+//                    "messages-op-cache"
+//                    }, allEntries = true, beforeInvocation=true)
     @PostMapping("/contactrequest")
     @Secured("ROLE_USER")
     public String contactRequest(@RequestParam String pathname) {
@@ -792,20 +792,20 @@ public class ActionController {
     }
     
     // This method handles contact requests
-    @CacheEvict(value = {"user-cache",
-                    "user-byId-cache",
-                    "viewed-cache",
-                    "username-cache",
-                    "userinfo-cache", 
-                    "userinfo_friendrequests-cache",
-                    "userinfo-friends-cache", 
-                    "userinfo-sentrequests-cache", 
-                    "topskills-cache",
-                    "otherskills-cache",
-                    "userfriends-cache",
-                    "messages-contacts-cache",
-                    "messages-op-cache"
-                    }, allEntries = true, beforeInvocation=true)
+//    @CacheEvict(value = {"user-cache",
+//                    "user-byId-cache",
+//                    "viewed-cache",
+//                    "username-cache",
+//                    "userinfo-cache", 
+//                    "userinfo_friendrequests-cache",
+//                    "userinfo-friends-cache", 
+//                    "userinfo-sentrequests-cache", 
+//                    "topskills-cache",
+//                    "otherskills-cache",
+//                    "userfriends-cache",
+//                    "messages-contacts-cache",
+//                    "messages-op-cache"
+//                    }, allEntries = true, beforeInvocation=true)
     @PostMapping("/handlerequest")
     @Secured("ROLE_USER")
     public String handleRequest(@RequestParam String decision, @RequestParam Long contactId) {
@@ -829,20 +829,20 @@ public class ActionController {
     
     
     // This method handles the termination of a friendship. Sad.
-    @CacheEvict(value = {"user-cache",
-                    "user-byId-cache",
-                    "viewed-cache",
-                    "username-cache",
-                    "userinfo-cache", 
-                    "userinfo_friendrequests-cache",
-                    "userinfo-friends-cache", 
-                    "userinfo-sentrequests-cache", 
-                    "topskills-cache",
-                    "otherskills-cache",
-                    "userfriends-cache",
-                    "messages-contacts-cache",
-                    "messages-op-cache"
-                    }, allEntries = true, beforeInvocation=true)
+//    @CacheEvict(value = {"user-cache",
+//                    "user-byId-cache",
+//                    "viewed-cache",
+//                    "username-cache",
+//                    "userinfo-cache", 
+//                    "userinfo_friendrequests-cache",
+//                    "userinfo-friends-cache", 
+//                    "userinfo-sentrequests-cache", 
+//                    "topskills-cache",
+//                    "otherskills-cache",
+//                    "userfriends-cache",
+//                    "messages-contacts-cache",
+//                    "messages-op-cache"
+//                    }, allEntries = true, beforeInvocation=true)
     @PostMapping("/terminatecontact")
     @Secured("ROLE_USER")
     public String terminateContact(@RequestParam String pathname) {
