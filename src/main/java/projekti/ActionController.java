@@ -588,13 +588,25 @@ public class ActionController {
         return "redirect:/updatemode";
     }
     
+    // This method sets the selected image as profile image
+    @CacheEvict(value = {"userinfo-cache", 
+                        "user-cache", 
+                        "viewed-cache", 
+                        "messages-op-cache", 
+                        "messages-contacts-cache"
+                    }, allEntries = true, beforeInvocation=true)
+    @Secured("ROLE_USER")
     // This method permanently deletes selected image
     @PostMapping("deletepic")
     public String pictureGalleryDeletePic(@RequestParam Long id) {
         
         Account user = domainService.getCurrentUser();
         
-        if (user.getProfileImgId() == id) {
+        System.out.println("users current img_id: " + user.getProfileImgId());
+        System.out.println("Id of deleted picture: " + id);
+        
+        if (user.getProfileImgId().longValue() == id.longValue()) {
+            System.out.println("If true");
             user.setProfileImgId(0L);
             accountRepository.save(user);
         }
