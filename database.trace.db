@@ -22,3 +22,6 @@ SELECT M.content FROM MESSAGES M WHERE USER_ID =? [42102-197]
 2020-11-08 15:56:21 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLException: Table "MESSAGES" not found; SQL statement:
 SELECT M.content FROM MESSAGES M WHERE M.USER_ID = ? [42102-197]
+2020-11-09 11:19:14 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "USER_INFO_SENT_REQUESTS[*]"; expected "UPDATE, USE, {"; SQL statement:
+USER_INFO_SENT_REQUESTS [42001-197]
