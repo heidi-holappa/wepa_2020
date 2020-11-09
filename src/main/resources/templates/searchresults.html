@@ -16,73 +16,74 @@
     <body>
         <div th:replace="fragments/layout :: pageTitle">Page title</div>
         <nav th:replace="fragments/layout :: nav">Navigation</nav>
+        <div class="flex-wrapper">
+             <div class="container" style="margin-top:30px">
+                <div class="row">
+                    <div class="col-sm-4">
 
-         <div class="container" style="margin-top:30px">
-            <div class="row">
-                <div class="col-sm-4">
-                   
-                    <hr class="d-sm-none">
-                        
-                    <div th:replace="fragments/layout :: quicknav"></div>
-                    
-                    <hr class="d-sm-none">
-                
-                </div>
-                <div class="col-sm-8">
-                    
-                    <h2>Search results:</h2>
-                    
-                    <div>
-                        <div th:if="${searchresults.empty}" class="alert alert-danger">
-                            <div th:unless="${notification.empty}">
-                                <span th:text="${notification}"></span>
-                                <br />
-                                <br />
+                        <hr class="d-sm-none">
+
+                        <div th:replace="fragments/layout :: quicknav"></div>
+
+                        <hr class="d-sm-none">
+
+                    </div>
+                    <div class="col-sm-8">
+
+                        <h2>Search results:</h2>
+
+                        <div>
+                            <div th:if="${searchresults.empty}" class="alert alert-danger">
+                                <div th:unless="${notification.empty}">
+                                    <span th:text="${notification}"></span>
+                                    <br />
+                                    <br />
+                                </div>
+                                <b>Tip:</b> If you want to see all users, search with the asterix symbol '*'.
                             </div>
-                            <b>Tip:</b> If you want to see all users, search with the asterix symbol '*'.
-                        </div>
-                        
-                        <div class='container' th:each="result : ${searchresults}">
-                            <div class="card-deck mt-4">    
-                                <div th:if="${result.username != userinfo.username}" class="card bg-light mb-3">
-                                    <div class="card-body">
-                                        <img th:if="${result.profileImgId != 0}" th:src="@{/profilePic/{id}(id=${result.profileImgId})}" class="avatar" alt="User profile img" />
-                                        <img th:if="${result.profileImgId == 0}" th:src="@{/media/template.PNG}" class="avatar" alt="Unicorn" />
-                                        <h4 class="card-title"><a th:href="@{/profile_view/{id}(id=${result.pathname})}" class="card-link" th:text='${result.name}'>Name</a> </h4>
+
+                            <div class='container' th:each="result : ${searchresults}">
+                                <div class="card-deck mt-4">    
+                                    <div th:if="${result.username != userinfo.username}" class="card bg-light mb-3">
+                                        <div class="card-body">
+                                            <img th:if="${result.profileImgId != 0}" th:src="@{/profilePic/{id}(id=${result.profileImgId})}" class="avatar" alt="User profile img" />
+                                            <img th:if="${result.profileImgId == 0}" th:src="@{/media/template.PNG}" class="avatar" alt="Unicorn" />
+                                            <h4 class="card-title"><a th:href="@{/profile_view/{id}(id=${result.pathname})}" class="card-link" th:text='${result.name}'>Name</a> </h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                    </div>
-                    <br />
-                    <br />
-                    <h4>Newest users</h4>
-                    <div class="alert alert-info">Didn't find what you were looking for? Check out Waypoint's most recent new members from below!</div>
-                    
-                    
-                    <div>
-                        <div th:if="${newest.empty}"></div>
-                        
-                        <div class='container' th:each="account : ${newest}">
-                            <div class="card-deck mt-4">    
-                                <div th:if="${account.username != userinfo.username}" class="card bg-light mb-3">
-                                    <div class="card-body">
-                                        <img th:if="${account.profileImgId != 0}" th:src="@{/profilePic/{id}(id=${account.profileImgId})}" class="avatar" alt="User profile img" />
-                                        <img th:if="${account.profileImgId == 0}" th:src="@{/media/template.PNG}" class="avatar" alt="Unicorn" />
-                                        <h4 class="card-title"><a th:href="@{/profile_view/{id}(id=${account.pathname})}" class="card-link" th:text='${account.name}'>Name</a> </h4>
+                        </div>
+                        <br />
+                        <br />
+                        <h4>Newest users</h4>
+                        <div class="alert alert-info">Didn't find what you were looking for? Check out Waypoint's most recent new members from below!</div>
+
+
+                        <div>
+                            <div th:if="${newest.empty}"></div>
+
+                            <div class='container' th:each="account : ${newest}">
+                                <div class="card-deck mt-4">    
+                                    <div th:if="${account.username != userinfo.username}" class="card bg-light mb-3">
+                                        <div class="card-body">
+                                            <img th:if="${account.profileImgId != 0}" th:src="@{/profilePic/{id}(id=${account.profileImgId})}" class="avatar" alt="User profile img" />
+                                            <img th:if="${account.profileImgId == 0}" th:src="@{/media/template.PNG}" class="avatar" alt="Unicorn" />
+                                            <h4 class="card-title"><a th:href="@{/profile_view/{id}(id=${account.pathname})}" class="card-link" th:text='${account.name}'>Name</a> </h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
+
                     </div>
-                    
-                    
+
                 </div>
-                
             </div>
+            <div th:replace="fragments/layout :: footer">Footer comes here</div>
         </div>
-        <div th:replace="fragments/layout :: footer">Footer comes here</div>
     </body>
 </html>

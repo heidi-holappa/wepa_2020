@@ -15,69 +15,69 @@
         
         <div th:replace="fragments/layout :: pageTitle">Page title</div>
         <nav th:replace="fragments/layout :: nav">Navigation</nav>
+        <div class="flex-wrapper">
         
-        
-        <div class="container" style="margin-top:30px">
-            <div class="row">
-                <div class="col">
-                    <h1>We value your feedback</h1>
-                    <div th:if="${param.success}" class="alert alert-success">    
-                        Feedback sent successfully. Thank you for your feedback!
-                    </div>
-                    <div th:unless="${notification == 'empty'}" th:text="${notification}" style="color:red;">Notification here</div>
+            <div class="container" style="margin-top:30px">
+                <div class="row">
+                    <div class="col">
+                        <h1>We value your feedback</h1>
+                        <div th:if="${param.success}" class="alert alert-success">    
+                            Feedback sent successfully. Thank you for your feedback!
+                        </div>
+                        <div th:unless="${notification == 'empty'}" th:text="${notification}" style="color:red;">Notification here</div>
 
-                    <p>
-                        Help us make Waypoint the bestest professional hook up site available. We value your feedback!
-                        <br />
-                        <br />
-                        <b>Please note</b> that you need to be a registered user to submit feedback.
-                        <br />
-                        <br />
-                    </p>
-                    
-                    <div>
-                        <form th:action="@{/docs/submitfeedback}" method="POST">
-                            
-                                
-                            <div class="form-group">
-                                <label>Is Waypoint a useful service to you?</label>
-                                <select name="useful" class="custom-select">
+                        <p>
+                            Help us make Waypoint the bestest professional hook up site available. We value your feedback!
+                            <br />
+                            <br />
+                            <b>Please note</b> that you need to be a registered user to submit feedback.
+                            <br />
+                            <br />
+                        </p>
+
+                        <div>
+                            <form th:action="@{/docs/submitfeedback}" method="POST">
+
+
+                                <div class="form-group">
+                                    <label>Is Waypoint a useful service to you?</label>
+                                    <select name="useful" class="custom-select">
+                                        <option value="empty" selected>Choose an option...</option>
+                                        <option value="yes">yes</option>
+                                        <option value="no">no</option>
+                                        <option value="dontknow">I don't know</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                <label>Would you recommend Waypoint to a colleague?</label>
+                                <select name="recommend" class="custom-select">
                                     <option value="empty" selected>Choose an option...</option>
                                     <option value="yes">yes</option>
                                     <option value="no">no</option>
                                     <option value="dontknow">I don't know</option>
                                 </select>
-                            </div>
-                            <div class="form-group">
-                            <label>Would you recommend Waypoint to a colleague?</label>
-                            <select name="recommend" class="custom-select">
-                                <option value="empty" selected>Choose an option...</option>
-                                <option value="yes">yes</option>
-                                <option value="no">no</option>
-                                <option value="dontknow">I don't know</option>
-                            </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Please let us know what you think of Waypoint:</label>
-                                <textarea class="form-control" rows="3" placeholder="Your feedback" type='text' name="openfeedback"></textarea>
-                            </div>
-                            <div class="form-group" align="right">
-                                <input class="btn btn-primary" type="submit" value="Submit feedback" />
-                            </div>
-                        </form>
-                        
-                        
-                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Please let us know what you think of Waypoint:</label>
+                                    <textarea class="form-control" rows="3" placeholder="Your feedback" type='text' name="openfeedback"></textarea>
+                                </div>
+                                <div class="form-group" align="right">
+                                    <input class="btn btn-primary" type="submit" value="Submit feedback" />
+                                </div>
+                            </form>
 
-                    
+
+                        </div>
+
+
+                    </div>
                 </div>
             </div>
+
+            <div class="jumbotron text-center" style="margin-bottom:0">
+                <footer th:replace="fragments/layout :: footer">Footer comes here</footer>
+            </div>
         </div>
-        
-        <div class="jumbotron text-center" style="margin-bottom:0">
-            <footer th:replace="fragments/layout :: footer">Footer comes here</footer>
-        </div>
-        
     </body>
 </html>
 

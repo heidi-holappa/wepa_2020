@@ -9,7 +9,11 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <style></style>
+        <style>
+            th, td {
+              padding: 4px;
+            }
+        </style>
     </head>
     <body>
 
@@ -19,11 +23,20 @@
         <div class="flex-wrapper">
             <div class="container" style="margin-top:30px">
                 <div class="row">
-                    <div class="col-sm">
+                   <div class="col-sm-4">
+
+                        <hr class="d-sm-none">
+
+                        <div th:replace="fragments/layout :: quicknav"></div>
+
+                        <hr class="d-sm-none">    
+                    </div>
+                    <div class="col-sm-8">
                         <h1>Sign up to Waypoint</h2>
                         <div th:if="${param.error}" class="alert alert-danger" th:text="${errors}">    
                             Login failed. Please check your username and password and try again.
                         </div>
+                        
                         <p>
                             Here are some tips to help you create an account: 
 
@@ -35,34 +48,56 @@
 
                             <b>Note:</b> This is a student project and data security is not guaranteed. Please do not submit any sensitive information or use passwords you use in other online services. 
                         </p>
-                        <h5 th:text="${errors}" style="color:red;"></h5>
+                        
                         <form th:action="@{/auth/signup}" method="POST" th:object="${account}">
                             <table>
                                 <tr>
                                     <td>Username:</td>
-                                    <td><input class="form-control" placeholder="Choose a username" type='text' th:field="*{username}"></td>
-                                    <td th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username error</td>
+                                </tr>
+                                <tr th:if="${#fields.hasErrors('username')}" >
+                                    <td class='alert alert-danger'>Username error:<br />
+                                        <span th:errors="*{username}"></span>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Name (it is preferrable to use a made-up name here):</td>
+                                    <td><input class="form-control" placeholder="Choose a username" type='text' th:field="*{username}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Name that is shown on Waypoint</td>
+                                </tr>
+                                <tr th:if="${#fields.hasErrors('name')}">
+                                    <td class='alert alert-danger'>Name error:<br />
+                                        <span th:errors="*{name}" ></span>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td><input class="form-control" placeholder="Enter your name" type='text' th:field="*{name}"></td>
-                                    <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</td>
                                 </tr>
                                 <tr>
                                     <td>Password:</td>
+                                </tr>
+                                <tr>
                                     <td><input class="form-control" placeholder="Enter password" type='password'  name="password" /></td>
                                 </tr>
                                 <tr>
                                     <td>Re-enter password:</td>
+                                </tr>
+                                <tr>
                                     <td><input class="form-control" placeholder="Enter password again" type='password'  name="passwordtwo" /></td>
                                 </tr>
                                 <tr>
                                     <td>Profile path:</td>
-                                    <td><input class="form-control" placeholder="Choose path-name" type='text' th:field="*{pathname}" /></td>
-                                    <td th:if="${#fields.hasErrors('pathname')}" th:errors="*{pathname}">Pathname error</td>
+                                </tr>
+                                <tr th:if="${#fields.hasErrors('pathname')}">
+                                    <td class='alert alert-danger'>Pathname error:<br />
+                                        <span th:errors="*{pathname}"></span>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="2" align ="right"><input class="btn btn-primary" type="submit" value="Send" /></td>
+                                    <td><input class="form-control" placeholder="Choose path-name" type='text' th:field="*{pathname}" /></td>
+                                </tr>
+                                <tr>
+                                    <td align ="right"><input class="btn btn-primary" type="submit" value="Send" /></td>
                                 </tr>
                             </table>
                         </form>

@@ -14,80 +14,81 @@
 <body>
     <div th:replace="fragments/layout :: pageTitle">Page title</div>
     <nav th:replace="fragments/layout :: nav">Navigation</nav>
-    <div class="container" style="margin-top:30px">
-        <div class="row">
-            <div class="col-sm-4">
-                <hr class="d-sm-none">               
-                <div th:replace="fragments/layout :: quicknav"></div>
-                <hr class="d-sm-none">
-                <br />                
-                <br />
-                <div th:if="${profilepic != null}">
-                    <img class="img-tumbnail" style="width:100%" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
-                </div>
-            </div>
-            <div class="col-sm-8">
-                <h2 th:text='${viewedProfile.name}'>User's name</h2>
-                <div th:if="${actionError != null}">
-                        <div th:replace='fragments/layout :: error'></div>
-                </div>
-                <div th:if="${requestreceived == 'false'}">
-                    <form th:unless="${modify =='true'}" method="POST" th:action="@{/contactrequest}">
-                        <div class="form-group">
-                           <input type="hidden" id="pathname" name="pathname" th:value="${viewedProfile.pathname}"/>
-                        </div>
-                        <button type="submit" class="btn btn-primary" th:text="${contactrequest}">Send or cancel</button>
-                    </form>
-                </div>
-                <p>
-                    Profile created:  <span th:text="${#temporals.format(userProfile.created, 'dd.MM.yyyy')}"></span>
+    <div class="flex-wrapper">
+        <div class="container" style="margin-top:30px">
+            <div class="row">
+                <div class="col-sm-4">
+                    <hr class="d-sm-none">               
+                    <div th:replace="fragments/layout :: quicknav"></div>
+                    <hr class="d-sm-none">
+                    <br />                
                     <br />
-                    Updated: <span th:text="${#temporals.format(userProfile.updateDate, 'dd.MM.yyyy')}"></span>
-                </p>
-                <p th:text='${userProfile.description}' class="font-italic">User can add a description here</p>
-                <h4>Contacts: </h4>
-                <div>
-                    <ul>
-                        <li th:if="${contacts.empty}">
-                            No contacts
-                        </li>
-                        <li th:each="contact : ${contacts}">
-                            <a th:href="@{/profile_view/{id}(id=${contact.pathname})}"><span th:text="${contact.name}"></span></a>
-                        </li>
-                    </ul>
+                    <div th:if="${profilepic != null}">
+                        <img class="img-tumbnail" style="width:100%" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
+                    </div>
                 </div>
-                <div>
-                    <h4>Top 3 skills</h4>
-                    <ul>
-                        <li th:each="skill : ${topSkills}">
-                            <span th:text="${skill.skill}">Top skills here</span> - Endorsements: 
-                            <span th:text="${skill.endorsements}"></span>
-                            <span th:unless="${modify =='true'}">
-                                <a th:href="@{/endorse/{id}(id=${skill.id})}">Endorse</a>
-                            </span>
-                        </li>
-                    </ul>
-                    <span th:unless="${otherSkills == null}" class="font-weight-bold">Other skills</span>
-                    <ul>
-                        <li th:each="skill : ${otherSkills}">
-                            <span th:text="${skill.skill}">Other skills here</span> - Endorsements: 
-                            <span th:text="${skill.endorsements}"></span> 
-                            <span th:unless="${modify =='true'}">
-                                <a th:href="@{/endorse/{id}(id=${skill.id})}">Endorse</a>
-                            </span>
-                        </li>
-                    </ul>
+                <div class="col-sm-8">
+                    <h2 th:text='${viewedProfile.name}'>User's name</h2>
+                    <div th:if="${actionError != null}">
+                            <div th:replace='fragments/layout :: error'></div>
+                    </div>
+                    <div th:if="${requestreceived == 'false'}">
+                        <form th:unless="${modify =='true'}" method="POST" th:action="@{/contactrequest}">
+                            <div class="form-group">
+                               <input type="hidden" id="pathname" name="pathname" th:value="${viewedProfile.pathname}"/>
+                            </div>
+                            <button type="submit" class="btn btn-primary" th:text="${contactrequest}">Send or cancel</button>
+                        </form>
+                    </div>
+                    <p>
+                        Profile created:  <span th:text="${#temporals.format(userProfile.created, 'dd.MM.yyyy')}"></span>
+                        <br />
+                        Updated: <span th:text="${#temporals.format(userProfile.updateDate, 'dd.MM.yyyy')}"></span>
+                    </p>
+                    <p th:text='${userProfile.description}' class="font-italic">User can add a description here</p>
+                    <h4>Contacts: </h4>
+                    <div>
+                        <ul>
+                            <li th:if="${contacts.empty}">
+                                No contacts
+                            </li>
+                            <li th:each="contact : ${contacts}">
+                                <a th:href="@{/profile_view/{id}(id=${contact.pathname})}"><span th:text="${contact.name}"></span></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Top 3 skills</h4>
+                        <ul>
+                            <li th:each="skill : ${topSkills}">
+                                <span th:text="${skill.skill}">Top skills here</span> - Endorsements: 
+                                <span th:text="${skill.endorsements}"></span>
+                                <span th:unless="${modify =='true'}">
+                                    <a th:href="@{/endorse/{id}(id=${skill.id})}">Endorse</a>
+                                </span>
+                            </li>
+                        </ul>
+                        <span th:unless="${otherSkills == null}" class="font-weight-bold">Other skills</span>
+                        <ul>
+                            <li th:each="skill : ${otherSkills}">
+                                <span th:text="${skill.skill}">Other skills here</span> - Endorsements: 
+                                <span th:text="${skill.endorsements}"></span> 
+                                <span th:unless="${modify =='true'}">
+                                    <a th:href="@{/endorse/{id}(id=${skill.id})}">Endorse</a>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    <br />
+                    <br />
                 </div>
-                <br />
-                <br />
             </div>
         </div>
+        <br />
+        <br />
+        <div class="jumbotron text-center" style="margin-bottom:0">
+            <footer th:replace="fragments/layout :: footer">Footer comes here</footer>
+        </div>
     </div>
-    <br />
-    <br />
-    <div class="jumbotron text-center" style="margin-bottom:0">
-        <footer th:replace="fragments/layout :: footer">Footer comes here</footer>
-    </div>
-
 </body>
 </html>
