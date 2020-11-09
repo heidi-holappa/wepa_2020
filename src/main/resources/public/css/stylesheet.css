@@ -55,3 +55,12 @@ img {
     height: 50px;
     border-radius: 50%;
 }
+
+.infinitehead {
+  height: 20vh;
+  min-height: 100px;
+  background-image: url('/media/haloInfinite_fade.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

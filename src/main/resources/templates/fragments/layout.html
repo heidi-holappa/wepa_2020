@@ -25,26 +25,44 @@
     
     <body>
         
-        <div th:fragment="pageTitle" class="jumbotron text-center" style="margin-bottom:0">
-            <h1>Waypoint</h1>
-            <p>The number one hub for UNSC professionals</p> 
+        <div th:fragment="pageTitle">
+            <header class="infinitehead">
+                <div class="container h-100">
+                    <div class="row h-100 align-items-center">
+                        <div class="col-12 text-center">
+                            <h1 class="font-weight-light">Waypoint</h1>
+                            <p class="lead">The number one hub for UNSC professionals</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
         </div>
+            
 
         <nav th:fragment="navbar" class="navbar navbar-expand-sm bg-dark navbar-dark">
-            <a class="navbar-brand" href="#">Navigation</a>
+            <a class="navbar-brand" href="/index">Message wall</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="collapsibleNavbar">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/index">Message wall</a>
-                    </li>
                     <li class="nav-item" sec:authorize="hasAuthority('USER')">
                         <a class="nav-link" th:href="@{/profile_view/{id}(id=${userinfo.pathname})}">Profile</a>
                     </li>
+                    <li class="nav-item" sec:authorize="hasAuthority('USER')">
+                        <a class="nav-link" href="/updatemode">Edit profile</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAuthority('USER')">
+                        <a href="/contacts">Manage contacts</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAuthority('USER')">
+                        <a class="nav-link" href="/alldata">View stored data</a>
+                    </li>
                     <li class="nav-item" sec:authorize="isAnonymous()">
                         <a class="nav-link" href="/auth/login">Sign in</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a class="nav-link" href="/auth/signup">Register</a>
                     </li>
                     <li class='nav-item' sec:authorize="hasAuthority('USER')">
                         <a class="nav-link" href="/logout">Sign out</a>
@@ -68,13 +86,16 @@
                     <a class="nav-link" href="/updatemode" th:classappend="${#httpServletRequest.getRequestURI() == '/updatemode' ? 'nav-link active':'nav-link'}">Edit profile</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasAuthority('USER')">
-                    <a class="nav-link" href="/alldata" th:classappend="${#httpServletRequest.getRequestURI() == '/alldata' ? 'nav-link active':'nav-link'}">View stored data</a>
+                    <a th:href="@{/contacts}" th:classappend="${#httpServletRequest.getRequestURI() == '/contacts' ? 'nav-link active':'nav-link'}">Manage contacts</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasAuthority('USER')">
-                    <a th:href="@{/contacts}" th:classappend="${#httpServletRequest.getRequestURI() == '/contacts' ? 'nav-link active':'nav-link'}">Contacts</a>
+                    <a class="nav-link" href="/alldata" th:classappend="${#httpServletRequest.getRequestURI() == '/alldata' ? 'nav-link active':'nav-link'}">View stored data</a>
                 </li>
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" href="/auth/login">Sign in</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" href="/auth/signup">Register</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasAuthority('USER')">
                     <a class="nav-link" href="/logout">Sign out</a>

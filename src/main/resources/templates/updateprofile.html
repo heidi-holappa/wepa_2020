@@ -25,21 +25,15 @@
 
     <div class="container" style="margin-top:30px">
         <div class="row">
-            <div class="col-sm-4">
-                
-                <hr class="d-sm-none">
-                                
-                <div th:replace="fragments/layout :: quicknav"></div>
-                
+            <div class="col-sm-4">                
+                <hr class="d-sm-none">                                
+                <div th:replace="fragments/layout :: quicknav"></div>                
                 <hr class="d-sm-none">    
-            </div>
-            
+            </div>            
             <div class="col-sm-8">
-                
                 <div th:if="${actionError != null}">
                     <div th:replace='fragments/layout :: error'></div>
                 </div>
-                
                 <h1>Update profile-information</h1>
                 <p> 
                     On this page you can update and edit your profile picture, personal description and skills. 
@@ -48,22 +42,20 @@
                 <div th:text="${actionError}"></div>
                 <br />
                 <br />
-                <div class="p-5 bg-light rounded">
+                <div class="p-5 bg-light rounded border border-primary">
                     <br />
-                
-                    <h2>Profile picture:</h2>
-
+                    <h2>Update profile picture:</h2>
                     <br />
-
-                    <div th:unless="${profilepic != null}" class="alert alert-info">
-                        No profile picture. Upload one below.
+                    <div th:unless="${profilepic != null}" class="alert alert-danger">
+                        No profile picture. <br />
+                        From the options below you can either upload a new image or manage previously uploaded images.
                     </div>
                     <br />
                     <div th:if="${profilepic != null}">
+                        Current profile image:<br />
                         <img class="rounded-circle border border-primary" style="width:50%" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
                     </div>
                     <br />
-
                     <div>
                         <h3>Upload a new profile image:</h3>
                         <form method="POST" th:action="@{/updatePicture}" enctype="multipart/form-data">
@@ -74,20 +66,16 @@
                             <input class="btn btn-primary" type="submit" value="Upload picture"/>
                         </form>
                     </div>
-
                     <br />
-
                     <div th:if="${profilepic != null}">
-                        <h3>Remove your current profile image: </h3>
-                        <p>Note: this sets the default image as your profile image.</p>
+                        <h3>Remove current profile image: </h3>
+                        <p><b>Note:</b> this sets the default image as your profile image.</p>
                         <form method="POST" th:action="@{/removepicture}" enctype="multipart/form-data">
                             <input class="btn btn-primary" type="submit" value="Remove current picture"/>
                         </form>  
                     </div>
-
                     <br />
                     <br />
-
                     <div>
                         <h3>Manage uploaded images:</h3>
                         <p>
@@ -102,16 +90,12 @@
                     </div>
                     <br />
                 </div>
-                
                 <br />
                 <br />
-                
-                <div class="p-5 bg-light rounded">
-                    <h2>Profile description</h2>
-
+                <div class="p-5 bg-light rounded border border-primary">
+                    <h2>Update description</h2>
                     <span class="font-weight-bold">Current description:</span>
                     <p th:text='${userProfile.description}' class="font-italic">User can add a description here</p>
-
                     <div> 
                         <form th:action="@{/updatedescription}" method="POST">
                             <div class="form-group">
@@ -121,21 +105,16 @@
                             <button type="submit" class="btn btn-primary" value="Post">Update description</button>    
                         </form> 
                     </div>
-
                     <br />
                 </div>
-                
                 <br />
                 <br />
-                
-                <div class=" p-5 bg-light rounded">
-                
+                <div class=" p-5 bg-light rounded border border-primary">
                     <br />
-                    <h2>Skills</h2>
+                    <h2>Update skills</h2>
+                    <br />
                     <h3>Manage current skills:</h3>
-                    <br />
-
-                                        
+                    <br />                  
                     <table>
                         <tbody>
                             <tr th:if="${skills.empty}">
@@ -153,13 +132,8 @@
                             </tr>
                         </tbody>
                     </table>
-                    
-
                     <br />
-
                     <h3>Submit a new skill</h3>
-
-
                     <div> 
                         <form th:action="@{/updateskill}" method="POST">
                             <div class="form-group">
@@ -169,31 +143,23 @@
                             <button type="submit" class="btn btn-primary" value="Post">Send skill</button>    
                         </form> 
                     </div>
-
-
                     <br />
                 </div>
                 <br />
-                
                 <form method="GET" th:action="@{/updatedone}">
                     <div class="form-group">
                        <button type="submit" class="btn btn-danger" value="Post">Back to profile</button>
                     </div>
                 </form>
-                
                 <br />
-                
-                
             </div>
         </div>
     </div>
     <br />
     <br />
-
     <div class="jumbotron text-center" style="margin-bottom:0">
         <footer th:replace="fragments/layout :: footer">Footer comes here</footer>
     </div>
-
 </body>
 </html>
 
