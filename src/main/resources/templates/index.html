@@ -14,43 +14,33 @@
     
     <body>
         <div th:replace="fragments/layout :: pageTitle">Page title</div>
+
         <nav th:replace="fragments/layout :: nav">Navigation</nav>
 
-         <div class="container" style="margin-top:30px">
+        <div class="container" style="margin-top:30px">
             <div class="row">
                 <div class="col-sm-4">
-                    <h2 sec:authorize="isAnonymous()">Meet Waypoint's #1 patreon!</h2>
-                    <img th:src="@{/media/template.PNG}" class="img-tumbnail" style="width:100%" alt="A beautiful unicorn" sec:authorize="isAnonymous()" />
-
-                    
                     <hr class="d-sm-none">                    
                     <div th:replace="fragments/layout :: quicknav"></div>
                     <hr class="d-sm-none">
                 </div>
-                <div class="col-sm-8">
-                    
-                   
+                <div class="col-sm-8">    
                     <h2>Welcome to Waypoint<span sec:authorize="hasAuthority('USER')">, <span th:text="${userinfo.name}">Name</span></span>!</h2>
                     <p sec:authorize="hasAuthority('USER')">
                         <i>Your profile information has last been updated on <span th:text="${#temporals.format(userProfile.updateDate, 'dd.MM.yyyy')}"></span>. Is everything up to date?</i>
                         <br />
                         <br />
                     </p>
-                   
-                    
                     <p sec:authorize="isAnonymous()">
                         Waypoint is a social connecting site for UNSC professionals. 
                         Registered users can personalize their profile, connect with 
                         other users and participate in discussion. Please be sure to 
                         read through the documentation in the footer before signing up. 
                     </p>
-                    
                     <div th:if="${actionError != null}">
                         <div th:replace='fragments/layout :: error'></div>
                     </div>
-                    
                     <div th:replace='fragments/layout :: postform' sec:authorize="hasAuthority('USER')"></div>
-                    
                     <br />
                     <br />
                     
@@ -68,9 +58,6 @@
                             <button type="submit" class="btn btn-primary" th:text="${show}">Filter posts</button>
                         </form>
                     </div>
-                    
-                    
-
                     <div sec:authorize="hasAuthority('USER')">
                         <br />
                         <br />
@@ -78,29 +65,24 @@
                         <br />
                         <br />
                     </div>
-                    
-                    
                     <div th:if="${show =='My contacts'}">
                         <div th:replace='fragments/layout :: msgs'></div>
                     </div>
-                    
-                    
                     <div th:if="${show =='All users'}">
                         <div th:replace='fragments/layout :: msgsContacts'></div>
                     </div>
-                        
                     <br />
                     <br />
-
                 </div>
-                
             </div>
         </div>
         <div th:replace="fragments/layout :: footer">Footer comes here</div>
+        
         <script sec:authorize="hasAuthority('USER')" th:src="@{/javascript/index.js}" defer></script>
         <script sec:authorize="hasAuthority('USER')" th:inline="javascript">
             var friendRequests = /*[[${friendRequests}]]*/ {};
             console.log(friendRequests);
         </script>
+    
     </body>
 </html>

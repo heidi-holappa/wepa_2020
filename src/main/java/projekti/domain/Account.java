@@ -30,7 +30,7 @@ public class Account extends AbstractPersistable<Long> {
     
     
     @NotEmpty
-    @Size(min = 4, max = 50)
+    @Size(min = 4, max = 16)
     private String username;
     
     @NotEmpty

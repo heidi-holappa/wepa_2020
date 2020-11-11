@@ -1,154 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>Waypoint - update profile</title>
-    <meta charset="utf-8" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/stylesheet.css}"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <style></style>
-</head>
-<body>
-    
+    <head>
+        <title>Waypoint - update profile</title>
+        <meta charset="utf-8" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" th:href="@{/css/stylesheet.css}"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <style></style>
+    </head>
+    <body>
+
         <div th:replace="fragments/layout :: pageTitle">Page title</div>
         <nav th:replace="fragments/layout :: nav">Navigation</nav>
-    
+        <div class="flex-wrapper">
 
-    <div class="container" style="margin-top:30px">
-        <div class="row">
-            <div class="col-sm-4">
-                
-                <hr class="d-sm-none">
-                                
-                <div th:replace="fragments/layout :: quicknav"></div>
-                
-                <hr class="d-sm-none">    
-            </div>
-            
-            <div class="col-sm-8">
-                
-                <h2>Userdata</h2>
-                
-                <p>
-                    Below you can see all the data stored about you in PostgreSQL - database. 
-                    Please note that some additional data may be stored.
-                </p>
-                
-                <h5>Account information</h5>
-                <ul>
-                    <li>Username: <span th:text="${userinfo.username}"></span></li>
-                    <li>Name: <span th:text="${userinfo.name}"></span></li>
-                    <li>Path: <span th:text="${userinfo.pathname}"></span></li>
-                    <li><b>Note:</b> for security reasons your password is not shown here</li>
-                </ul>
-                
-                <h5>Additional information</h5>
-                
-                <ul>
-                    <li>Description: <span th:text="${userProfile.description}"></span></li>
-                    <li>Profile created:  <span th:text="${#temporals.format(userProfile.created, 'dd.MM.yyyy')}"></span></li>
-                    <li>Profile last updated: <span th:text="${#temporals.format(userProfile.updateDate, 'dd.MM.yyyy')}"></span></li>
-                </ul>
-                
-                <h5>Skills</h5>
-                <div th:if="${skills.empty}" class="alert alert-danger">No skills found. I'm sure you have a lot to offer. Don't be shy, add some skills!</div>
-                <ul>
-                    <li th:each="skill : ${skills}"><span th:text="${skill.skill}"></span></li>                    
-                </ul>
-                
-                <h5>Contacts</h5>
-                <div th:if="${friends.empty}" class="alert alert-danger">No contacts found. You should network on Waypoint. It's easy!</div>
-                <ul>
-                    <li th:each="contact : ${friends}"><span th:text="${contact.name}"></span></li>                    
-                </ul>
-                
-                <h5>Active sent requests</h5>
-                <div th:if="${sentRequests.empty}" class="alert alert-danger">No active sent requests found.</div>
-                <ul>
-                    <li th:each="contact : ${sentRequests}"><span th:text="${contact.name}"></span></li>                    
-                </ul>
-                
-                <h5>Active received requests</h5>
-                <div th:if="${friendRequests.empty}" class="alert alert-danger">No active received requests found.</div>
-                <ul>
-                    <li th:each="contact : ${friendRequests}"><span th:text="${contact.name}"></span></li>                    
-                </ul>
-                
-                <h5>Posted messages</h5>
-                <div th:if="${messages.empty}" class="alert alert-danger">No posted messages found.</div>
-                <ul>
-                    <li th:each="message : ${messages}"><span th:text="${#temporals.format(message.messageDate, 'dd.MM.yyyy HH:mm')}"></span>: <span th:text="${message.content}"></span></li>
-                </ul>
-                
-                <h5>Files</h5>
-                <p><b>Note: </b>at the time only filenames are shown. Please contact system administrator to receive the files.</p>
-                <div th:if="${files.empty}" class="alert alert-danger">No files found.</div>
-                <ul>
-                    <li th:each="file : ${files}"><span th:text="${file.name}"></span></li>
-                    
-                </ul>
-                
-                <h5>Search words</h5>
-                <p>This list contains words that you have submitted into the search bar</p>
-                
-                <div th:if="${search.empty}" class="alert alert-danger">No searches found.</div>
-                
-                <ul>
-                    <li th:each="search : ${search}"><span th:text="${search.value}"></span></li>
-                </ul>
-                
-                <h5>Feedback</h5>
-                <p>All feedbacks you have submitted.</p>
-                <div th:if="${feedback.empty}" class="alert alert-danger">You haven't given us any feedback yet. Feedback form can be found in the footer.</div>
-                <ul th:each="feedback : ${feedback}">
-                    <li>Date: <span th:text="${#temporals.format(feedback.messageDate, 'dd.MM.yyyy HH:mm')}"></span></li>
-                    <li>Useful: <span th:text="${feedback.useful}"></span></li>
-                    <li>Recommend: <span th:text="${feedback.recommend}"></span></li>
-                    <li>Feedback: <span th:text="${feedback.openFeedback}"></span></li>                    
-                </ul>
-                
-                
-                <h5>Activity log</h5>
-                <p>Below you can see what has been logged about your activity on the site.</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Timestamp</th><th>Logged activity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:if="${sentRequests.empty}">
-                            <td colspan="2">No logged activity found. This should not happen. We track almost everything.</td>
-                        </tr>
-                        <tr th:each="log : ${activitylog}">
-                            <td th:text="${#temporals.format(log.logDate, 'dd.MM.yyyy HH:mm')}"></td>
-                            <td th:text="${log.userAction}"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                
-                <form method="GET" th:action="@{/updatedone}">
-                    <div class="form-group">
-                       <button type="submit" class="btn btn-primary" value="Post">Back to profile</button>
+            <div class="container" style="margin-top:30px">
+                <div class="row">
+                    <div class="col-sm-4">
+
+                        <hr class="d-sm-none">
+
+                        <div th:replace="fragments/layout :: quicknav"></div>
+
+                        <hr class="d-sm-none">    
                     </div>
-                </form>
+
+                    <div class="col-sm-8">
+
+                        <h2>Userdata</h2>
+
+                        <p>
+                            Below you can see all the data stored about you in PostgreSQL - database. 
+                            Please note that some additional data may be stored.
+                        </p>
+
+                        <h5>Account information</h5>
+                        <ul>
+                            <li>Username: <span th:text="${userinfo.username}"></span></li>
+                            <li>Name: <span th:text="${userinfo.name}"></span></li>
+                            <li>Path: <span th:text="${userinfo.pathname}"></span></li>
+                            <li><b>Note:</b> for security reasons your password is not shown here</li>
+                        </ul>
+
+                        <h5>Additional information</h5>
+
+                        <ul>
+                            <li>Description: <span th:text="${userProfile.description}"></span></li>
+                            <li>Profile created:  <span th:text="${#temporals.format(userProfile.created, 'dd.MM.yyyy')}"></span></li>
+                            <li>Profile last updated: <span th:text="${#temporals.format(userProfile.updateDate, 'dd.MM.yyyy')}"></span></li>
+                        </ul>
+
+                        <h5>Skills</h5>
+                        <div th:if="${skills.empty}" class="alert alert-danger">No skills found. I'm sure you have a lot to offer. Don't be shy, add some skills!</div>
+                        <ul>
+                            <li th:each="skill : ${skills}"><span th:text="${skill.skill}"></span></li>                    
+                        </ul>
+
+                        <h5>Contacts</h5>
+                        <div th:if="${friends.empty}" class="alert alert-danger">No contacts found. You should network on Waypoint. It's easy!</div>
+                        <ul>
+                            <li th:each="contact : ${friends}"><span th:text="${contact.name}"></span></li>                    
+                        </ul>
+
+                        <h5>Active sent requests</h5>
+                        <div th:if="${sentRequests.empty}" class="alert alert-danger">No active sent requests found.</div>
+                        <ul>
+                            <li th:each="contact : ${sentRequests}"><span th:text="${contact.name}"></span></li>                    
+                        </ul>
+
+                        <h5>Active received requests</h5>
+                        <div th:if="${friendRequests.empty}" class="alert alert-danger">No active received requests found.</div>
+                        <ul>
+                            <li th:each="contact : ${friendRequests}"><span th:text="${contact.name}"></span></li>                    
+                        </ul>
+
+                        <h5>Posted messages</h5>
+                        <div th:if="${messages.empty}" class="alert alert-danger">No posted messages found.</div>
+                        <ul>
+                            <li th:each="message : ${messages}"><span th:text="${#temporals.format(message.messageDate, 'dd.MM.yyyy HH:mm')}"></span>: <span th:text="${message.content}"></span></li>
+                        </ul>
+
+                        <h5>Files</h5>
+                        <p><b>Note: </b>at the time only filenames are shown. Please contact system administrator to receive the files.</p>
+                        <div th:if="${files.empty}" class="alert alert-danger">No files found.</div>
+                        <ul>
+                            <li th:each="file : ${files}"><span th:text="${file.name}"></span></li>
+
+                        </ul>
+
+                        <h5>Search words</h5>
+                        <p>This list contains words that you have submitted into the search bar</p>
+
+                        <div th:if="${search.empty}" class="alert alert-danger">No searches found.</div>
+
+                        <ul>
+                            <li th:each="search : ${search}"><span th:text="${search.value}"></span></li>
+                        </ul>
+
+                        <h5>Feedback</h5>
+                        <p>All feedbacks you have submitted.</p>
+                        <div th:if="${feedback.empty}" class="alert alert-danger">You haven't given us any feedback yet. Feedback form can be found in the footer.</div>
+                        <ul th:each="feedback : ${feedback}">
+                            <li>Date: <span th:text="${#temporals.format(feedback.messageDate, 'dd.MM.yyyy HH:mm')}"></span></li>
+                            <li>Useful: <span th:text="${feedback.useful}"></span></li>
+                            <li>Recommend: <span th:text="${feedback.recommend}"></span></li>
+                            <li>Feedback: <span th:text="${feedback.openFeedback}"></span></li>                    
+                        </ul>
 
 
+                        <h5>Activity log</h5>
+                        <p>Below you can see what has been logged about your activity on the site.</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th><th>Logged activity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${sentRequests.empty}">
+                                    <td colspan="2">No logged activity found. This should not happen. We track almost everything.</td>
+                                </tr>
+                                <tr th:each="log : ${activitylog}">
+                                    <td th:text="${#temporals.format(log.logDate, 'dd.MM.yyyy HH:mm')}"></td>
+                                    <td th:text="${log.userAction}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        <form method="GET" th:action="@{/updatedone}">
+                            <div class="form-group">
+                               <button type="submit" class="btn btn-primary" value="Post">Back to profile</button>
+                            </div>
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+            <br />
+            <br />
+
+            <div class="jumbotron text-center" style="margin-bottom:0">
+                <footer th:replace="fragments/layout :: footer">Footer comes here</footer>
             </div>
         </div>
-    </div>
-    <br />
-    <br />
-
-    <div class="jumbotron text-center" style="margin-bottom:0">
-        <footer th:replace="fragments/layout :: footer">Footer comes here</footer>
-    </div>
-
-</body>
+    </body>
 </html>
 
 

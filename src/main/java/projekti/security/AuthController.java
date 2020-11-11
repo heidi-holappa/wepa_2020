@@ -43,10 +43,8 @@ public class AuthController {
 
     
     // Custom login-sivu
-    @CacheEvict(value = {"user-cache",
-                    "user-byId-cache",
+    @CacheEvict(value = {"user-byId-cache",
                     "viewed-cache",
-                    "username-cache",
                     "userinfo-cache", 
                     "userinfo_friendrequests-cache",
                     "userinfo-friends-cache", 
@@ -57,7 +55,6 @@ public class AuthController {
                     "messages-contacts-cache",
                     "messages-op-cache"
                     }, allEntries = true, beforeInvocation=true)
-    
     @GetMapping("/auth/login")
     public String login() {
         return "auth/login";
@@ -65,10 +62,8 @@ public class AuthController {
     
     // Sign up view  
     // Object error contains error-messages 
-    @CacheEvict(value = {"user-cache",
-            "user-byId-cache",
+    @CacheEvict(value = {"user-byId-cache",
             "viewed-cache",
-            "username-cache",
             "userinfo-cache", 
             "userinfo_friendrequests-cache",
             "userinfo-friends-cache", 

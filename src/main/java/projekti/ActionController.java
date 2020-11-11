@@ -133,15 +133,22 @@ public class ActionController {
     @PostMapping("/postmessage")
     public String postMessage(@RequestParam String content) {
         
+        
+        // Cleans the String content. Solution was found on SO (question-id: 49510006)
+        String characterFilter = "[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]";
+        String contentCleaned = content.replaceAll(characterFilter,"");
+
+        
+        
         System.out.println("method postMessage");
 
-        if (content.length() < 10) {
+        if (contentCleaned.length() < 10) {
             this.actionError.setError("Your post must be at least 10 characters long.");
             domainService.logAction("POST: posting message failed: too short");
             return "redirect:/index";
         }
         
-        if (content.length() > 500) {
+        if (contentCleaned.length() > 500) {
             this.actionError.setError("Your post must not be more than 500 characters long.");
             domainService.logAction("POST: posting message failed: too long");
             return "redirect:/index";
@@ -150,8 +157,8 @@ public class ActionController {
         // Get the user who has logged in    
         Account user = domainService.getCurrentUser();
         
-        if (messageRepository.findContentByUser(user.getId()).contains(content)) {
-            if (messageRepository.findAndCompareDate(content).isAfter(LocalDateTime.now().minusMinutes(1L))) {
+        if (messageRepository.findContentByUser(user.getId()).contains(contentCleaned)) {
+            if (messageRepository.findAndCompareDate(contentCleaned).isAfter(LocalDateTime.now().minusMinutes(1L))) {
                 this.actionError.setError("You tried to post similar content that you have posted within 1 minute. To prevent spamming that is not permitted");
                 domainService.logAction("ERROR: tried to post same content twice in 60 seconds.");
                 return "redirect:/index";
@@ -160,7 +167,7 @@ public class ActionController {
         }
         
         Message msg = new Message();
-        msg.setContent(content);
+        msg.setContent(contentCleaned);
         msg.setLikes(0);
         msg.setComments(0);
         msg.setOpId(0L);
@@ -245,7 +252,7 @@ public class ActionController {
         
         model.addAttribute("userinfo", user);
         model.addAttribute("message", messageRepository.getOne(id));
-        model.addAttribute("comments", messageRepository.findAllByOpId(id));
+        model.addAttribute("comments", messageRepository.findTop10ByOpIdOrderByMessageDateDesc(id));
         
         // Show possible actionError. 
         if (actionError.toString().length() > 3) {
@@ -266,16 +273,19 @@ public class ActionController {
     @PostMapping("/postcomment")
     public String postComment(@RequestParam String content, @RequestParam Long messageId) {
         
+        // Cleans the String content. Solution was found on SO (question-id: 49510006)
+        String characterFilter = "[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]";
+        String contentCleaned = content.replaceAll(characterFilter,"");
                 
         // Set error-message, if comment too short or too long
-        if (content.length() < 10) {
+        if (contentCleaned.length() < 10) {
             this.actionError.setError("Your post must be at least 10 characters long.");
             // Log the current action
             domainService.logAction("POST: posting comment failed: too short");
             return "redirect:/comment/" + messageId;
         }
         
-        if (content.length() > 500) {
+        if (contentCleaned.length() > 500) {
             this.actionError.setError("Your post must not be more than 500 characters long.");
             // Log the current action
             domainService.logAction("POST: posting comment failed: too long");
@@ -286,8 +296,8 @@ public class ActionController {
         Account user = domainService.getCurrentUser();
         
         // This assesses if content containing the same content has been posted within 60 seconds. If true, user gets a notification that this is prevented
-        if (messageRepository.findContentByUser(user.getId()).contains(content)) {
-            if (messageRepository.findAndCompareDate(content).isAfter(LocalDateTime.now().minusMinutes(1L))) {
+        if (messageRepository.findContentByUser(user.getId()).contains(contentCleaned)) {
+            if (messageRepository.findAndCompareDate(contentCleaned).isAfter(LocalDateTime.now().minusMinutes(1L))) {
                 this.actionError.setError("You tried to post similar content that you have posted within 1 minute. To prevent spamming that is not permitted");
                 domainService.logAction("ERROR: tried to post same content twice in 60 seconds.");
                 return "redirect:/comment/" + messageId;
@@ -297,7 +307,7 @@ public class ActionController {
         
         // Create a new reply
         Message msg = new Message();
-        msg.setContent(content);
+        msg.setContent(contentCleaned);
         msg.setLikes(0);
         msg.setComments(0);
         msg.setOpId(messageId);
@@ -513,8 +523,7 @@ public class ActionController {
     
     
     // This method adds a new profile picture
-    @CacheEvict(value = {"userinfo-cache", 
-                        "user-cache", 
+    @CacheEvict(value = {"userinfo-cache",
                         "viewed-cache", 
                         "messages-op-cache", 
                         "messages-contacts-cache"
@@ -568,7 +577,6 @@ public class ActionController {
     // This method removes the current picture from profile. 
     // Picture is still left in the repository
     @CacheEvict(value = {"userinfo-cache", 
-                        "user-cache", 
                         "viewed-cache", 
                         "messages-op-cache", 
                         "messages-contacts-cache"
@@ -589,8 +597,7 @@ public class ActionController {
     
     
     // This method sets the selected image as profile image
-    @CacheEvict(value = {"userinfo-cache", 
-                        "user-cache", 
+    @CacheEvict(value = {"userinfo-cache",
                         "viewed-cache", 
                         "messages-op-cache", 
                         "messages-contacts-cache"
@@ -610,8 +617,7 @@ public class ActionController {
     }
     
     // This method sets the selected image as profile image
-    @CacheEvict(value = {"userinfo-cache", 
-                        "user-cache", 
+    @CacheEvict(value = {"userinfo-cache",
                         "viewed-cache", 
                         "messages-op-cache", 
                         "messages-contacts-cache"
@@ -662,7 +668,7 @@ public class ActionController {
     
     
     // This prepares the view updateprofile
-    @CacheEvict(value = {"userinfo-cache", "user-cache"}, allEntries = true)
+    @CacheEvict(value = {"userinfo-cache"}, allEntries = true)
     @Secured("ROLE_USER")
     @GetMapping("/updatemode")
     public String updateProfile(Model model) {
@@ -696,10 +702,8 @@ public class ActionController {
     
     
     // This method prepares the view contacts
-    @CacheEvict(value = {"user-cache",
-                    "user-byId-cache",
+    @CacheEvict(value = {"user-byId-cache",
                     "viewed-cache",
-                    "username-cache",
                     "userinfo-cache", 
                     "userinfo_friendrequests-cache",
                     "userinfo-friends-cache", 
@@ -732,10 +736,8 @@ public class ActionController {
     
     
     // This method handles the sending contactrequests
-    @CacheEvict(value = {"user-cache",
-                    "user-byId-cache",
+    @CacheEvict(value = {"user-byId-cache",
                     "viewed-cache",
-                    "username-cache",
                     "userinfo-cache", 
                     "userinfo_friendrequests-cache",
                     "userinfo-friends-cache", 
@@ -782,10 +784,8 @@ public class ActionController {
     }
     
     // This method handles contact requests
-    @CacheEvict(value = {"user-cache",
-                    "user-byId-cache",
+    @CacheEvict(value = {"user-byId-cache",
                     "viewed-cache",
-                    "username-cache",
                     "userinfo-cache", 
                     "userinfo_friendrequests-cache",
                     "userinfo-friends-cache", 
@@ -819,10 +819,8 @@ public class ActionController {
     
     
     // This method handles the termination of a friendship. Sad.
-    @CacheEvict(value = {"user-cache",
-                    "user-byId-cache",
+    @CacheEvict(value = {"user-byId-cache",
                     "viewed-cache",
-                    "username-cache",
                     "userinfo-cache", 
                     "userinfo_friendrequests-cache",
                     "userinfo-friends-cache", 

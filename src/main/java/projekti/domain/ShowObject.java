@@ -2,6 +2,7 @@ package projekti.domain;
 
 // This class creates an object to manage, which posts are filtered to view /index
 
+
 /**
  *
  * @author Heidi Holappa
