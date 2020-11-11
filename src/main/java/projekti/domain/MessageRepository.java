@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
     
-//    Message findByUser(Account user);
+//    Message findByUser(Account user); 
     
     Message findByContent(String content);
     
