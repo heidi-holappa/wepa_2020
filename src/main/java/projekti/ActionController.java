@@ -252,7 +252,7 @@ public class ActionController {
         
         model.addAttribute("userinfo", user);
         model.addAttribute("message", messageRepository.getOne(id));
-        model.addAttribute("comments", messageRepository.findAllByOpIdOrderByMessageDateAsc(id));
+        model.addAttribute("comments", messageRepository.findTop10ByOpIdOrderByMessageDateDesc(id));
         
         // Show possible actionError. 
         if (actionError.toString().length() > 3) {
