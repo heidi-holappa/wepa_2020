@@ -32,7 +32,9 @@
                 
                 <h2>Comments</h2>
                 
-                <h5 th:text="${errors}" style="color:red;"></h5>
+                <div th:if="${actionError != null}">
+                    <div th:replace='fragments/layout :: error'></div>
+                </div>
                 
                 <div>
                     <div class='container'>

@@ -57,6 +57,14 @@ public class DomainService {
         return fo;
     }
     
+    public List<FileObject> getAllPictures(Account user) {
+        return fileObjectRepository.findByUser(user);
+    }
+    
+    public void deleteImg(Long id) {
+        fileObjectRepository.deleteById(id);
+    }
+    
     @Cacheable(value = "user-cache")
     public Account getCurrentUser() {
         return accountRepository.findByUsername(getCurrentUsername());

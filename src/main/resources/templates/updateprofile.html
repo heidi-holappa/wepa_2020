@@ -9,7 +9,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <style></style>
+    <style>
+        td {
+            border-collapse: collapse;
+            padding: 5px;
+        }
+        
+    </style>
 </head>
 <body>
     
@@ -34,7 +40,7 @@
                     <div th:replace='fragments/layout :: error'></div>
                 </div>
                 
-                <h2>Update profile-information</h2>
+                <h1>Update profile-information</h1>
                 <p> 
                     On this page you can update and edit your profile picture, personal description and skills. 
                     Please note that using square pictures quarantees the best experience in this service. 
@@ -42,110 +48,142 @@
                 <div th:text="${actionError}"></div>
                 <br />
                 <br />
+                <div class="p-5 bg-light rounded">
+                    <br />
                 
-                <div class="container">
-                    <div class="row">
-                        <div class="col">
-                            <h3 class="font-weight-bold">Current profile picture:</h3>
-                            <span th:unless="${profilepic != null}"> No profile picture. Upload one below.</span>
-                        </div>
+                    <h2>Profile picture:</h2>
+
+                    <br />
+
+                    <div th:unless="${profilepic != null}" class="alert alert-info">
+                        No profile picture. Upload one below.
                     </div>
-                    <div th:if="${profilepic != null}" class="row">
-                        <div class="col">
-                            <img class="rounded-circle" style="width:50%" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
-                        </div>
+                    <br />
+                    <div th:if="${profilepic != null}">
+                        <img class="rounded-circle border border-primary" style="width:50%" th:src="@{/profilePic/{id}(id=${profilepic})}"/>
                     </div>
-                    <div class="row">
-                        <div class="col">
-                            <form method="POST" th:action="@{/updatePicture}" enctype="multipart/form-data">
-                                <div class="form-group">
-                                    <label class="font-weight-bold">Update your profile picture:</label>
-                                    <input type="file" class="form-control-file border" name="file" id="file"/>
-                                </div>
-                                <input class="btn btn-primary" type="submit" value="Update picture"/>
-                            </form>
-                        </div>
+                    <br />
+
+                    <div>
+                        <h3>Upload a new profile image:</h3>
+                        <form method="POST" th:action="@{/updatePicture}" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Select a file and upload it:</label>
+                                <input type="file" class="form-control-file border" name="file" id="file"/>
+                            </div>
+                            <input class="btn btn-primary" type="submit" value="Upload picture"/>
+                        </form>
                     </div>
-                    <div class="row" th:if="${profilepic != null}">
-                        <div class="col">
-                            You can remove your profile picture below:
-                        </div>
+
+                    <br />
+
+                    <div th:if="${profilepic != null}">
+                        <h3>Remove your current profile image: </h3>
+                        <p>Note: this sets the default image as your profile image.</p>
+                        <form method="POST" th:action="@{/removepicture}" enctype="multipart/form-data">
+                            <input class="btn btn-primary" type="submit" value="Remove current picture"/>
+                        </form>  
                     </div>
-                    <div class="row" th:if="${profilepic != null}">
-                        <div class "col">                    
-                            <form method="POST" th:action="@{/removepicture}" enctype="multipart/form-data">
-                                <input class="btn btn-primary" type="submit" value="Remove current picture"/>
-                            </form>  
-                        </div>
+
+                    <br />
+                    <br />
+
+                    <div>
+                        <h3>Manage uploaded images:</h3>
+                        <p>
+                            Opens a view where you can see all your uploaded images. 
+                            You can either set a previously uploaded image as your profile image or delete images from database.
+                        </p>
+                        <form method="GET" th:action="@{/picturegallery}">
+                            <div class="form-group">
+                               <button type="submit" class="btn btn-primary" value="Post">Manage images</button>
+                            </div>
+                        </form>
                     </div>
+                    <br />
                 </div>
                 
-                
                 <br />
                 <br />
                 
-                <span class="font-weight-bold">Current description:</span>
-                <p th:text='${userProfile.description}' class="font-italic">User can add a description here</p>
-                 
-                <div> 
-                    <form th:action="@{/updatedescription}" method="POST">
-                        <div class="form-group">
-                            <label class="font-weight-bold">Update your description:</label>
-                            <textarea class="form-control" id="updatedescription" name="description" rows="3" placeholder="Description must be between 4 and 200 characters."></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary" value="Post">Update description</button>    
-                    </form> 
-                </div>
-                
-                <br />
-                <br />
-                <h4>Current skills:</h4>
-                <ul>
-                    <li th:each="skill : ${skills}">
-                        <span th:text="${skill.skill}">Top skills here</span> - Endorsements: 
-                        <span th:text="${skill.endorsements}"></span>
-                        <form method="POST" th:action="@{/removeskill}">
-                            <input type="hidden" id="id" name="id" th:value="${skill.id}"/>
-                            <input class="btn btn-primary" type="submit" value="Remove skill"/>
+                <div class="p-5 bg-light rounded">
+                    <h2>Profile description</h2>
+
+                    <span class="font-weight-bold">Current description:</span>
+                    <p th:text='${userProfile.description}' class="font-italic">User can add a description here</p>
+
+                    <div> 
+                        <form th:action="@{/updatedescription}" method="POST">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Update your description:</label>
+                                <textarea class="form-control" id="updatedescription" name="description" rows="3" placeholder="Description must be between 4 and 200 characters."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" value="Post">Update description</button>    
                         </form> 
-                    </li>
-                </ul>                    
-       
-                
-                <div> 
-                    <form th:action="@{/updateskill}" method="POST">
-                        <div class="form-group">
-                            <label class="font-weight-bold">Add a skill:</label>
-                            <textarea class="form-control" id="addskill" name="skill" rows="1" placeholder="Skill must be 1-40 characters long."></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary" value="Post">Send skill</button>    
-                    </form> 
+                    </div>
+
+                    <br />
                 </div>
-                                                
-               
+                
                 <br />
+                <br />
+                
+                <div class=" p-5 bg-light rounded">
+                
+                    <br />
+                    <h2>Skills</h2>
+                    <h3>Manage current skills:</h3>
+                    <br />
+
+                                        
+                    <table>
+                        <tbody>
+                            <tr th:if="${skills.empty}">
+                                <td colspan="3"><span class="alert alert-danger">You have not submitted any skills yet.</span></td>
+                            </tr>
+                            <tr th:each="skill : ${skills}">
+                                <td><span th:text="${skill.skill}">Top skills here</span> - Endorsements: <br /></td>
+                                <td><span th:text="${skill.endorsements}"></span></td>
+                                <td>
+                                    <form method="POST" th:action="@{/removeskill}">
+                                        <input type="hidden" id="id" name="id" th:value="${skill.id}"/>
+                                        <input class="btn btn-primary" type="submit" value="Remove skill"/>
+                                    </form> 
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+
+                    <br />
+
+                    <h3>Submit a new skill</h3>
+
+
+                    <div> 
+                        <form th:action="@{/updateskill}" method="POST">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Add a skill:</label>
+                                <textarea class="form-control" id="addskill" name="skill" rows="1" placeholder="Skill must be 1-40 characters long."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" value="Post">Send skill</button>    
+                        </form> 
+                    </div>
+
+
+                    <br />
+                </div>
                 <br />
                 
                 <form method="GET" th:action="@{/updatedone}">
                     <div class="form-group">
-                       <button type="submit" class="btn btn-primary" value="Post">Back to profile</button>
+                       <button type="submit" class="btn btn-danger" value="Post">Back to profile</button>
                     </div>
                 </form>
                 
                 <br />
-                <br />
                 
-                <h5>BONUS: View all your data</h5>
                 
-                Want to see what has been stored to the PostgreSQL database about your activities? Click here:
-                
-                <form method="GET" th:action="@{/alldata}">
-                    <div class="form-group">
-                       <button type="submit" class="btn btn-primary" value="Post">Check all data</button>
-                    </div>
-                </form>
-
-
             </div>
         </div>
     </div>

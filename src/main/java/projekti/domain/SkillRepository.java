@@ -31,6 +31,9 @@ public interface SkillRepository extends JpaRepository<Skill, Long> {
     @Query(value = "SELECT * FROM Skill S WHERE S.USER_ID = ?1 AND ON_LIST = 1 ORDER BY ENDORSEMENTS DESC, SKILL DESC", nativeQuery = true)
     List<Skill> findByUserActive(Long id);
     
+    @Query(value = "SELECT S.skill FROM Skill S WHERE S.USER_ID = ?1 AND S.ON_LIST != 0", nativeQuery = true)
+    List<String> findActiveSkillsByUser(Long id);
+    
     
     
 }

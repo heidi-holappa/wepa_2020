@@ -98,13 +98,11 @@ public class ActionController {
             model.addAttribute("showInverted", "All users");
         }
         
-        // Show possible actionError. Showing it here, because in some cases user may be returned to /index when something goes wrong.
+        // Show possible actionError. 
         if (actionError.toString().length() > 3) {
             model.addAttribute("actionError", actionError.toString());
             actionError.setError("");
-        }
-        
-        
+        }  
         
         return "index";
     }
@@ -149,6 +147,18 @@ public class ActionController {
             return "redirect:/index";
         }
         
+        // Get the user who has logged in    
+        Account user = domainService.getCurrentUser();
+        
+        if (messageRepository.findContentByUser(user.getId()).contains(content)) {
+            if (messageRepository.findAndCompareDate(content).isAfter(LocalDateTime.now().minusMinutes(1L))) {
+                this.actionError.setError("You tried to post similar content that you have posted within 1 minute. To prevent spamming that is not permitted");
+                domainService.logAction("ERROR: tried to post same content twice in 60 seconds.");
+                return "redirect:/index";
+            }
+            
+        }
+        
         Message msg = new Message();
         msg.setContent(content);
         msg.setLikes(0);
@@ -156,10 +166,6 @@ public class ActionController {
         msg.setOpId(0L);
         List<Account> likers = new ArrayList<>();
         msg.setLikers(likers);
-        
-        // Get the user who has logged in    
-        String username = domainService.getCurrentUsername();
-        Account user = domainService.getCurrentUser();
         
         msg.setUser(user);
         
@@ -236,13 +242,16 @@ public class ActionController {
     public String comment(Model model, @PathVariable Long id) {
         
         Account user = domainService.getCurrentUser();
-        UserInfo userInfo = domainService.getUserInfo(user);
         
         model.addAttribute("userinfo", user);
         model.addAttribute("message", messageRepository.getOne(id));
         model.addAttribute("comments", messageRepository.findAllByOpId(id));
-        model.addAttribute("error", actionError.toString());
-        actionError.setError("");
+        
+        // Show possible actionError. 
+        if (actionError.toString().length() > 3) {
+            model.addAttribute("actionError", actionError.toString());
+            actionError.setError("");
+        }
         
         // Log the current action
         domainService.logAction("GET: viewed comment " + id);
@@ -257,19 +266,33 @@ public class ActionController {
     @PostMapping("/postcomment")
     public String postComment(@RequestParam String content, @RequestParam Long messageId) {
         
+                
         // Set error-message, if comment too short or too long
         if (content.length() < 10) {
             this.actionError.setError("Your post must be at least 10 characters long.");
             // Log the current action
             domainService.logAction("POST: posting comment failed: too short");
-            return "redirect:/index";
+            return "redirect:/comment/" + messageId;
         }
         
         if (content.length() > 500) {
             this.actionError.setError("Your post must not be more than 500 characters long.");
             // Log the current action
             domainService.logAction("POST: posting comment failed: too long");
-            return "redirect:/index";
+            return "redirect:/comment/" + messageId;
+        }
+        
+        // Get the user who has logged in
+        Account user = domainService.getCurrentUser();
+        
+        // This assesses if content containing the same content has been posted within 60 seconds. If true, user gets a notification that this is prevented
+        if (messageRepository.findContentByUser(user.getId()).contains(content)) {
+            if (messageRepository.findAndCompareDate(content).isAfter(LocalDateTime.now().minusMinutes(1L))) {
+                this.actionError.setError("You tried to post similar content that you have posted within 1 minute. To prevent spamming that is not permitted");
+                domainService.logAction("ERROR: tried to post same content twice in 60 seconds.");
+                return "redirect:/comment/" + messageId;
+            }
+            
         }
         
         // Create a new reply
@@ -280,9 +303,6 @@ public class ActionController {
         msg.setOpId(messageId);
         List<Account> likers = new ArrayList<>();
         msg.setLikers(likers);
-        
-        // Get the user who has logged in
-        Account user = domainService.getCurrentUser();
         msg.setUser(user);
         
         messageRepository.save(msg);
@@ -406,11 +426,14 @@ public class ActionController {
         Account user = domainService.getCurrentUser();
         UserInfo info = domainService.getUserInfo(user);
         
-        // Log the current action
-        domainService.logAction("POST: updated skill");
-        
         actionError.setError("");
         
+        if (skillRepository.findActiveSkillsByUser(user.getId()).contains(skill)) {
+            domainService.logAction("ERROR: Tried to submit a skill already on the list of skills.");
+            this.actionError.setError("You tried to submit a skill that already is included on your profile. This might happen for instance, when you double click submit button.");
+            return "redirect:/updatemode";
+        }
+               
         if (skill.length() >= 1 && skill.length() < 41) {
             
             
@@ -427,7 +450,9 @@ public class ActionController {
             actionError.setError("Skills must be between 1-40 characters.");
         }
         
-        String pathname = accountRepository.findByUsername(username).getPathname();
+        // Log the current action
+        domainService.logAction("POST: added a new skill");
+        
         return "redirect:/updatemode/";
     }
     
@@ -499,11 +524,7 @@ public class ActionController {
     public String addPicure(@RequestParam("file") MultipartFile file) throws IOException {
         
         // Get the user who has logged in
-        String username = domainService.getCurrentUsername();
         Account user = domainService.getCurrentUser();
-        // Get user's pathname
-        String pathname = user.getPathname();
-        
         
         // If ContentType is image, it can be used as a profile image. 
         if (!file.getContentType().contains("image/")) {
@@ -531,6 +552,19 @@ public class ActionController {
         return "redirect:/updatemode/";
     }
     
+    @GetMapping("/picturegallery")
+    public String pictureGallery(Model model) {
+        
+        Account user = domainService.getCurrentUser();
+        
+        model.addAttribute("allpictures", domainService.getAllPictures(user));
+        model.addAttribute("userinfo", user);
+        
+        domainService.logAction("GET: view picturegallery");
+        
+        return "picturegallery";
+    }
+    
     // This method removes the current picture from profile. 
     // Picture is still left in the repository
     @CacheEvict(value = {"userinfo-cache", 
@@ -552,6 +586,61 @@ public class ActionController {
         
         return "redirect:/updatemode/";
     }
+    
+    
+    // This method sets the selected image as profile image
+    @CacheEvict(value = {"userinfo-cache", 
+                        "user-cache", 
+                        "viewed-cache", 
+                        "messages-op-cache", 
+                        "messages-contacts-cache"
+                    }, allEntries = true, beforeInvocation=true)
+    @Secured("ROLE_USER")
+    @PostMapping("/setasprofilepic")
+    public String pictureGallerySetAsProfilePic(@RequestParam Long id) {
+        
+        Account user = domainService.getCurrentUser();
+        user.setProfileImgId(id);
+        accountRepository.save(user);
+        
+        // Log the current action
+        domainService.logAction("POST: set image id:" + id + " as profile image.");
+        
+        return "redirect:/updatemode";
+    }
+    
+    // This method sets the selected image as profile image
+    @CacheEvict(value = {"userinfo-cache", 
+                        "user-cache", 
+                        "viewed-cache", 
+                        "messages-op-cache", 
+                        "messages-contacts-cache"
+                    }, allEntries = true, beforeInvocation=true)
+    @Secured("ROLE_USER")
+    // This method permanently deletes selected image
+    @PostMapping("deletepic")
+    public String pictureGalleryDeletePic(@RequestParam Long id) {
+        
+        Account user = domainService.getCurrentUser();
+        
+        System.out.println("users current img_id: " + user.getProfileImgId());
+        System.out.println("Id of deleted picture: " + id);
+        
+        if (user.getProfileImgId().longValue() == id.longValue()) {
+            System.out.println("If true");
+            user.setProfileImgId(0L);
+            accountRepository.save(user);
+        }
+        
+        domainService.deleteImg(id);
+        
+        // Log the current action
+        domainService.logAction("POST: permanately deleted image id " + id);
+        
+        
+        return "redirect:/picturegallery";
+    }
+    
     
     // This methods returns a file for viewing. 
     @Transactional
@@ -577,7 +666,6 @@ public class ActionController {
     @Secured("ROLE_USER")
     @GetMapping("/updatemode")
     public String updateProfile(Model model) {
-        String username = domainService.getCurrentUsername();
         Account user = domainService.getCurrentUser();
         model.addAttribute("userinfo", user);
         model.addAttribute("skills", skillRepository.findByUserActive(user.getId()));
@@ -624,7 +712,6 @@ public class ActionController {
                     }, allEntries = true, beforeInvocation=true)
     @GetMapping("/contacts")
     public String contacts(Model model) {
-        String username = domainService.getCurrentUsername();
         Account user = domainService.getCurrentUser();
         UserInfo userInfo = domainService.getUserInfo(user);
         
@@ -754,13 +841,9 @@ public class ActionController {
         UserInfo userInfo = domainService.getUserInfo(user);
         Account contact = domainService.getViewedUserByPathname(pathname);
         UserInfo contactInfo = domainService.getUserInfo(contact);
-//        Account contact = accountRepository.findByPathname(pathname);
-//        UserInfo contactInfo = userInfoRepository.findByUser(contact);
         
         domainService.getUserInfoFriends(contactInfo).remove(user);
         domainService.getUserInfoFriends(userInfo).remove(contact);
-//        contactInfo.getFriends().remove(user);
-//        userInfo.getFriends().remove(contact);
         
         userInfoRepository.save(userInfo);
         userInfoRepository.save(contactInfo);
@@ -787,7 +870,6 @@ public class ActionController {
         // Log the current action
         domainService.logAction("POST: searchpost. Redirects to searchresults");
         
-        
         return "redirect:/searchresults";
         
     }
@@ -798,7 +880,6 @@ public class ActionController {
     public String searchGet(Model model) {
         
         Account user = domainService.getCurrentUser();
-        UserInfo userInfo = domainService.getUserInfo(user);
         SearchObject so = searchObjectRepository.findByUserNewest(user);
         
         model.addAttribute("userinfo", user);

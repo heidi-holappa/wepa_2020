@@ -1,3 +1,24 @@
-2020-11-05 18:30:06 jdbc[3]: exception
+2020-11-06 17:01:25 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLException: Value too long for column "CONTENT BINARY(255)": "X'ffd8ffe000104a46494600010101004800480000fffe003250726f6365737365642042792065426179207769746820496d6167654d616769636b2c207a312e... (13074)"; SQL statement:
 insert into file_object (content, content_length, content_type, name, user_id, id) values (?, ?, ?, ?, ?, ?) [22001-197]
+2020-11-06 17:23:34 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "USER_INFO_FRIENDS[*]"; expected "UPDATE, USE, {"; SQL statement:
+USER_INFO_FRIENDS [42001-197]
+2020-11-06 17:23:34 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "USER_INFO_FRIEND_REQUESTS[*]"; expected "UPDATE, USE, {"; SQL statement:
+USER_INFO_FRIEND_REQUESTS [42001-197]
+2020-11-06 17:23:34 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "USER_INFO_SENT_REQUESTS[*]"; expected "UPDATE, USE, {"; SQL statement:
+USER_INFO_SENT_REQUESTS [42001-197]
+2020-11-08 12:12:07 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT S.SKILL FROM SKILL S WHERE S.USER_ID = ? AND S.ONLIST != 0)[*] "; SQL statement:
+SELECT S.skill FROM Skill S WHERE S.USER_ID = ? AND S.ONLIST != 0) [42000-197]
+2020-11-08 12:15:50 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT S.SKILL FROM SKILL S WHERE S.USER_ID = ? AND S.ONLIST != 0)[*] "; SQL statement:
+SELECT S.skill FROM Skill S WHERE S.USER_ID = ? AND S.ONLIST != 0) [42000-197]
+2020-11-08 15:53:13 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "MESSAGES" not found; SQL statement:
+SELECT M.content FROM MESSAGES M WHERE USER_ID =? [42102-197]
+2020-11-08 15:56:21 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "MESSAGES" not found; SQL statement:
+SELECT M.content FROM MESSAGES M WHERE M.USER_ID = ? [42102-197]
